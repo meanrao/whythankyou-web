@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Why, Thank You!",
+    "slug": "w-ty",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/handbox.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/handbox.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2A9D8F"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.placeholder.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "Why, Thank You! needs access to your photo library to add photos to gift items and child profiles."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/handbox.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.placeholder.app",
+      "permissions": [
+        "READ_MEDIA_IMAGES"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/images/final_quest_240x240.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-router",
+      "expo-web-browser",
+      "expo-secure-store",
+      "expo-video"
+    ],
+    "scheme": "wty",
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "backendUrl": "https://8nsdd27yxhenvw8tnazbfv4kd9vumew6.app.specular.dev",
+      "supabaseUrl": "https://wdiovqjtfbkvjkcmbkzr.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkaW92cWp0ZmJrdmprY21ia3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzQ5OTUsImV4cCI6MjA5NDM1MDk5NX0.Pdoh7mPt_3YhTvPN8xFdda7M9L7E8t-_oDOqZ_fL3T8"
+    }
+  }
+}
