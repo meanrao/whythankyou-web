@@ -10,9 +10,9 @@ export const COLORS = {
   textTertiary: '#8E9A87',
 
   // Brand
-  primary: '#1B8A8A',
+  primary: '#2A9D8F',
   primaryMuted: '#E8F5F3',
-  accent: '#1B8A8A',
+  accent: '#2A9D8F',
   accentMuted: '#E8F5F3',
 
   // Occasion accents
@@ -41,9 +41,9 @@ export const DARK_COLORS = {
   text: '#FFFFFF',
   textSecondary: '#A0A0A0',
   textTertiary: '#707070',
-  primary: '#1B8A8A',
+  primary: '#2A9D8F',
   primaryMuted: '#1A3535',
-  accent: '#1B8A8A',
+  accent: '#2A9D8F',
   accentMuted: '#1A3535',
   occasionBirthday: '#E8866A',
   occasionChristmas: '#6BA882',

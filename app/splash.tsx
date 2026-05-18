@@ -77,7 +77,7 @@ const webStyles = StyleSheet.create({
   },
   why: { fontFamily: 'Georgia', fontSize: 42, color: '#1C2820', fontWeight: '700', textAlign: 'center' },
   thankYou: { fontFamily: 'Georgia', fontSize: 42, color: '#B5872E', fontStyle: 'italic', textAlign: 'center' },
-  tagline: { fontFamily: 'Georgia', fontStyle: 'italic', fontSize: 16, color: '#7A8B7A', marginTop: 16, textAlign: 'center' },
+  tagline: { fontFamily: 'Georgia', fontStyle: 'italic', fontSize: 20, fontWeight: '500', color: '#7A8B7A', marginTop: 16, textAlign: 'center' },
   button: { marginTop: 48, backgroundColor: '#1B8A8A', borderRadius: 28, paddingHorizontal: 52, height: 56, alignItems: 'center', justifyContent: 'center' },
   buttonText: { color: '#FFFFFF', fontSize: 17, fontWeight: '700', letterSpacing: 0.3 },
 });
@@ -320,12 +320,13 @@ const styles = StyleSheet.create({
   taglineText: {
     fontFamily: 'Georgia',
     fontStyle: 'italic',
-    fontSize: 16,
+    fontSize: 20,
+    fontWeight: '500',
     color: '#7A8B7A',
     textAlign: 'center',
     marginTop: 20,
     letterSpacing: 0.1,
-    lineHeight: 24,
+    lineHeight: 28,
   },
   buttonWrapper: {
     position: 'absolute',

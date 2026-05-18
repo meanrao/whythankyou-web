@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(git init *)",
+      "Bash(gh repo *)",
+      "Bash(git --version)",
+      "Bash(ssh -T git@github.com)",
+      "Bash(git config *)",
+      "Bash(security find-internet-password *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git remote *)",
+      "Bash(git push *)"
+    ]
+  }
+}

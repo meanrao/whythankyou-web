@@ -28,7 +28,7 @@ const OCCASIONS = ['Birthday', 'Christmas', 'Graduation', 'Baby Shower', 'Holida
 type Occasion = typeof OCCASIONS[number];
 
 const C = {
-  header: '#4A7C5F',
+  header: '#2A9D8F',
   headerText: '#F5F0E8',
   pillSelected: '#4A7C5F',
   pillSelectedText: '#F5F0E8',

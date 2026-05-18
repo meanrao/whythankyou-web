@@ -18,7 +18,7 @@ import { useColors } from '@/hooks/useColors';
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const C = {
-  header: '#4A7C5F',
+  header: '#2A9D8F',
   headerText: '#F5F0E8',
   teal: '#1B8A8A',
   sage: '#4A7C5F',

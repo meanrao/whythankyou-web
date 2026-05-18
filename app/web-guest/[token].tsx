@@ -14,20 +14,28 @@ import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/utils/supabase';
 import type { Session } from '@supabase/supabase-js';
 
+// ─── Palette ──────────────────────────────────────────────────────────────────
+
 const C = {
-  bg: '#F5F0E8',
-  teal: '#1B8A8A',
-  text: '#2C3B32',
-  textSecondary: '#5C6B5E',
+  bg: '#FAF7F2',
+  cream2: '#F2EDE5',
+  teal: '#2A9D8F',
+  tealMuted: '#E8F5F3',
+  gold: '#B5872E',
+  text: '#1C2820',
+  textSecondary: '#5A6654',
+  textTertiary: '#8A9882',
   surface: '#FFFFFF',
-  border: '#D4C9B8',
-  success: '#4A7C5F',
+  border: '#EAE2D6',
+  success: '#2A9D8F',
   errorText: '#C0392B',
 };
 
 const APP_STORE_URL = 'https://apps.apple.com/app/w-ty/id6746818447';
 const SIGNUP_URL = 'https://whythankyou.com/signup';
 const LOGIN_URL = 'https://whythankyou.com/login';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 type GiftItem = {
   id: string;
@@ -52,10 +60,7 @@ type ChildAddress = {
   country: string | null;
 };
 
-function resolveImageSource(source: string | null | undefined) {
-  if (!source) return { uri: '' };
-  return { uri: source };
-}
+// ─── Gift card ────────────────────────────────────────────────────────────────
 
 function GiftCard({
   item,
@@ -67,63 +72,78 @@ function GiftCard({
   isLoggedIn: boolean;
 }) {
   const priceDisplay = item.price != null ? `$${Number(item.price).toFixed(2)}` : null;
-  const claimedLabel = item.claimed ? 'Claimed ✓' : 'Claim this gift';
   const hasStoreUrl = !!item.store_url;
-  const storeLinkLabel = item.store ? `View on ${item.store}` : 'View item';
 
-  function handleCardPress() {
+  function handleShopPress() {
     if (!hasStoreUrl) return;
-    console.log('[WebGuest] Card tapped — opening store URL:', item.store_url);
+    console.log('[WebGuest] Shop link tapped:', item.store_url);
     Linking.openURL(item.store_url!);
   }
 
   function handleClaimPress() {
-    console.log('[WebGuest] Claim button pressed for item:', item.id, item.name, '| isLoggedIn:', isLoggedIn);
+    console.log('[WebGuest] Claim pressed:', item.id, item.name, '| loggedIn:', isLoggedIn);
     onClaim(item.id);
   }
 
   return (
-    <TouchableOpacity
-      onPress={handleCardPress}
-      activeOpacity={hasStoreUrl ? 0.85 : 1}
-      style={styles.giftCard}
-    >
-      {item.photo_url ? (
-        <Image
-          source={resolveImageSource(item.photo_url)}
-          style={styles.giftImage}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={styles.giftImagePlaceholder}>
-          <Text style={styles.giftImagePlaceholderText}>🎁</Text>
+    <View style={styles.giftCard}>
+      {/* Photo + details row */}
+      <View style={styles.giftCardBody}>
+        {/* Square photo */}
+        <View style={styles.giftImageWrap}>
+          {item.photo_url ? (
+            <Image
+              source={{ uri: item.photo_url }}
+              style={styles.giftImage}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={styles.giftImagePlaceholder}>
+              <Text style={styles.giftPlaceholderEmoji}>🎁</Text>
+            </View>
+          )}
+          {item.claimed ? (
+            <View style={styles.claimedOverlay}>
+              <Text style={styles.claimedOverlayCheck}>✓</Text>
+            </View>
+          ) : null}
         </View>
-      )}
-      <View style={styles.giftInfo}>
-        <Text style={styles.giftName}>{item.name}</Text>
-        {item.store ? (
-          <Text style={styles.giftStore}>{item.store}</Text>
-        ) : null}
-        {priceDisplay ? (
-          <Text style={styles.giftPrice}>{priceDisplay}</Text>
-        ) : null}
-        {hasStoreUrl ? (
-          <Text style={styles.storeLink}>{storeLinkLabel}</Text>
-        ) : null}
+
+        {/* Text details */}
+        <View style={styles.giftDetails}>
+          <Text style={styles.giftName} numberOfLines={3}>{item.name}</Text>
+          {item.store ? (
+            <Text style={styles.giftStore}>{item.store}</Text>
+          ) : null}
+          {priceDisplay ? (
+            <Text style={styles.giftPrice}>{priceDisplay}</Text>
+          ) : null}
+          {hasStoreUrl ? (
+            <TouchableOpacity onPress={handleShopPress} activeOpacity={0.7} style={styles.shopLinkBtn}>
+              <Text style={styles.shopLinkText}>Shop now →</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      </View>
+
+      {/* Full-width claim button */}
+      <View style={styles.giftCardFooter}>
         <TouchableOpacity
           onPress={handleClaimPress}
           disabled={item.claimed}
           style={[styles.claimButton, item.claimed && styles.claimButtonClaimed]}
-          activeOpacity={0.8}
+          activeOpacity={0.85}
         >
           <Text style={[styles.claimButtonText, item.claimed && styles.claimButtonTextClaimed]}>
-            {claimedLabel}
+            {item.claimed ? '✓  Claimed' : 'Claim this gift'}
           </Text>
         </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
+
+// ─── Screen ───────────────────────────────────────────────────────────────────
 
 export default function WebGuestScreen() {
   const { token } = useLocalSearchParams<{ token: string }>();
@@ -156,7 +176,7 @@ export default function WebGuestScreen() {
 
   useEffect(() => {
     if (isLoggedIn && wishlistId) {
-      console.log('[WebGuest] User is logged in — fetching address for wishlist:', wishlistId);
+      console.log('[WebGuest] User logged in — fetching address for wishlist:', wishlistId);
       loadAddress(wishlistId);
     }
   }, [isLoggedIn, wishlistId]);
@@ -280,14 +300,18 @@ export default function WebGuestScreen() {
     Linking.openURL(APP_STORE_URL);
   }
 
+  // ── Loading state ────────────────────────────────────────────────────────────
+
   if (loading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={C.teal} />
-        <Text style={styles.loadingText}>Loading gift list...</Text>
+        <Text style={styles.loadingText}>Loading gift list…</Text>
       </View>
     );
   }
+
+  // ── Error state ──────────────────────────────────────────────────────────────
 
   if (error) {
     return (
@@ -301,15 +325,26 @@ export default function WebGuestScreen() {
 
   if (!wishlist) return null;
 
-  const listName = wishlist.name;
-  const personName = wishlist.person;
+  // ── Derived values ───────────────────────────────────────────────────────────
+
   const claimedCount = items.filter(i => i.claimed).length;
   const totalCount = items.length;
-  const progressLabel = totalCount > 0 ? `${claimedCount} of ${totalCount} gifts claimed` : 'No gifts yet';
+  const progressPercent = totalCount > 0 ? (claimedCount / totalCount) * 100 : 0;
+  const allClaimed = totalCount > 0 && claimedCount === totalCount;
 
-  const hasAddress = isLoggedIn && address && (address.city || address.state || address.country);
-  const addressParts = [address?.city, address?.state, address?.country].filter(Boolean);
-  const addressDisplay = addressParts.join(', ');
+  const formattedBirthday = wishlist.birthday
+    ? new Date(wishlist.birthday + 'T00:00:00').toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric',
+      })
+    : null;
+
+  const hasAddress =
+    isLoggedIn && address && (address.city || address.state || address.country);
+  const addressDisplay = [address?.city, address?.state, address?.country]
+    .filter(Boolean)
+    .join(', ');
+
+  // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
     <>
@@ -318,74 +353,119 @@ export default function WebGuestScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.appName}>Why, Thank You!</Text>
-          <Text style={styles.headerTitle}>{listName}</Text>
-          <Text style={styles.headerSubtitle}>
-            {'Gift list for '}
-            {personName}
-          </Text>
-          {wishlist.birthday ? (
-            <Text style={guestStyles.birthdayText}>
-              {'🎂 '}
-              {new Date(wishlist.birthday + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-            </Text>
-          ) : null}
-          <Text style={styles.progressLabel}>{progressLabel}</Text>
-        </View>
+        <View style={styles.page}>
 
-        {/* Gift items */}
-        <View style={styles.itemsContainer}>
-          {items.length === 0 ? (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyEmoji}>🎁</Text>
-              <Text style={styles.emptyText}>No gifts have been added yet.</Text>
-            </View>
-          ) : (
-            items.map(item => (
-              <GiftCard
-                key={item.id}
-                item={item}
-                onClaim={handleClaim}
-                isLoggedIn={isLoggedIn}
-              />
-            ))
-          )}
-        </View>
-
-        {/* Mailing address — logged-in guests only */}
-        {hasAddress ? (
-          <View style={styles.addressSection}>
-            <Text style={styles.addressSectionTitle}>Mailing Address</Text>
-            <View style={styles.addressCard}>
-              <Text style={styles.addressLabel}>Ship to</Text>
-              <Text style={styles.addressValue}>{addressDisplay}</Text>
-            </View>
+          {/* ── Brand bar ── */}
+          <View style={styles.brandBar}>
+            <View style={styles.brandRule} />
+            <Text style={styles.brandName}>Why, Thank You!</Text>
+            <View style={styles.brandRule} />
           </View>
-        ) : null}
 
-        {/* Download banner */}
-        <View style={styles.downloadBanner}>
-          <Text style={styles.downloadTitle}>Want to create wishlists for your kids?</Text>
-          <Text style={styles.downloadSubtext}>Download Why, Thank You! on the App Store</Text>
-          <TouchableOpacity
-            onPress={handleDownloadBanner}
-            style={styles.downloadButton}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.downloadButtonText}>Download on the App Store</Text>
-          </TouchableOpacity>
-        </View>
+          {/* ── Hero header ── */}
+          <View style={styles.hero}>
+            <Text style={styles.heroTitle}>{wishlist.name}</Text>
+            <Text style={styles.heroSubtitle}>
+              A gift list for {wishlist.person}
+            </Text>
+            {formattedBirthday ? (
+              <Text style={styles.heroBirthday}>🎂 {formattedBirthday}</Text>
+            ) : null}
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Powered by Why, Thank You!</Text>
-          <Text style={styles.footerTagline}>Take the guesswork out of giving.</Text>
+            {/* Progress */}
+            {totalCount > 0 ? (
+              <View style={styles.progressBlock}>
+                <View style={styles.progressTrack}>
+                  <View
+                    style={[
+                      styles.progressFill,
+                      { width: `${Math.round(progressPercent)}%` as any },
+                      allClaimed && styles.progressFillComplete,
+                    ]}
+                  />
+                </View>
+                <Text style={styles.progressLabel}>
+                  {allClaimed
+                    ? '🎉 All gifts claimed!'
+                    : `${claimedCount} of ${totalCount} gifts claimed`}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+
+          {/* ── Divider ── */}
+          <View style={styles.sectionDivider} />
+
+          {/* ── Gift list ── */}
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>
+              {totalCount === 0 ? 'Gift List' : `${totalCount} Gift${totalCount !== 1 ? 's' : ''}`}
+            </Text>
+
+            {items.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyEmoji}>🎁</Text>
+                <Text style={styles.emptyText}>No gifts have been added yet.</Text>
+              </View>
+            ) : (
+              <View style={styles.giftList}>
+                {items.map(item => (
+                  <GiftCard
+                    key={item.id}
+                    item={item}
+                    onClaim={handleClaim}
+                    isLoggedIn={isLoggedIn}
+                  />
+                ))}
+              </View>
+            )}
+          </View>
+
+          {/* ── Mailing address (logged-in guests only) ── */}
+          {hasAddress ? (
+            <>
+              <View style={styles.sectionDivider} />
+              <View style={styles.section}>
+                <Text style={styles.sectionLabel}>Mailing Address</Text>
+                <View style={styles.addressCard}>
+                  <Text style={styles.addressLabel}>Ship to</Text>
+                  <Text style={styles.addressValue}>{addressDisplay}</Text>
+                </View>
+              </View>
+            </>
+          ) : null}
+
+          {/* ── Download banner ── */}
+          <View style={styles.sectionDivider} />
+          <View style={styles.downloadBanner}>
+            <Text style={styles.downloadIcon}>🎀</Text>
+            <Text style={styles.downloadTitle}>
+              Create wishlists for your family
+            </Text>
+            <Text style={styles.downloadSubtext}>
+              Free on iPhone & iPad — takes two minutes to set up
+            </Text>
+            <TouchableOpacity
+              onPress={handleDownloadBanner}
+              style={styles.downloadButton}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.downloadButtonText}>Download Why, Thank You!</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* ── Footer ── */}
+          <View style={styles.footer}>
+            <Text style={styles.footerWordmark}>Why, Thank You!</Text>
+            <Text style={styles.footerTagline}>
+              Take the guesswork out of giving.
+            </Text>
+          </View>
+
         </View>
       </ScrollView>
 
-      {/* Claim modal — shown when not logged in */}
+      {/* ── Claim modal (not logged in) ── */}
       <Modal
         visible={claimModalVisible}
         animationType="slide"
@@ -395,31 +475,32 @@ export default function WebGuestScreen() {
         <View style={styles.modalContainer}>
           <TouchableOpacity
             onPress={handleModalClose}
-            style={styles.modalCloseButton}
+            style={styles.modalCloseBtn}
             activeOpacity={0.7}
           >
             <Text style={styles.modalCloseText}>✕</Text>
           </TouchableOpacity>
 
+          <Text style={styles.modalEmoji}>🎁</Text>
           <Text style={styles.modalTitle}>Claim this gift</Text>
           <Text style={styles.modalBody}>
-            Create a free Why, Thank You! account to claim gifts and track what you're buying.
+            Sign in to mark this as yours so no one else buys a duplicate.
           </Text>
 
           <TouchableOpacity
             onPress={handleModalCreateAccount}
-            style={styles.modalPrimaryButton}
+            style={styles.modalPrimaryBtn}
             activeOpacity={0.85}
           >
-            <Text style={styles.modalPrimaryButtonText}>Create account</Text>
+            <Text style={styles.modalPrimaryBtnText}>Create a free account</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={handleModalLogin}
-            style={styles.modalSecondaryButton}
+            style={styles.modalSecondaryBtn}
             activeOpacity={0.85}
           >
-            <Text style={styles.modalSecondaryButtonText}>Log in</Text>
+            <Text style={styles.modalSecondaryBtnText}>Log in</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -427,14 +508,24 @@ export default function WebGuestScreen() {
   );
 }
 
+// ─── Styles ───────────────────────────────────────────────────────────────────
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: C.bg,
   },
   scrollContent: {
-    paddingBottom: 60,
+    paddingBottom: 0,
   },
+  // Centered page wrapper (caps width on desktop)
+  page: {
+    maxWidth: 600,
+    alignSelf: 'center',
+    width: '100%',
+  },
+
+  // ── Loading / error ────────────────────────────────────────────────────────
   centered: {
     flex: 1,
     backgroundColor: C.bg,
@@ -445,14 +536,14 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 15,
+    fontFamily: 'Georgia',
+    fontStyle: 'italic',
     color: C.textSecondary,
     marginTop: 8,
   },
-  errorEmoji: {
-    fontSize: 48,
-  },
+  errorEmoji: { fontSize: 48 },
   errorTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
     fontFamily: 'Georgia',
     color: C.text,
@@ -463,140 +554,244 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
   },
-  header: {
-    backgroundColor: C.teal,
+
+  // ── Brand bar ─────────────────────────────────────────────────────────────
+  brandBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 24,
-    paddingTop: 48,
+    paddingTop: 40,
+    paddingBottom: 32,
+    gap: 14,
+  },
+  brandRule: {
+    flex: 1,
+    height: 1,
+    backgroundColor: C.border,
+  },
+  brandName: {
+    fontFamily: 'Georgia',
+    fontStyle: 'italic',
+    fontSize: 18,
+    color: C.teal,
+    letterSpacing: 0.2,
+  },
+
+  // ── Hero ──────────────────────────────────────────────────────────────────
+  hero: {
+    paddingHorizontal: 28,
     paddingBottom: 32,
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
-  appName: {
+  heroTitle: {
+    fontFamily: 'Georgia',
+    fontSize: 34,
+    fontWeight: '700',
+    color: C.text,
+    textAlign: 'center',
+    letterSpacing: -0.6,
+    lineHeight: 40,
+  },
+  heroSubtitle: {
+    fontFamily: 'Georgia',
+    fontStyle: 'italic',
+    fontSize: 17,
+    color: C.textSecondary,
+    textAlign: 'center',
+  },
+  heroBirthday: {
     fontSize: 14,
-    fontWeight: '700',
-    fontFamily: 'Georgia',
-    color: 'rgba(255,255,255,0.85)',
-    letterSpacing: 0.2,
-    marginBottom: 4,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    fontFamily: 'Georgia',
-    color: '#FFFFFF',
+    color: C.textTertiary,
     textAlign: 'center',
-    letterSpacing: -0.5,
+    marginTop: 2,
   },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.85)',
-    textAlign: 'center',
+  // Progress bar
+  progressBlock: {
+    marginTop: 16,
+    width: '100%',
+    alignItems: 'center',
+    gap: 8,
+  },
+  progressTrack: {
+    width: '100%',
+    height: 6,
+    backgroundColor: C.border,
+    borderRadius: 99,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: 6,
+    backgroundColor: C.teal,
+    borderRadius: 99,
+  },
+  progressFillComplete: {
+    backgroundColor: '#4CAF85',
   },
   progressLabel: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.7)',
-    marginTop: 4,
+    color: C.textSecondary,
+    fontWeight: '500',
   },
-  itemsContainer: {
+
+  // ── Section divider ───────────────────────────────────────────────────────
+  sectionDivider: {
+    height: 1,
+    backgroundColor: C.border,
+    marginHorizontal: 24,
+    marginBottom: 28,
+  },
+
+  // ── Section wrapper ───────────────────────────────────────────────────────
+  section: {
     paddingHorizontal: 20,
-    paddingTop: 24,
-    gap: 16,
+    marginBottom: 32,
+    gap: 14,
   },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    color: C.textTertiary,
+  },
+
+  // ── Gift list ─────────────────────────────────────────────────────────────
+  giftList: {
+    gap: 14,
+  },
+
+  // ── Gift card ─────────────────────────────────────────────────────────────
   giftCard: {
     backgroundColor: C.surface,
-    borderRadius: 16,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: C.border,
     overflow: 'hidden',
+    // Web shadow via boxShadow is set inline since RN StyleSheet doesn't support it
+    shadowColor: '#1C2820',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  giftCardBody: {
     flexDirection: 'row',
+    padding: 14,
+    gap: 14,
+  },
+  giftImageWrap: {
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: C.cream2,
+    flexShrink: 0,
   },
   giftImage: {
     width: 100,
-    height: 120,
+    height: 100,
   },
   giftImagePlaceholder: {
     width: 100,
-    height: 120,
-    backgroundColor: '#F0EBE3',
+    height: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EDE7DC',
+  },
+  giftPlaceholderEmoji: {
+    fontSize: 36,
+  },
+  // Claimed overlay on image
+  claimedOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(42,157,143,0.72)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  giftImagePlaceholderText: {
-    fontSize: 32,
+  claimedOverlayCheck: {
+    fontSize: 36,
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
-  giftInfo: {
+  giftDetails: {
     flex: 1,
-    padding: 14,
     gap: 4,
     justifyContent: 'center',
   },
   giftName: {
-    fontSize: 16,
-    fontWeight: '700',
     fontFamily: 'Georgia',
+    fontSize: 17,
+    fontWeight: '700',
     color: C.text,
-    lineHeight: 22,
+    lineHeight: 23,
+    letterSpacing: -0.2,
   },
   giftStore: {
     fontSize: 13,
     color: C.textSecondary,
   },
   giftPrice: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '700',
     color: C.teal,
     marginTop: 2,
   },
-  storeLink: {
+  shopLinkBtn: {
+    marginTop: 6,
+  },
+  shopLinkText: {
     fontSize: 13,
     color: C.teal,
-    marginTop: 2,
-    textDecorationLine: 'underline',
+    fontWeight: '600',
+  },
+  // Full-width claim button at card bottom
+  giftCardFooter: {
+    borderTopWidth: 1,
+    borderTopColor: C.border,
+    padding: 12,
   },
   claimButton: {
-    marginTop: 10,
     backgroundColor: C.teal,
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    borderRadius: 12,
+    paddingVertical: 12,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   claimButtonClaimed: {
-    backgroundColor: C.success,
+    backgroundColor: C.tealMuted,
   },
   claimButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: 0.1,
   },
   claimButtonTextClaimed: {
-    color: '#FFFFFF',
+    color: C.teal,
   },
+
+  // ── Empty state ───────────────────────────────────────────────────────────
   emptyState: {
     alignItems: 'center',
     paddingVertical: 48,
-    gap: 12,
+    gap: 10,
+    backgroundColor: C.surface,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: C.border,
   },
-  emptyEmoji: {
-    fontSize: 48,
-  },
+  emptyEmoji: { fontSize: 40 },
   emptyText: {
+    fontFamily: 'Georgia',
+    fontStyle: 'italic',
     fontSize: 15,
     color: C.textSecondary,
     textAlign: 'center',
   },
-  // Address section
-  addressSection: {
-    marginHorizontal: 20,
-    marginTop: 32,
-    gap: 10,
-  },
-  addressSectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    fontFamily: 'Georgia',
-    color: C.text,
-  },
+
+  // ── Address card ──────────────────────────────────────────────────────────
   addressCard: {
     backgroundColor: C.surface,
     borderRadius: 14,
@@ -606,79 +801,96 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   addressLabel: {
-    fontSize: 12,
-    color: C.textSecondary,
+    fontSize: 11,
+    color: C.textTertiary,
     textTransform: 'uppercase',
-    letterSpacing: 0.8,
+    letterSpacing: 1,
     fontWeight: '600',
   },
   addressValue: {
-    fontSize: 15,
+    fontFamily: 'Georgia',
+    fontSize: 16,
     color: C.text,
     fontWeight: '500',
   },
-  // Download banner
+
+  // ── Download banner ───────────────────────────────────────────────────────
   downloadBanner: {
-    backgroundColor: C.teal,
-    borderRadius: 16,
-    padding: 24,
+    backgroundColor: C.cream2,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: C.border,
+    padding: 28,
     marginHorizontal: 20,
-    marginTop: 32,
+    marginBottom: 16,
     alignItems: 'center',
     gap: 8,
   },
+  downloadIcon: {
+    fontSize: 32,
+    marginBottom: 4,
+  },
   downloadTitle: {
-    fontSize: 18,
-    fontWeight: '700',
     fontFamily: 'Georgia',
-    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '700',
+    color: C.text,
     textAlign: 'center',
+    letterSpacing: -0.4,
+    lineHeight: 28,
   },
   downloadSubtext: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
+    color: C.textSecondary,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   downloadButton: {
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    borderRadius: 50,
-    paddingVertical: 12,
+    backgroundColor: C.teal,
+    borderRadius: 24,
     paddingHorizontal: 28,
+    paddingVertical: 14,
     marginTop: 4,
   },
   downloadButtonText: {
     color: '#FFFFFF',
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.2,
   },
-  // Footer
+
+  // ── Footer ────────────────────────────────────────────────────────────────
   footer: {
-    marginTop: 40,
     alignItems: 'center',
     gap: 4,
-    paddingBottom: 20,
+    paddingVertical: 36,
+    borderTopWidth: 1,
+    borderTopColor: C.border,
+    marginTop: 8,
   },
-  footerText: {
-    fontSize: 13,
+  footerWordmark: {
+    fontFamily: 'Georgia',
+    fontStyle: 'italic',
+    fontSize: 16,
+    color: C.teal,
     fontWeight: '600',
-    color: C.textSecondary,
   },
   footerTagline: {
     fontSize: 12,
     fontStyle: 'italic',
     fontFamily: 'Georgia',
-    color: C.textSecondary,
+    color: C.textTertiary,
   },
-  // Claim modal
+
+  // ── Claim modal ───────────────────────────────────────────────────────────
   modalContainer: {
     flex: 1,
     backgroundColor: C.bg,
     padding: 28,
-    paddingTop: 56,
+    paddingTop: 64,
+    alignItems: 'center',
   },
-  modalCloseButton: {
+  modalCloseBtn: {
     position: 'absolute',
     top: 20,
     right: 20,
@@ -694,49 +906,54 @@ const styles = StyleSheet.create({
     color: C.text,
     fontWeight: '600',
   },
+  modalEmoji: {
+    fontSize: 44,
+    marginBottom: 16,
+  },
   modalTitle: {
-    fontSize: 26,
-    fontWeight: '700',
     fontFamily: 'Georgia',
+    fontSize: 28,
+    fontWeight: '700',
     color: C.text,
+    textAlign: 'center',
+    letterSpacing: -0.4,
     marginBottom: 12,
   },
   modalBody: {
     fontSize: 16,
     color: C.textSecondary,
+    textAlign: 'center',
     lineHeight: 24,
-    marginBottom: 32,
+    marginBottom: 36,
+    maxWidth: 300,
   },
-  modalPrimaryButton: {
+  modalPrimaryBtn: {
     backgroundColor: C.teal,
-    borderRadius: 14,
+    borderRadius: 28,
     paddingVertical: 16,
+    paddingHorizontal: 36,
     alignItems: 'center',
+    width: '100%',
     marginBottom: 12,
   },
-  modalPrimaryButtonText: {
+  modalPrimaryBtnText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
+    letterSpacing: 0.2,
   },
-  modalSecondaryButton: {
-    borderWidth: 2,
+  modalSecondaryBtn: {
+    borderWidth: 1.5,
     borderColor: C.teal,
-    borderRadius: 14,
+    borderRadius: 28,
     paddingVertical: 16,
+    paddingHorizontal: 36,
     alignItems: 'center',
+    width: '100%',
   },
-  modalSecondaryButtonText: {
+  modalSecondaryBtnText: {
     color: C.teal,
     fontSize: 16,
     fontWeight: '600',
-  },
-});
-
-const guestStyles = StyleSheet.create({
-  birthdayText: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.85)',
-    marginTop: 2,
   },
 });

@@ -143,7 +143,7 @@ function AppNavigator({ splashDone }: { splashDone: boolean }) {
           name="guest/[token]"
           options={{
             headerShown: true,
-            headerStyle: { backgroundColor: '#1B8A8A' },
+            headerStyle: { backgroundColor: '#2A9D8F' },
             headerTintColor: '#F5F0E8',
             headerTitleStyle: {
               fontFamily: 'Georgia',

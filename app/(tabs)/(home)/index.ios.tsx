@@ -452,8 +452,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerGreeting: {
-    fontFamily: 'Georgia',
-    fontSize: 22,
+    fontFamily: 'CormorantGaramond_700Bold',
+    fontSize: 24,
     fontWeight: '700',
     color: '#FAF7F2',
     flex: 1,
