@@ -11,7 +11,11 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git remote *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python3 *)",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a add .)",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Landing page desktop polish\")",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a push)"
     ]
   }
 }

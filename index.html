@@ -144,7 +144,7 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 }
 .hero-img-overlay{
   position:absolute;inset:0;
-  background:linear-gradient(to right,var(--cream) 0%,transparent 30%);
+  background:linear-gradient(to right,rgba(250,247,242,0.4) 0%,transparent 45%);
 }
 .hero-app-card{
   position:absolute;bottom:60px;left:-30px;
@@ -188,12 +188,12 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .section-sub{font-size:16px;color:var(--text-mid);line-height:1.65}
 
 /* HOW IT WORKS */
-.how{background:var(--cream);padding:100px 80px}
-.how-inner{max-width:680px;margin:0 auto;text-align:center}
+.how{background:var(--cream);padding:120px 100px}
+.how-inner{max-width:1060px;margin:0 auto;text-align:center}
 .how-header{margin-bottom:56px}
-.steps{display:flex;flex-direction:column;gap:16px;text-align:left}
+.steps{display:flex;flex-direction:row;align-items:stretch;gap:20px;text-align:left}
 .step{
-  background:white;border-radius:var(--r);padding:36px 40px;
+  flex:1;background:white;border-radius:var(--r);padding:36px 40px;
   box-shadow:0 2px 16px rgba(0,0,0,0.05);
   border:1px solid rgba(42,157,143,0.08);
   opacity:0;transform:translateY(24px);
@@ -220,7 +220,7 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .step p{font-size:15px;color:var(--text-mid);line-height:1.65}
 
 /* OCCASIONS */
-.occasions{background:var(--teal);padding:100px 80px}
+.occasions{background:var(--teal);padding:120px 100px}
 .occasions-inner{max-width:800px;margin:0 auto;text-align:center}
 .occasions .section-eyebrow{color:var(--gold-light)}
 .occasions .section-title{color:white}
@@ -284,12 +284,12 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .app-claim-btn:active{transform:translateY(0);transition-duration:0.06s}
 
 /* PRIVACY */
-.privacy{background:var(--text-dark);padding:100px 80px}
+.privacy{background:#1A3632;padding:120px 100px}
 .privacy-inner{max-width:800px;margin:0 auto}
 .privacy .section-eyebrow{color:var(--gold-light)}
 .privacy .section-title{color:white}
 .privacy .section-sub{color:rgba(255,255,255,0.6);margin-bottom:48px}
-.privacy-cards{display:flex;flex-direction:column;gap:14px}
+.privacy-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .privacy-card{
   background:var(--cream-warm);border-radius:var(--r);padding:28px 32px;
   opacity:0;transform:translateY(20px);
@@ -309,7 +309,7 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .privacy-card p{font-size:14px;color:var(--text-mid);line-height:1.65}
 
 /* TESTIMONIALS */
-.testimonials{background:var(--cream-warm);padding:100px 80px}
+.testimonials{background:var(--cream-warm);padding:120px 100px}
 .testimonials-inner{max-width:800px;margin:0 auto}
 .testi-cards{display:flex;flex-direction:column;gap:16px;margin-top:52px}
 .testi-card{
@@ -333,7 +333,7 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .testi-author{font-size:13px;font-weight:600;color:var(--text-mid)}
 
 /* FAQ */
-.faq{background:var(--cream);padding:100px 80px}
+.faq{background:var(--cream);padding:120px 100px}
 .faq-inner{max-width:680px;margin:0 auto}
 .faq-header{text-align:center;margin-bottom:52px}
 .faq-list{display:flex;flex-direction:column}
@@ -364,7 +364,7 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .faq-item.open .faq-a{grid-template-rows:1fr;padding-bottom:22px}
 
 /* CTA */
-.cta{background:var(--teal);padding:100px 80px;text-align:center}
+.cta{background:var(--teal);padding:120px 100px;text-align:center}
 .cta h2{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(36px,5.5vw,58px);font-weight:600;
@@ -434,6 +434,8 @@ footer{background:var(--teal-dark);padding:64px 80px 40px}
   footer{padding:56px 32px 32px}
   .footer-top{grid-template-columns:1fr;gap:32px}
   .hero-btns{max-width:100%}
+  .steps{flex-direction:column}
+  .privacy-cards{grid-template-columns:1fr}
 }
 </style>
 </head>
