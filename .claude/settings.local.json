@@ -16,7 +16,8 @@
       "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a add .)",
       "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Landing page desktop polish\")",
       "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a push)",
-      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Fix hero card and left panel polish\")"
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Fix hero card and left panel polish\")",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Full-bleed hero, app screenshots, photo strip, remove pills\")"
     ]
   }
 }

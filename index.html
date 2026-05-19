@@ -67,14 +67,13 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 /* HERO */
 .hero{
   position:relative;min-height:100vh;
-  display:grid;grid-template-columns:1fr 1fr;
-  align-items:center;padding-top:76px;overflow:hidden;
+  overflow:hidden;
 }
-.hero-left{padding:80px 60px 80px 80px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(160deg,rgba(245,239,230,0.55) 0%,var(--cream) 65%)}
+.hero-left{padding:140px 80px 80px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;min-height:100vh;max-width:600px}
 .hero-eyebrow{
   display:inline-block;
   font-size:11px;font-weight:700;letter-spacing:2.5px;
-  text-transform:uppercase;color:var(--teal);margin-bottom:20px;
+  text-transform:uppercase;color:rgba(255,255,255,0.8);margin-bottom:20px;
   /* Emil: reveal with short upward drift */
   opacity:0;transform:translateY(12px);
   animation:fadeUp 0.6s var(--ease-out-expo) 0.1s forwards;
@@ -82,13 +81,13 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .hero h1{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(42px,5.5vw,68px);font-weight:600;
-  line-height:1.07;color:var(--text-dark);margin-bottom:22px;
+  line-height:1.07;color:white;margin-bottom:22px;
   opacity:0;transform:translateY(16px);
   animation:fadeUp 0.7s var(--ease-out-expo) 0.2s forwards;
 }
 .hero h1 em{font-style:italic;color:var(--gold)}
 .hero-sub{
-  font-size:17px;line-height:1.7;color:var(--text-mid);
+  font-size:17px;line-height:1.7;color:rgba(255,255,255,0.82);
   margin-bottom:38px;max-width:420px;
   opacity:0;transform:translateY(14px);
   animation:fadeUp 0.7s var(--ease-out-expo) 0.32s forwards;
@@ -132,10 +131,12 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
   transform:translateY(-1px);
 }
 .btn-ghost:active{transform:translateY(0);transition-duration:0.08s}
-.hero-right{position:relative;height:100vh;overflow:hidden}
+.hero .btn-ghost{border-color:rgba(255,255,255,0.5);color:white}
+.hero .btn-ghost:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.75)}
+.hero-right{position:absolute;inset:0;height:100%;overflow:hidden;z-index:1}
 .hero-img{
+  position:absolute;inset:0;
   width:100%;height:100%;object-fit:cover;object-position:center 20%;
-  /* Emil: image loads should feel intentional */
   animation:heroImgReveal 1s var(--ease-out-expo) 0.1s both;
 }
 @keyframes heroImgReveal{
@@ -144,10 +145,10 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 }
 .hero-img-overlay{
   position:absolute;inset:0;
-  background:linear-gradient(to right,rgba(250,247,242,0.4) 0%,transparent 45%);
+  background:linear-gradient(to right,rgba(15,35,25,0.62) 0%,transparent 62%);
 }
 .hero-app-card{
-  position:absolute;bottom:60px;left:20px;
+  position:absolute;bottom:60px;right:40px;
   background:white;border-radius:20px;
   padding:18px 20px;
   box-shadow:0 20px 60px rgba(0,0,0,0.12);
@@ -425,10 +426,9 @@ footer{background:var(--teal-dark);padding:64px 80px 40px}
 }
 
 @media(max-width:900px){
-  .hero{grid-template-columns:1fr;min-height:auto}
-  .hero-left{padding:100px 32px 40px}
-  .hero-right{height:55vw;min-height:280px}
-  .hero-img-overlay{background:linear-gradient(to bottom,var(--cream) 0%,transparent 40%)}
+  .hero{min-height:100svh}
+  .hero-left{padding:120px 28px 60px;max-width:100%}
+  .hero-img-overlay{background:linear-gradient(to bottom,rgba(15,35,25,0.68) 0%,rgba(15,35,25,0.28) 100%)}
   .hero-app-card{display:none}
   .how,.occasions,.privacy,.testimonials,.faq,.cta{padding:70px 32px}
   footer{padding:56px 32px 32px}
@@ -436,6 +436,65 @@ footer{background:var(--teal-dark);padding:64px 80px 40px}
   .hero-btns{max-width:100%}
   .steps{flex-direction:column}
   .privacy-cards{grid-template-columns:1fr}
+}
+
+/* PHOTO STRIP */
+.photo-strip{padding:0;background:var(--cream)}
+.photo-strip-inner{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:16px;
+  padding:0 60px 80px;
+  max-width:1200px;margin:0 auto;
+}
+.strip-photo{
+  width:100%;aspect-ratio:4/3;object-fit:cover;
+  border-radius:20px;
+  opacity:0;transform:scale(0.97);
+  transition:opacity 0.6s var(--ease-out-expo),
+             transform 0.6s var(--ease-out-expo),
+             box-shadow 0.25s var(--ease-out-quart);
+  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+.strip-photo.visible{opacity:1;transform:scale(1)}
+.strip-photo:hover{
+  transform:scale(1.02);
+  box-shadow:0 12px 36px rgba(0,0,0,0.14);
+}
+@media(max-width:900px){
+  .photo-strip-inner{grid-template-columns:1fr;padding:0 28px 60px;gap:12px}
+  .strip-photo{aspect-ratio:16/9}
+}
+
+/* APP SCREENSHOTS */
+.screenshots{background:var(--cream-warm);padding:100px 60px 120px}
+.screenshots-inner{max-width:1000px;margin:0 auto;text-align:center}
+.screenshots-header{margin-bottom:64px}
+.screenshots-heading{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(26px,3vw,38px);font-weight:600;
+  color:var(--text-dark);letter-spacing:-0.3px;line-height:1.15;
+}
+.screenshot-frames{
+  display:flex;align-items:center;justify-content:center;gap:28px;
+}
+.screenshot-img{
+  max-height:500px;width:auto;flex-shrink:0;
+  border-radius:28px;
+  box-shadow:0 20px 56px rgba(0,0,0,0.14);
+  opacity:0;
+  transition:opacity 0.65s var(--ease-out-expo),
+             box-shadow 0.25s var(--ease-out-quart);
+}
+.screenshot-img.visible{opacity:1}
+.screenshot-img:hover{box-shadow:0 28px 72px rgba(0,0,0,0.22)}
+.tilt-left {transform:rotate(-3deg) translateY(10px)}
+.tilt-center{transform:translateY(-6px)}
+.tilt-right {transform:rotate( 3deg) translateY(10px)}
+@media(max-width:900px){
+  .screenshots{padding:70px 32px 80px}
+  .screenshot-frames{flex-direction:column;gap:20px}
+  .screenshot-img{max-height:380px}
+  .tilt-left,.tilt-center,.tilt-right{transform:none}
 }
 </style>
 </head>
@@ -503,6 +562,21 @@ footer{background:var(--teal-dark);padding:64px 80px 40px}
   </div>
 </section>
 
+<!-- APP SCREENSHOTS -->
+<section class="screenshots">
+  <div class="screenshots-inner">
+    <div class="screenshots-header reveal">
+      <div class="section-eyebrow">See It in Action</div>
+      <h2 class="screenshots-heading">Designed for the way families actually give gifts.</h2>
+    </div>
+    <div class="screenshot-frames">
+      <img class="screenshot-img tilt-left"   src="assets/images/appscreen1.png" alt="Create a wishlist" loading="lazy">
+      <img class="screenshot-img tilt-center" src="assets/images/appscreen2.png" alt="Gift list view"    loading="lazy">
+      <img class="screenshot-img tilt-right"  src="assets/images/appscreen3.png" alt="Claim a gift"      loading="lazy">
+    </div>
+  </div>
+</section>
+
 <!-- OCCASIONS -->
 <section class="occasions">
   <div class="occasions-inner">
@@ -510,15 +584,6 @@ footer{background:var(--teal-dark);padding:64px 80px 40px}
       <div class="section-eyebrow">Every Celebration</div>
       <h2 class="section-title" style="color:white">Built for any occasion</h2>
       <p class="section-sub">Birthdays, graduations, baby showers — Why, Thank You! works for every gifting moment.</p>
-    </div>
-    <div class="pills reveal">
-      <div class="pill active">Birthday</div>
-      <div class="pill">Graduation</div>
-      <div class="pill">Baby Shower</div>
-      <div class="pill">Christmas</div>
-      <div class="pill">Holiday</div>
-      <div class="pill">Wedding</div>
-      <div class="pill">Other</div>
     </div>
     <div class="feature-bullets reveal">
       <div class="feature-bullet">
@@ -643,6 +708,16 @@ footer{background:var(--teal-dark);padding:64px 80px 40px}
   </div>
 </section>
 
+
+<!-- PHOTO STRIP -->
+<section class="photo-strip">
+  <div class="photo-strip-inner">
+    <img class="strip-photo" src="assets/images/splash1.png" alt="Family gift moment" loading="lazy">
+    <img class="strip-photo" src="assets/images/splash3.png" alt="Celebration" loading="lazy">
+    <img class="strip-photo" src="assets/images/splash5.png" alt="Joy of giving" loading="lazy">
+  </div>
+</section>
+
 <!-- FAQ -->
 <section class="faq">
   <div class="faq-inner">
@@ -739,7 +814,7 @@ const obs=new IntersectionObserver(entries=>{
   });
 },{threshold:0.08,rootMargin:'0 0 -32px 0'});
 
-document.querySelectorAll('.reveal,.step,.privacy-card,.testi-card').forEach(el=>obs.observe(el));
+document.querySelectorAll('.reveal,.step,.privacy-card,.testi-card,.strip-photo,.screenshot-img').forEach(el=>obs.observe(el));
 
 /* Nav shadow on scroll */
 const nav=document.getElementById('nav');
