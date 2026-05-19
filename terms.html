@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Use - Why, Thank You!</title>
+  <meta name="description" content="Terms of Use for Why, Thank You! gift wishlist app.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #2A9D8F;
+      --teal-dark: #1d7a6e;
+      --teal-pale: #e6f4f2;
+      --gold: #C9963A;
+      --gold-light: #E9C46A;
+      --cream: #FAF7F2;
+      --cream-warm: #F5EFE6;
+      --text-dark: #1C2B29;
+      --text-mid: #4a6360;
+      --text-light: #7a9e9b;
+      --r: 20px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(250,247,242,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: -0.2px;
+    }
+    .nav-logo span { color: var(--gold); font-style: italic; }
+    .nav-cta {
+      background: var(--teal);
+      color: white;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.18s, transform 0.18s;
+    }
+    .nav-cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 32px 100px;
+    }
+
+    .page-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(38px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .updated {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 40px;
+    }
+
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: var(--teal);
+      border-radius: 2px;
+      margin-bottom: 48px;
+    }
+
+    .prose h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin: 48px 0 14px;
+      letter-spacing: -0.2px;
+    }
+
+    .prose h2:first-child { margin-top: 0; }
+
+    .prose p {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text-mid);
+      margin-bottom: 18px;
+    }
+
+    .prose ul {
+      padding-left: 20px;
+      margin-bottom: 18px;
+    }
+
+    .prose ul li {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+    }
+
+    .prose strong {
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+
+    .prose a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .prose a:hover { text-decoration: underline; }
+
+    footer { background: #1C1C1E; padding: 64px 80px 40px; }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .footer-logo span { color: var(--gold-light); font-style: italic; }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .footer-col h4 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.15s;
+    }
+    .footer-col a:hover { color: white; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 28px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .page-wrap { padding: 110px 24px 80px; }
+      footer { padding: 56px 32px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="/">Why, <span>Thank You!</span></a>
+  <a class="nav-cta" href="/#download">Download App</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">Legal</div>
+  <h1 class="page-title">Terms of Use</h1>
+  <p class="updated">Last updated: May 2026</p>
+
+  <div class="divider"></div>
+
+  <div class="prose">
+    <h2>Acceptance of terms</h2>
+    <p>By downloading, installing, or using Why, Thank You! (the "App") or visiting whythankyou.com (the "Site"), you agree to be bound by these Terms of Use. If you do not agree, please do not use the App or Site.</p>
+
+    <h2>What the app is for</h2>
+    <p>Why, Thank You! is a gift wishlist platform designed for families. It allows parents to create wishlists for their children and share them with family members and friends so that gifts can be coordinated and claimed without duplicates.</p>
+
+    <h2>Acceptable use</h2>
+    <p>You agree to use the App only for its intended purpose and in a lawful manner. You must not:</p>
+    <ul>
+      <li>Use the App to harass, threaten, or harm any person</li>
+      <li>Create wishlists or add items for fraudulent, deceptive, or illegal purposes</li>
+      <li>Attempt to reverse-engineer, scrape, or abuse our API or infrastructure</li>
+      <li>Share your account credentials with others</li>
+      <li>Use the App to collect personal information from others without their consent</li>
+      <li>Violate any applicable law or regulation</li>
+    </ul>
+
+    <h2>Your content</h2>
+    <p>You retain ownership of the content you add to the App (wishlist items, notes, child profiles). By adding content, you grant us a limited license to store and display it to users you choose to share it with.</p>
+    <p>You are responsible for the content you add. Do not include sensitive personal information beyond what is needed for gifting purposes.</p>
+
+    <h2>Account responsibility</h2>
+    <p>You are responsible for maintaining the security of your account. If you believe your account has been compromised, please contact us immediately at <a href="mailto:hello@whythankyou.com">hello@whythankyou.com</a>.</p>
+
+    <h2>Shared wishlists</h2>
+    <p>When you share a wishlist link, anyone with that link can view the list and claim gifts. You control who receives the link. We are not responsible for unintended sharing of wishlist links.</p>
+    <p>Gift claims are tracked but claimers remain anonymous to the list owner to preserve the element of surprise.</p>
+
+    <h2>Affiliate links</h2>
+    <p>Some product links may be affiliate links. If a user clicks a link and makes a purchase, we may earn a small commission at no extra cost to the buyer. Affiliate relationships do not affect what appears on wishlists.</p>
+
+    <h2>No warranties</h2>
+    <p>The App and Site are provided "as is" and "as available" without warranties of any kind, either express or implied. We do not warrant that the App will be error-free, uninterrupted, or free of security vulnerabilities. We make no warranty regarding the accuracy or reliability of any product information linked from the App.</p>
+    <p>Your use of the App is at your sole risk.</p>
+
+    <h2>Limitation of liability</h2>
+    <p>To the maximum extent permitted by applicable law, Why, Thank You! and its team shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of, or inability to use, the App or Site. Our total liability for any claim arising from these Terms or your use of the App shall not exceed the amount you paid us in the 12 months preceding the claim (which may be zero, as the App is free).</p>
+
+    <h2>App Store terms</h2>
+    <p>The iOS version of Why, Thank You! is distributed through the Apple App Store. Your use of the App is also subject to Apple's <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank">Standard End User License Agreement</a>. Apple is not a party to these Terms and has no obligation to provide support for the App.</p>
+
+    <h2>Termination</h2>
+    <p>We reserve the right to suspend or terminate your account if you violate these Terms or if we determine, in our sole discretion, that your use is harmful to other users or to the service. You may delete your account at any time by contacting us.</p>
+
+    <h2>Changes to these terms</h2>
+    <p>We may update these Terms from time to time. We will notify you of material changes via the App or email. Your continued use after notice constitutes acceptance of the updated Terms.</p>
+
+    <h2>Governing law</h2>
+    <p>These Terms are governed by the laws of the State of California, without regard to conflict of law principles. Any disputes shall be resolved in the courts of Santa Clara County, California.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about these Terms? Contact us at <a href="mailto:hello@whythankyou.com">hello@whythankyou.com</a>.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Why, <span>Thank You!</span></div>
+      <div class="footer-tagline">Take the guesswork out of giving.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="/#how">How it works</a>
+      <a href="/#occasions">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="/#download">Download</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 Why, Thank You! All rights reserved.<br>
+    Some links on shared wishlists may earn affiliate commissions at no extra cost to gift buyers. This helps keep Why, Thank You! free for families.
+  </div>
+</footer>
+
+</body>
+</html>

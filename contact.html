@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Why, Thank You!</title>
+  <meta name="description" content="Get in touch with the Why, Thank You! team.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #2A9D8F;
+      --teal-dark: #1d7a6e;
+      --teal-pale: #e6f4f2;
+      --gold: #C9963A;
+      --gold-light: #E9C46A;
+      --cream: #FAF7F2;
+      --cream-warm: #F5EFE6;
+      --text-dark: #1C2B29;
+      --text-mid: #4a6360;
+      --text-light: #7a9e9b;
+      --r: 20px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(250,247,242,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: -0.2px;
+    }
+    .nav-logo span { color: var(--gold); font-style: italic; }
+    .nav-cta {
+      background: var(--teal);
+      color: white;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.18s, transform 0.18s;
+    }
+    .nav-cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 32px 100px;
+    }
+
+    .page-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(38px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .page-title em { font-style: italic; color: var(--gold); }
+
+    .lead {
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--text-mid);
+      margin-bottom: 56px;
+      max-width: 540px;
+    }
+
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: var(--teal);
+      border-radius: 2px;
+      margin-bottom: 56px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 64px;
+    }
+
+    .contact-card {
+      background: white;
+      border-radius: var(--r);
+      border: 1px solid rgba(0,0,0,0.07);
+      padding: 32px 28px;
+    }
+
+    .contact-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+    }
+
+    .contact-card h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .contact-card p {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text-mid);
+      margin-bottom: 16px;
+    }
+
+    .contact-card a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .contact-card a:hover { text-decoration: underline; }
+
+    .email-section {
+      background: white;
+      border-radius: var(--r);
+      border: 1px solid rgba(0,0,0,0.07);
+      padding: 48px;
+      text-align: center;
+    }
+
+    .email-section h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .email-section p {
+      font-size: 16px;
+      color: var(--text-mid);
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .email-address {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--teal-pale);
+      border: 1px solid rgba(42,157,143,0.2);
+      border-radius: 12px;
+      padding: 16px 28px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--teal-dark);
+      text-decoration: none;
+      transition: background 0.18s;
+      margin-bottom: 16px;
+    }
+    .email-address:hover { background: rgba(42,157,143,0.15); }
+
+    .response-note {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    footer { background: #1C1C1E; padding: 64px 80px 40px; }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .footer-logo span { color: var(--gold-light); font-style: italic; }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .footer-col h4 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.15s;
+    }
+    .footer-col a:hover { color: white; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 28px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .page-wrap { padding: 110px 24px 80px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .email-section { padding: 36px 24px; }
+      footer { padding: 56px 32px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="/">Why, <span>Thank You!</span></a>
+  <a class="nav-cta" href="/#download">Download App</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">Contact</div>
+  <h1 class="page-title">We'd love to <em>hear</em> from you</h1>
+  <p class="lead">We're a small team and we read every message. Whether you have a question, a bug report, or an idea -- reach out.</p>
+
+  <div class="divider"></div>
+
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="contact-icon">&#x1F41B;</div>
+      <h3>Bug reports</h3>
+      <p>Something not working right? Tell us what happened and what device you're on and we'll look into it.</p>
+      <a href="mailto:hello@whythankyou.com?subject=Bug report">hello@whythankyou.com</a>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">&#x1F4A1;</div>
+      <h3>Feature ideas</h3>
+      <p>Have a feature that would make gift giving easier for your family? We genuinely want to know.</p>
+      <a href="mailto:hello@whythankyou.com?subject=Feature idea">hello@whythankyou.com</a>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">&#x1F91D;</div>
+      <h3>Partnerships</h3>
+      <p>Interested in working with us? We're open to conversations with family brands and retailers.</p>
+      <a href="mailto:hello@whythankyou.com?subject=Partnership inquiry">hello@whythankyou.com</a>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">&#x1F512;</div>
+      <h3>Privacy questions</h3>
+      <p>Questions about your data, account deletion, or our privacy practices? We'll respond within 2 business days.</p>
+      <a href="mailto:hello@whythankyou.com?subject=Privacy question">hello@whythankyou.com</a>
+    </div>
+  </div>
+
+  <div class="email-section">
+    <h2>One inbox for everything</h2>
+    <p>Whatever's on your mind, send it here.<br>We're a small team and we promise a real human reads it.</p>
+    <a class="email-address" href="mailto:hello@whythankyou.com">
+      hello@whythankyou.com
+    </a>
+    <div class="response-note">We typically respond within 1 to 2 business days.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Why, <span>Thank You!</span></div>
+      <div class="footer-tagline">Take the guesswork out of giving.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="/#how">How it works</a>
+      <a href="/#occasions">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="/#download">Download</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 Why, Thank You! All rights reserved.<br>
+    Some links on shared wishlists may earn affiliate commissions at no extra cost to gift buyers. This helps keep Why, Thank You! free for families.
+  </div>
+</footer>
+
+</body>
+</html>

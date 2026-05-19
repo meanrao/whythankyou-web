@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - Why, Thank You!</title>
+  <meta name="description" content="Why, Thank You! is free to download. No subscription required.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #2A9D8F;
+      --teal-dark: #1d7a6e;
+      --teal-pale: #e6f4f2;
+      --gold: #C9963A;
+      --gold-light: #E9C46A;
+      --cream: #FAF7F2;
+      --cream-warm: #F5EFE6;
+      --text-dark: #1C2B29;
+      --text-mid: #4a6360;
+      --text-light: #7a9e9b;
+      --r: 20px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(250,247,242,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: -0.2px;
+    }
+    .nav-logo span { color: var(--gold); font-style: italic; }
+    .nav-cta {
+      background: var(--teal);
+      color: white;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.18s, transform 0.18s;
+    }
+    .nav-cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 140px 32px 100px;
+    }
+
+    .page-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(38px, 5vw, 60px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .page-title em { font-style: italic; color: var(--gold); }
+
+    .page-subtitle {
+      font-size: 18px;
+      color: var(--text-mid);
+      text-align: center;
+      margin-bottom: 64px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .plan-card {
+      background: white;
+      border-radius: var(--r);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 40px 36px;
+    }
+
+    .plan-card.featured {
+      border-color: var(--teal);
+      border-width: 2px;
+      position: relative;
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--teal);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .plan-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .plan-price {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .plan-price span {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-light);
+    }
+
+    .plan-desc {
+      font-size: 15px;
+      color: var(--text-mid);
+      margin-bottom: 28px;
+      line-height: 1.6;
+      min-height: 44px;
+    }
+
+    .plan-divider {
+      height: 1px;
+      background: rgba(0,0,0,0.07);
+      margin-bottom: 24px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .plan-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text-mid);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .plan-features li::before {
+      content: '';
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--teal-pale);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A9D8F' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+      background-size: 12px;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin-top: 2px;
+    }
+
+    .plan-features li.muted::before {
+      background-color: rgba(0,0,0,0.05);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E");
+    }
+
+    .plan-features li.muted { color: var(--text-light); }
+
+    .plan-btn {
+      display: block;
+      text-align: center;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.18s, transform 0.18s;
+    }
+
+    .plan-btn.primary {
+      background: var(--teal);
+      color: white;
+    }
+    .plan-btn.primary:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    .plan-btn.secondary {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-dark);
+    }
+    .plan-btn.secondary:hover { background: rgba(0,0,0,0.09); }
+
+    .faq-section {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .faq-section h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: -0.3px;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      padding: 24px 0;
+    }
+
+    .faq-item:first-of-type { border-top: 1px solid rgba(0,0,0,0.08); }
+
+    .faq-q {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .faq-a {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-mid);
+    }
+
+    footer { background: #1C1C1E; padding: 64px 80px 40px; }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .footer-logo span { color: var(--gold-light); font-style: italic; }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .footer-col h4 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.15s;
+    }
+    .footer-col a:hover { color: white; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 28px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .page-wrap { padding: 110px 24px 80px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      footer { padding: 56px 32px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="/">Why, <span>Thank You!</span></a>
+  <a class="nav-cta" href="/#download">Download App</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">Pricing</div>
+  <h1 class="page-title">Simple and <em>honest</em></h1>
+  <p class="page-subtitle">Why, Thank You! is free to download and use. No subscriptions, no hidden fees, no credit card required.</p>
+
+  <div class="pricing-grid">
+    <div class="plan-card featured">
+      <div class="plan-badge">Available now</div>
+      <div class="plan-name">Free</div>
+      <div class="plan-price">$0 <span>/ forever</span></div>
+      <p class="plan-desc">Everything you need to create wishlists and coordinate gifts with family.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Unlimited wishlists</li>
+        <li>Unlimited gift items</li>
+        <li>Share with anyone via link</li>
+        <li>Gift claiming (no duplicates)</li>
+        <li>Add items from any store</li>
+        <li>Child profiles with sizes and interests</li>
+        <li>Multiple children per account</li>
+      </ul>
+      <a class="plan-btn primary" href="https://apps.apple.com/app/w-ty/id6746818447" target="_blank">Download on the App Store</a>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-name">Premium</div>
+      <div class="plan-price">TBD <span></span></div>
+      <p class="plan-desc">Extra features for power users. Coming later in 2026, if there's demand.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Everything in Free</li>
+        <li>Thank-you note reminders</li>
+        <li>Gift history and archives</li>
+        <li>Priority support</li>
+        <li class="muted">More features based on your feedback</li>
+      </ul>
+      <a class="plan-btn secondary" href="contact.html">Tell us what you'd pay for</a>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <h2>Common questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Is it really free? What's the catch?</div>
+      <div class="faq-a">Really free. We keep it free through optional affiliate commissions -- if a gift buyer clicks a product link and buys something, we may earn a small commission at no extra cost to them. That's it. No ads, no upsells, no tracking.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Do gift givers need to create an account?</div>
+      <div class="faq-a">They need a free account to claim gifts (so we can prevent duplicates and keep records). Viewing a wishlist requires only the share link -- no account needed to browse.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Will it stay free?</div>
+      <div class="faq-a">The core app will always be free. If we add a premium tier, it will only include new optional features -- we will never move existing free features behind a paywall.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">When is Premium coming?</div>
+      <div class="faq-a">We're still figuring out which features are worth building. If you have ideas, we'd genuinely love to hear from you -- reach out on our contact page.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Why, <span>Thank You!</span></div>
+      <div class="footer-tagline">Take the guesswork out of giving.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="/#how">How it works</a>
+      <a href="/#occasions">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="/#download">Download</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 Why, Thank You! All rights reserved.<br>
+    Some links on shared wishlists may earn affiliate commissions at no extra cost to gift buyers. This helps keep Why, Thank You! free for families.
+  </div>
+</footer>
+
+</body>
+</html>
