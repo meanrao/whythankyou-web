@@ -1,780 +1,941 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gift List — Why, Thank You!</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Why, Thank You! — Gift List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,900;1,9..144,900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
+  <style>
+    /* ── Design Tokens ────────────────────────────────────────────── */
     :root {
-      --bg:             #FAF7F2;
-      --cream2:         #F0EAE0;
-      --teal:           #1B8A8A;
-      --teal-muted:     #E8F5F3;
-      --text:           #1C2820;
-      --text-secondary: #5A6654;
-      --text-tertiary:  #8A9882;
-      --surface:        #FFFFFF;
-      --border:         #EAE2D6;
+      --cream:       #F6F1E8;
+      --cream2:      #F0EAE0;
+      --teal:        #0F6B6F;
+      --teal-light:  #E8F4F4;
+      --sage:        #7AA7A3;
+      --coral:       #F28C79;
+      --dark:        #1F2A24;
+      --muted:       #6E776A;
+      --surface:     #FFFFFF;
+      --border:      #E3DED5;
+      --radius-card: 16px;
+      --radius-pill: 28px;
     }
 
+    /* ── Reset ────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: var(--bg);
-      font-family: 'Poppins', -apple-system, sans-serif;
-      color: var(--text);
-      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
     }
 
-    .hidden { display: none !important; }
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 0 80px;
+    }
 
-    /* ── Loading ────────────────────────────────────────────────────────── */
+    /* ── Header ───────────────────────────────────────────────────── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      font-size: 22px;
+      line-height: 1;
+      color: var(--teal);
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+    }
+    .logo .coral { color: var(--coral); }
+
+    /* ── Hero Card ────────────────────────────────────────────────── */
+    .hero {
+      background: var(--surface);
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .child-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--coral);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--surface);
+      flex-shrink: 0;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 0 0 3px var(--coral), 0 0 0 5px var(--surface);
+    }
+
+    .child-info { flex: 1; min-width: 0; }
+
+    .child-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+
+    .child-meta {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+    }
+
+    .birthday-soon {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #FFF0ED;
+      color: var(--coral);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .stat-pill {
+      flex: 1;
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.4px;
+      margin-top: 1px;
+    }
+
+    /* ── Section heading ──────────────────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 20px 20px 8px;
+    }
+
+    /* ── Gift Cards ───────────────────────────────────────────────── */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0 16px;
+      gap: 10px;
+    }
+
+    .gift-card {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--coral);
+      overflow: hidden;
+      transition: box-shadow 0.18s cubic-bezier(.4,0,.2,1);
+    }
+
+    .gift-card:hover {
+      box-shadow: 0 4px 16px rgba(15,107,111,0.10);
+    }
+
+    .gift-card.claimed {
+      border-left-color: var(--border);
+      opacity: 0.72;
+    }
+
+    .card-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 14px 14px 12px;
+    }
+
+    /* Product image */
+    .product-img-wrap {
+      width: 68px;
+      height: 68px;
+      border-radius: 10px;
+      background: var(--cream2);
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 6px;
+    }
+
+    .product-img-placeholder {
+      width: 36px;
+      height: 36px;
+      opacity: 0.35;
+    }
+
+    /* Card text */
+    .card-body { flex: 1; min-width: 0; }
+
+    .item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .item-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal);
+      margin-top: 4px;
+    }
+
+    .item-note {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .item-store {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--teal);
+      background: var(--teal-light);
+      padding: 3px 8px;
+      border-radius: 6px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .item-store:hover { text-decoration: underline; }
+
+    .claimed-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--cream2);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    /* Claim button */
+    .claim-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--teal);
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      align-self: center;
+      transition: background 0.18s cubic-bezier(.4,0,.2,1), transform 0.14s cubic-bezier(.4,0,.2,1);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .claim-btn:hover { background: #0d5c60; }
+    .claim-btn:active { transform: scale(0.93); }
+
+    .claim-btn.claimed-btn {
+      background: var(--cream2);
+      cursor: default;
+    }
+
+    /* ── Empty state ──────────────────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .empty-icon { margin-bottom: 16px; opacity: 0.4; }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .empty-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── Loading state ────────────────────────────────────────────── */
     .loading-screen {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 80px 24px;
       gap: 16px;
-      padding: 32px;
     }
 
     .spinner {
-      width: 32px;
-      height: 32px;
-      border: 2.5px solid var(--border);
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
       border-top-color: var(--teal);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.75s linear infinite;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .loading-text {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
     }
 
-    /* ── Error ──────────────────────────────────────────────────────────── */
+    /* ── Error state ──────────────────────────────────────────────── */
     .error-screen {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 40px 24px;
       text-align: center;
+      padding: 60px 24px;
     }
 
-    .error-icon {
-      width: 56px;
-      height: 56px;
-      background: var(--cream2);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 8px;
-    }
+    .error-icon { margin-bottom: 16px; opacity: 0.45; }
 
     .error-title {
-      font-size: 22px;
+      font-size: 17px;
       font-weight: 700;
-      color: var(--text);
+      color: var(--dark);
     }
 
-    .error-message {
-      font-size: 15px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      max-width: 300px;
+    .error-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.5;
     }
 
-    /* ── Page wrapper ───────────────────────────────────────────────────── */
-    .page {
-      max-width: 560px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    /* ── Brand bar ──────────────────────────────────────────────────────── */
-    .brand-bar {
+    /* ── Claim modal ──────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(31,42,36,0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 200;
       display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 40px 24px 32px;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s cubic-bezier(.4,0,.2,1);
     }
 
-    .brand-rule {
-      flex: 1;
-      height: 1px;
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-sheet {
+      background: var(--surface);
+      border-radius: 24px 24px 0 0;
+      padding: 8px 24px 40px;
+      width: 100%;
+      max-width: 480px;
+      transform: translateY(24px);
+      transition: transform 0.26s cubic-bezier(.32,0,.67,0);
+    }
+
+    .modal-overlay.open .modal-sheet {
+      transform: translateY(0);
+      transition: transform 0.28s cubic-bezier(.22,1,.36,1);
+    }
+
+    .modal-handle {
+      width: 36px;
+      height: 4px;
       background: var(--border);
+      border-radius: 2px;
+      margin: 12px auto 20px;
     }
 
-    .brand-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--teal);
-      white-space: nowrap;
-      letter-spacing: 0.1px;
-    }
-
-    /* ── Hero ───────────────────────────────────────────────────────────── */
-    .hero {
-      padding: 0 28px 32px;
-      text-align: center;
-    }
-
-    .hero-title {
-      font-size: 32px;
+    .modal-title {
+      font-size: 18px;
       font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.5px;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-
-    .hero-subtitle {
-      font-size: 16px;
-      font-weight: 400;
-      color: var(--text-secondary);
+      color: var(--dark);
       margin-bottom: 4px;
     }
 
-    .hero-birthday {
+    .modal-sub {
       font-size: 13px;
-      font-weight: 500;
-      color: var(--text-tertiary);
-      margin-top: 4px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
     }
 
-    /* ── Divider ────────────────────────────────────────────────────────── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 0 24px 28px;
-    }
-
-    /* ── Section ────────────────────────────────────────────────────────── */
-    .section {
-      padding: 0 20px;
-      margin-bottom: 32px;
-    }
-
-    .section-label {
+    .modal-input-label {
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-      margin-bottom: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
     }
 
-    /* ── Gift list ──────────────────────────────────────────────────────── */
-    .gift-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* ── Gift card ──────────────────────────────────────────────────────── */
-    .gift-card {
-      background: var(--surface);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(28,40,32,0.05);
-    }
-
-    .gift-card-body {
-      display: flex;
-      gap: 12px;
-      padding: 12px;
-      align-items: center;
-    }
-
-    .gift-image-wrap {
-      width: 88px;
-      height: 88px;
-      border-radius: 10px;
-      overflow: hidden;
-      background: var(--cream2);
-      flex-shrink: 0;
-      position: relative;
-    }
-
-    .gift-image {
+    .modal-input {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    .gift-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--cream2);
-    }
-
-    .gift-placeholder svg {
-      opacity: 0.4;
-    }
-
-    .claimed-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(27,138,138,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .claimed-check {
-      width: 28px;
-      height: 28px;
-      background: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .gift-details {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      min-width: 0;
-    }
-
-    .gift-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .gift-store {
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--text-secondary);
-    }
-
-    .gift-price {
+      height: 52px;
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      background: #FDFAF6;
+      font-family: 'Poppins', sans-serif;
       font-size: 15px;
-      font-weight: 700;
-      color: var(--teal);
-      margin-top: 2px;
+      font-weight: 500;
+      color: var(--dark);
+      padding: 0 16px;
+      outline: none;
+      transition: border-color 0.15s;
     }
 
-    .shop-link {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--teal);
-      text-decoration: none;
-      margin-top: 4px;
-      display: inline-block;
+    .modal-input:focus {
+      border-color: var(--teal);
+      border-width: 1.5px;
     }
 
-    .shop-link:hover { text-decoration: underline; }
-
-    /* ── Claim button ───────────────────────────────────────────────────── */
-    .gift-card-footer {
-      border-top: 1px solid var(--border);
-      padding: 10px 12px;
+    .modal-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      margin-bottom: 24px;
     }
 
-    .claim-btn {
+    .modal-btn {
       width: 100%;
+      height: 54px;
       background: var(--teal);
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 11px;
+      border-radius: var(--radius-pill);
       font-family: 'Poppins', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.15s;
+      transition: background 0.15s, transform 0.12s cubic-bezier(.4,0,.2,1);
     }
 
-    .claim-btn:hover:not(:disabled) { opacity: 0.88; }
+    .modal-btn:hover { background: #0d5c60; }
+    .modal-btn:active { transform: scale(0.98); }
+    .modal-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-    .claim-btn.claimed {
-      background: var(--teal-muted);
-      color: var(--teal);
-      cursor: default;
-    }
-
-    /* ── Empty state ────────────────────────────────────────────────────── */
-    .empty-state {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 48px 24px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .empty-icon {
-      width: 56px;
-      height: 56px;
-      background: var(--cream2);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 4px;
-    }
-
-    .empty-text {
+    .modal-cancel {
+      width: 100%;
+      height: 44px;
+      background: none;
+      border: none;
+      font-family: 'Poppins', sans-serif;
       font-size: 14px;
-      color: var(--text-secondary);
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      margin-top: 8px;
     }
 
-    /* ── Download banner ────────────────────────────────────────────────── */
-    .download-banner {
-      background: var(--cream2);
+    /* ── Success toast ────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--dark);
+      color: #fff;
+      padding: 12px 20px;
       border-radius: 20px;
-      border: 1px solid var(--border);
-      padding: 28px 24px;
-      margin: 0 20px 16px;
-      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      z-index: 300;
+      transition: transform 0.28s cubic-bezier(.22,1,.36,1), opacity 0.22s;
+      opacity: 0;
       display: flex;
-      flex-direction: column;
       align-items: center;
       gap: 8px;
     }
 
-    .download-icon-wrap {
-      width: 48px;
-      height: 48px;
-      background: var(--teal-muted);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: 32px 20px 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      font-size: 16px;
+      color: var(--teal);
       margin-bottom: 4px;
     }
 
-    .download-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.3px;
-      line-height: 1.25;
+    .footer-logo .coral { color: var(--coral); }
+
+    /* ── Animations ───────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .download-subtext {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--text-secondary);
+    .animate-in {
+      animation: fadeUp 0.32s cubic-bezier(.22,1,.36,1) both;
     }
 
-    .download-btn {
-      display: inline-block;
-      background: var(--teal);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 24px;
-      padding: 13px 28px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      margin-top: 6px;
-      transition: opacity 0.15s;
-    }
-
-    .download-btn:hover { opacity: 0.88; }
-
-    /* ── Footer ─────────────────────────────────────────────────────────── */
-    .footer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 32px 24px 40px;
-      border-top: 1px solid var(--border);
-      margin-top: 8px;
-    }
-
-    .footer-wordmark {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--teal);
-    }
-
-    .footer-tagline {
-      font-size: 12px;
-      font-weight: 300;
-      letter-spacing: 0.08em;
-      color: var(--text-tertiary);
-    }
-
-    /* ── Modal ──────────────────────────────────────────────────────────── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(28,40,32,0.4);
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 100;
-      padding: 0;
-    }
-
-    .modal-overlay.visible { display: flex; }
-
-    .modal-card {
-      background: var(--bg);
-      border-radius: 24px 24px 0 0;
-      padding: 36px 28px 48px;
-      width: 100%;
-      max-width: 560px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      position: relative;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
-      background: var(--border);
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-icon {
-      width: 56px;
-      height: 56px;
-      background: var(--teal-muted);
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 8px;
-    }
-
-    .modal-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-      letter-spacing: -0.3px;
-    }
-
-    .modal-body {
-      font-size: 15px;
-      font-weight: 400;
-      color: var(--text-secondary);
-      text-align: center;
-      line-height: 1.6;
-      max-width: 280px;
-      margin-bottom: 12px;
-    }
-
-    .modal-primary-btn {
-      display: block;
-      width: 100%;
-      background: var(--teal);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 24px;
-      padding: 15px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      text-align: center;
-      transition: opacity 0.15s;
-    }
-
-    .modal-primary-btn:hover { opacity: 0.88; }
-
-    .modal-secondary-btn {
-      display: block;
-      width: 100%;
-      border: 1.5px solid var(--teal);
-      color: var(--teal);
-      text-decoration: none;
-      border-radius: 24px;
-      padding: 14px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      text-align: center;
-      transition: opacity 0.15s;
-    }
-
-    .modal-secondary-btn:hover { opacity: 0.75; }
+    .gift-card:nth-child(1)  { animation-delay: 0ms; }
+    .gift-card:nth-child(2)  { animation-delay: 60ms; }
+    .gift-card:nth-child(3)  { animation-delay: 120ms; }
+    .gift-card:nth-child(4)  { animation-delay: 180ms; }
+    .gift-card:nth-child(5)  { animation-delay: 240ms; }
+    .gift-card:nth-child(6)  { animation-delay: 300ms; }
+    .gift-card:nth-child(7)  { animation-delay: 360ms; }
+    .gift-card:nth-child(8)  { animation-delay: 420ms; }
+    .gift-card:nth-child(9)  { animation-delay: 480ms; }
+    .gift-card:nth-child(10) { animation-delay: 540ms; }
   </style>
 </head>
 <body>
 
+<div class="page" id="app">
   <!-- Loading -->
-  <div id="loading-screen" class="loading-screen">
+  <div class="loading-screen" id="loading-screen">
     <div class="spinner"></div>
-    <p class="loading-text">Loading gift list…</p>
+    <p class="loading-text">Loading gift list&hellip;</p>
   </div>
+</div>
 
-  <!-- Error -->
-  <div id="error-screen" class="error-screen hidden">
-    <div class="error-icon">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8A9882" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
-      </svg>
+<!-- Claim modal -->
+<div class="modal-overlay" id="modal-overlay" aria-modal="true" role="dialog">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Claim a gift</div>
+    <p class="modal-sub" id="modal-sub">Enter your name so the parent can keep track. Only you will know which gift you're getting!</p>
+    <p class="modal-input-label">Your name</p>
+    <input class="modal-input" id="claimer-name" type="text" placeholder="e.g. Grandma Sue" autocomplete="given-name" />
+    <p class="modal-hint">This is kept secret from the child.</p>
+    <button class="modal-btn" id="confirm-claim-btn">Claim this gift</button>
+    <button class="modal-cancel" id="cancel-claim-btn">Cancel</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <circle cx="8" cy="8" r="8" fill="#F28C79"/>
+    <path d="M4.5 8L7 10.5L11.5 6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span id="toast-text">Gift claimed!</span>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// Config — update SUPABASE_URL and ANON_KEY
+// ─────────────────────────────────────────────
+const SUPABASE_URL  = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON = 'YOUR_ANON_KEY';
+const API_BASE      = `${SUPABASE_URL}/functions/v1/wishlist-api`;
+
+// ─────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────
+let listData        = null;
+let pendingItemId   = null;
+let claimerName     = localStorage.getItem('wty_claimer_name') || '';
+
+// ─────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────
+function getToken() {
+  const parts = window.location.pathname.split('/');
+  return parts[parts.length - 1] || new URLSearchParams(window.location.search).get('token');
+}
+
+function fmt(cents) {
+  if (!cents && cents !== 0) return '';
+  return '$' + (cents / 100).toFixed(2).replace(/\.00$/, '');
+}
+
+function initials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const bday  = new Date(dateStr); bday.setHours(0,0,0,0);
+  const diff  = Math.round((bday - today) / 86400000);
+  return diff;
+}
+
+// ─────────────────────────────────────────────
+// SVG icons
+// ─────────────────────────────────────────────
+const GiftIcon = `
+  <svg class="product-img-placeholder" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="20" width="32" height="22" rx="3" stroke="#7AA7A3" stroke-width="2.5"/>
+    <rect x="6" y="13" width="36" height="9" rx="3" stroke="#7AA7A3" stroke-width="2.5"/>
+    <path d="M24 13v29" stroke="#7AA7A3" stroke-width="2.5"/>
+    <path d="M24 13c0 0-4-9 0-9s4 9 0 9" stroke="#F28C79" stroke-width="2" stroke-linecap="round"/>
+    <path d="M24 13c0 0 4-9 0-9" stroke="#F28C79" stroke-width="2" stroke-linecap="round"/>
+  </svg>`;
+
+const CheckIcon = `
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M5 10L8.5 13.5L15 7" stroke="#6E776A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+const PlusIcon = `
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>`;
+
+const LinkIcon = `
+  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+    <path d="M4 2H2a1 1 0 00-1 1v5a1 1 0 001 1h5a1 1 0 001-1V6M6 1h3m0 0v3m0-3L4.5 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+// ─────────────────────────────────────────────
+// Render
+// ─────────────────────────────────────────────
+function render(data) {
+  const { child, wishlist, items } = data;
+  const available = items.filter(i => !i.claimed_by);
+  const claimed   = items.filter(i =>  i.claimed_by);
+  const days      = daysUntil(child?.birthday);
+  const app       = document.getElementById('app');
+
+  app.innerHTML = `
+    <div class="header animate-in">
+      <div class="logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
     </div>
-    <h2 class="error-title">List not found</h2>
-    <p class="error-message" id="error-message">This gift list link is invalid or has expired.</p>
-  </div>
 
-  <!-- Main content -->
-  <div id="main-content" class="hidden">
-    <div class="page">
-
-      <!-- Brand bar -->
-      <div class="brand-bar">
-        <div class="brand-rule"></div>
-        <span class="brand-name">Why, Thank You!</span>
-        <div class="brand-rule"></div>
+    <div class="hero animate-in" style="animation-delay:40ms">
+      <div class="child-row">
+        <div class="avatar">${initials(child?.name || wishlist?.child_name || '?')}</div>
+        <div class="child-info">
+          <div class="child-name">${escHtml(child?.name || wishlist?.child_name || 'Gift List')}</div>
+          <div class="child-meta">${wishlist?.name ? escHtml(wishlist.name) : ''}</div>
+          ${days !== null && days >= 0 && days <= 30
+            ? `<div class="birthday-soon">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M5.5 1v.8M2.2 2.2l.57.57M1 5.5h.8M9.2 5.5H10M8.23 2.77l-.57.57" stroke="#F28C79" stroke-width="1.4" stroke-linecap="round"/>
+                  <circle cx="5.5" cy="6.5" r="3" stroke="#F28C79" stroke-width="1.3"/>
+                </svg>
+                ${days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `${days} days`} until birthday
+              </div>`
+            : ''}
+        </div>
       </div>
 
-      <!-- Hero -->
-      <div class="hero">
-        <h1 class="hero-title" id="hero-title"></h1>
-        <p class="hero-subtitle" id="hero-subtitle"></p>
-        <p class="hero-birthday hidden" id="hero-birthday"></p>
+      <div class="stats-row">
+        <div class="stat-pill">
+          <div class="stat-num">${items.length}</div>
+          <div class="stat-label">Gifts total</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-num" style="color:var(--coral)">${available.length}</div>
+          <div class="stat-label">Still available</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-num">${claimed.length}</div>
+          <div class="stat-label">Claimed</div>
+        </div>
       </div>
+    </div>
 
-      <div class="divider"></div>
-
-      <!-- Gift list -->
-      <div class="section">
-        <p class="section-label" id="section-label">Gift List</p>
-        <div id="gift-list" class="gift-list"></div>
+    ${available.length > 0 ? `
+      <p class="section-label">Available gifts</p>
+      <div class="items-list" id="available-list">
+        ${available.map(item => renderCard(item, false)).join('')}
       </div>
+    ` : ''}
 
-      <div class="divider"></div>
+    ${claimed.length > 0 && claimed.length < items.length ? `
+      <p class="section-label">Already claimed</p>
+      <div class="items-list">
+        ${claimed.map(item => renderCard(item, true)).join('')}
+      </div>
+    ` : ''}
 
-      <!-- Download banner -->
-      <div class="download-banner">
-        <div class="download-icon-wrap">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1B8A8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+    ${items.length === 0 ? `
+      <div class="empty-state animate-in" style="animation-delay:120ms">
+        ${GiftIcon.replace('class="product-img-placeholder"', 'class="empty-icon" style="width:56px;height:56px;opacity:0.3"')}
+        <div class="empty-title">No gifts added yet</div>
+        <p class="empty-sub">Check back soon — this list is being put together.</p>
+      </div>
+    ` : ''}
+
+    ${items.length > 0 && claimed.length === items.length ? `
+      <div class="empty-state animate-in" style="animation-delay:120ms">
+        <div class="empty-icon" style="font-size:40px; opacity:0.5; margin-bottom:12px">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" stroke="#0F6B6F" stroke-width="2.5"/>
+            <path d="M15 24l7 7 11-11" stroke="#0F6B6F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h2 class="download-title">Create wishlists for your family</h2>
-        <p class="download-subtext">Free on iPhone &amp; iPad — takes two minutes to set up</p>
-        <a href="https://apps.apple.com/app/w-ty/id6746818447" class="download-btn" target="_blank" rel="noopener">
-          Download Why, Thank You!
-        </a>
+        <div class="empty-title">All gifts claimed!</div>
+        <p class="empty-sub">This list is all taken care of.</p>
       </div>
+    ` : ''}
 
-      <!-- Footer -->
-      <footer class="footer">
-        <span class="footer-wordmark">Why, Thank You!</span>
-        <span class="footer-tagline">Take the guesswork out of giving.</span>
-      </footer>
-
+    <div class="footer">
+      <div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
+      <div>Keep gift-giving delightful.</div>
     </div>
-  </div>
+  `;
 
-  <!-- Claim modal -->
-  <div id="claim-modal" class="modal-overlay" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
-      <div class="modal-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1B8A8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
-        </svg>
-      </div>
-      <h2 class="modal-title">Claim this gift</h2>
-      <p class="modal-body">Sign in to mark this as yours so no one else buys a duplicate.</p>
-      <a href="https://whythankyou.com/signup" class="modal-primary-btn">Create a free account</a>
-      <a href="https://whythankyou.com/login" class="modal-secondary-btn">Log in</a>
-    </div>
-  </div>
+  // Attach claim button listeners
+  document.querySelectorAll('.claim-btn[data-item-id]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.itemId, btn.dataset.itemName));
+  });
+}
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script>
-    const SUPABASE_URL = 'https://wdiovqjtfbkvjkcmbkzr.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkaW92cWp0ZmJrdmprY21ia3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzQ5OTUsImV4cCI6MjA5NDM1MDk5NX0.Pdoh7mPt_3YhTvPN8xFdda7M9L7E8t-_oDOqZ_fL3T8';
-
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, detectSessionInUrl: false },
-    });
-
-    const pathParts = window.location.pathname.split('/').filter(Boolean);
-    const listIdx = pathParts.indexOf('list');
-    const token = listIdx !== -1 ? pathParts[listIdx + 1] : null;
-
-    let session = null;
-    let pendingClaimItemId = null;
-    let currentItems = [];
-
-    async function init() {
-      const { data } = await sb.auth.getSession();
-      session = data.session;
-      if (!token) { showError('No gift list found.'); return; }
-      await loadGiftList();
-    }
-
-    async function loadGiftList() {
-      try {
-        const { data: tokenRow, error: tokenError } = await sb
-          .from('share_tokens').select('wishlist_id').eq('token', token).single();
-        if (tokenError || !tokenRow) { showError('This gift list link is invalid or has expired.'); return; }
-
-        const wid = tokenRow.wishlist_id;
-        const [wishlistRes, itemsRes] = await Promise.all([
-          sb.from('wishlists').select('id, name, person, birthday').eq('id', wid).single(),
-          sb.from('wishlist_items').select('id, name, price, store, store_url, photo_url, claimed')
-            .eq('wishlist_id', wid).order('created_at', { ascending: true }),
-        ]);
-
-        if (wishlistRes.error || !wishlistRes.data) { showError('Could not load the gift list.'); return; }
-        renderPage(wishlistRes.data, itemsRes.data || []);
-      } catch (err) {
-        showError('Something went wrong. Please try again.');
-      }
-    }
-
-    function renderPage(wishlist, itemList) {
-      currentItems = itemList;
-      document.title = `${wishlist.name} — Why, Thank You!`;
-      document.getElementById('hero-title').textContent = wishlist.name;
-      document.getElementById('hero-subtitle').textContent = `A gift list for ${wishlist.person}`;
-
-      if (wishlist.birthday) {
-        const bd = new Date(wishlist.birthday + 'T00:00:00');
-        const formatted = bd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        const el = document.getElementById('hero-birthday');
-        el.textContent = formatted;
-        el.classList.remove('hidden');
-      }
-
-      const count = itemList.length;
-      document.getElementById('section-label').textContent =
-        count === 0 ? 'Gift List' : `${count} Gift${count !== 1 ? 's' : ''}`;
-
-      renderGiftCards(itemList);
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('main-content').classList.remove('hidden');
-    }
-
-    const giftIcon = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B89A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>`;
-    const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B8A8A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-
-    function renderGiftCards(itemList) {
-      const container = document.getElementById('gift-list');
-      container.innerHTML = '';
-      if (itemList.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">${giftIcon}</div>
-            <p class="empty-text">No gifts have been added yet.</p>
-          </div>`;
-        return;
-      }
-      itemList.forEach(item => container.appendChild(buildCard(item)));
-    }
-
-    function buildCard(item) {
-      const price = item.price != null ? `$${Number(item.price).toFixed(2)}` : null;
-      const imageHtml = item.photo_url
-        ? `<img class="gift-image" src="${esc(item.photo_url)}" alt="${esc(item.name)}" loading="lazy">`
-        : `<div class="gift-placeholder">${giftIcon}</div>`;
-      const overlayHtml = item.claimed
-        ? `<div class="claimed-overlay"><div class="claimed-check">${checkIcon}</div></div>` : '';
-      const storeHtml = item.store ? `<span class="gift-store">${esc(item.store)}</span>` : '';
-      const priceHtml = price ? `<span class="gift-price">${esc(price)}</span>` : '';
-      const shopHtml = item.store_url
-        ? `<a class="shop-link" href="${esc(item.store_url)}" target="_blank" rel="noopener">View item →</a>` : '';
-      const btnClass = item.claimed ? 'claim-btn claimed' : 'claim-btn';
-      const btnLabel = item.claimed ? '&#10003;&nbsp; Claimed' : 'Claim this gift';
-
-      const card = document.createElement('div');
-      card.className = 'gift-card';
-      card.id = `card-${esc(item.id)}`;
-      card.innerHTML = `
-        <div class="gift-card-body">
-          <div class="gift-image-wrap">${imageHtml}${overlayHtml}</div>
-          <div class="gift-details">
-            <span class="gift-name">${esc(item.name)}</span>
-            ${storeHtml}${priceHtml}${shopHtml}
-          </div>
+function renderCard(item, isClaimed) {
+  const hasImg = !!item.image_url;
+  return `
+    <div class="gift-card animate-in ${isClaimed ? 'claimed' : ''}">
+      <div class="card-inner">
+        <div class="product-img-wrap">
+          ${hasImg
+            ? `<img src="${escAttr(item.image_url)}" alt="${escAttr(item.name)}" loading="lazy" onerror="this.style.display='none';this.parentNode.innerHTML='${GiftIcon.replace(/"/g,"'")}'" />`
+            : GiftIcon}
         </div>
-        <div class="gift-card-footer">
-          <button class="${btnClass}" data-item-id="${esc(item.id)}" ${item.claimed ? 'disabled' : ''}>
-            ${btnLabel}
-          </button>
-        </div>`;
+        <div class="card-body">
+          <div class="item-name">${escHtml(item.name)}</div>
+          ${item.price_cents ? `<div class="item-price">${fmt(item.price_cents)}</div>` : ''}
+          ${item.note ? `<div class="item-note">${escHtml(item.note)}</div>` : ''}
+          ${item.url && !isClaimed
+            ? `<a class="item-store" href="${escAttr(item.url)}" target="_blank" rel="noopener">${LinkIcon} View item</a>`
+            : ''}
+          ${isClaimed
+            ? `<div class="claimed-badge">${CheckIcon} Claimed</div>`
+            : ''}
+        </div>
+        <button
+          class="claim-btn ${isClaimed ? 'claimed-btn' : ''}"
+          ${isClaimed ? 'disabled aria-label="Already claimed"' : `data-item-id="${escAttr(item.id)}" data-item-name="${escAttr(item.name)}" aria-label="Claim ${escAttr(item.name)}"`}
+        >
+          ${isClaimed ? CheckIcon : PlusIcon}
+        </button>
+      </div>
+    </div>`;
+}
 
-      card.querySelector('.claim-btn')?.addEventListener('click', () => handleClaim(item.id));
-      return card;
-    }
+// ─────────────────────────────────────────────
+// Modal
+// ─────────────────────────────────────────────
+const overlay = document.getElementById('modal-overlay');
+const nameInput = document.getElementById('claimer-name');
 
-    async function handleClaim(itemId) {
-      if (!session) {
-        pendingClaimItemId = itemId;
-        document.getElementById('claim-modal').classList.add('visible');
-        return;
-      }
-      const { error } = await sb.from('item_claims').insert({ item_id: itemId, claimed_by: session.user.id });
-      if (!error) {
-        currentItems = currentItems.map(i => i.id === itemId ? { ...i, claimed: true } : i);
-        renderGiftCards(currentItems);
-      }
-    }
+function openModal(itemId, itemName) {
+  pendingItemId = itemId;
+  document.getElementById('modal-sub').textContent =
+    `Enter your name to claim "${itemName}". Only the parent can see who claimed what.`;
+  nameInput.value = claimerName;
+  overlay.classList.add('open');
+  setTimeout(() => nameInput.focus(), 300);
+}
 
-    function closeModal() {
-      document.getElementById('claim-modal').classList.remove('visible');
-      pendingClaimItemId = null;
-    }
+function closeModal() {
+  overlay.classList.remove('open');
+  pendingItemId = null;
+}
 
-    document.getElementById('claim-modal').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
+document.getElementById('cancel-claim-btn').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+document.getElementById('confirm-claim-btn').addEventListener('click', async () => {
+  const name = nameInput.value.trim();
+  if (!name) { nameInput.focus(); nameInput.style.borderColor = 'var(--coral)'; return; }
+  nameInput.style.borderColor = '';
+  claimerName = name;
+  localStorage.setItem('wty_claimer_name', name);
+  await doClaim(pendingItemId, name);
+  closeModal();
+});
+
+nameInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('confirm-claim-btn').click();
+});
+
+// ─────────────────────────────────────────────
+// API calls
+// ─────────────────────────────────────────────
+async function fetchList(token) {
+  const res = await fetch(`${API_BASE}?action=get_list&token=${encodeURIComponent(token)}`, {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function doClaim(itemId, claimerName) {
+  const btn = document.querySelector(`[data-item-id="${itemId}"]`);
+  if (btn) btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${SUPABASE_ANON}`
+      },
+      body: JSON.stringify({ action: 'claim_item', item_id: itemId, claimer_name: claimerName })
     });
 
-    function showError(msg) {
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('error-message').textContent = msg;
-      document.getElementById('error-screen').classList.remove('hidden');
-    }
+    if (!res.ok) throw new Error(await res.text());
 
-    function esc(str) {
-      if (str == null) return '';
-      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-    }
+    // Optimistically mark as claimed in state
+    const item = listData.items.find(i => i.id === itemId);
+    if (item) { item.claimed_by = claimerName; item.claimed_at = new Date().toISOString(); }
+    render(listData);
+    showToast('Gift claimed! It\'s a secret.');
+  } catch (err) {
+    showError('Couldn\'t claim that gift. Please try again.');
+    if (btn) btn.disabled = false;
+  }
+}
 
-    init();
-  </script>
+// ─────────────────────────────────────────────
+// Toast
+// ─────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function showError(msg) {
+  showToast(msg);
+}
+
+// ─────────────────────────────────────────────
+// XSS helpers
+// ─────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escAttr(str) { return escHtml(str); }
+
+// ─────────────────────────────────────────────
+// Bootstrap
+// ─────────────────────────────────────────────
+async function init() {
+  const token = getToken();
+
+  if (!token) {
+    document.getElementById('app').innerHTML = `
+      <div class="header"><div class="logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div></div>
+      <div class="error-screen animate-in">
+        <svg class="error-icon" width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="24" stroke="#E3DED5" stroke-width="2.5"/>
+          <path d="M28 18v12M28 36v2" stroke="#6E776A" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div class="error-title">No list found</div>
+        <p class="error-sub">The link may be invalid or expired.<br>Ask the organiser to resend it.</p>
+      </div>
+      <div class="footer"><div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div></div>
+    `;
+    return;
+  }
+
+  try {
+    listData = await fetchList(token);
+    render(listData);
+  } catch (err) {
+    document.getElementById('app').innerHTML = `
+      <div class="header"><div class="logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div></div>
+      <div class="error-screen animate-in">
+        <svg class="error-icon" width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="24" stroke="#E3DED5" stroke-width="2.5"/>
+          <path d="M28 18v12M28 36v2" stroke="#6E776A" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div class="error-title">Couldn't load this list</div>
+        <p class="error-sub">Something went wrong fetching the gift list.<br>Try refreshing the page.</p>
+      </div>
+      <div class="footer"><div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div></div>
+    `;
+  }
+}
+
+init();
+</script>
 </body>
 </html>
