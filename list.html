@@ -6,14 +6,14 @@
   <title>Gift List — Why, Thank You!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg:             #FAF7F2;
-      --cream2:         #F2EDE5;
-      --teal:           #2A9D8F;
+      --cream2:         #F0EAE0;
+      --teal:           #1B8A8A;
       --teal-muted:     #E8F5F3;
       --text:           #1C2820;
       --text-secondary: #5A6654;
@@ -24,12 +24,15 @@
 
     body {
       background: var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Poppins', -apple-system, sans-serif;
       color: var(--text);
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Loading ─────────────────────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── Loading ────────────────────────────────────────────────────────── */
     .loading-screen {
       min-height: 100vh;
       display: flex;
@@ -41,9 +44,9 @@
     }
 
     .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid var(--border);
+      width: 32px;
+      height: 32px;
+      border: 2.5px solid var(--border);
       border-top-color: var(--teal);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
@@ -52,13 +55,12 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .loading-text {
-      font-family: Georgia, serif;
-      font-style: italic;
-      font-size: 15px;
+      font-size: 14px;
+      font-weight: 400;
       color: var(--text-secondary);
     }
 
-    /* ── Error ───────────────────────────────────────────────────────────────── */
+    /* ── Error ──────────────────────────────────────────────────────────── */
     .error-screen {
       min-height: 100vh;
       display: flex;
@@ -70,28 +72,38 @@
       text-align: center;
     }
 
-    .error-emoji  { font-size: 48px; }
-    .error-title  {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 28px;
+    .error-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--cream2);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .error-title {
+      font-size: 22px;
       font-weight: 700;
       color: var(--text);
     }
+
     .error-message {
       font-size: 15px;
       color: var(--text-secondary);
       line-height: 1.6;
-      max-width: 320px;
+      max-width: 300px;
     }
 
-    /* ── Page wrapper ────────────────────────────────────────────────────────── */
+    /* ── Page wrapper ───────────────────────────────────────────────────── */
     .page {
-      max-width: 600px;
+      max-width: 560px;
       margin: 0 auto;
       width: 100%;
     }
 
-    /* ── Brand bar ───────────────────────────────────────────────────────────── */
+    /* ── Brand bar ──────────────────────────────────────────────────────── */
     .brand-bar {
       display: flex;
       align-items: center;
@@ -106,78 +118,50 @@
     }
 
     .brand-name {
-      font-family: Georgia, serif;
-      font-style: italic;
-      font-size: 18px;
+      font-size: 16px;
+      font-weight: 600;
       color: var(--teal);
       white-space: nowrap;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.1px;
     }
 
-    /* ── Hero ────────────────────────────────────────────────────────────────── */
+    /* ── Hero ───────────────────────────────────────────────────────────── */
     .hero {
       padding: 0 28px 32px;
       text-align: center;
     }
 
     .hero-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 700;
       color: var(--text);
-      letter-spacing: -0.6px;
+      letter-spacing: -0.5px;
       line-height: 1.2;
       margin-bottom: 8px;
     }
 
     .hero-subtitle {
-      font-family: Georgia, serif;
-      font-style: italic;
-      font-size: 17px;
+      font-size: 16px;
+      font-weight: 400;
       color: var(--text-secondary);
       margin-bottom: 4px;
     }
 
     .hero-birthday {
-      font-size: 14px;
-      color: var(--text-tertiary);
-      margin-top: 2px;
-    }
-
-    .progress-block { margin-top: 16px; }
-
-    .progress-track {
-      width: 100%;
-      height: 6px;
-      background: var(--border);
-      border-radius: 99px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      height: 6px;
-      background: var(--teal);
-      border-radius: 99px;
-      transition: width 0.6s ease;
-    }
-
-    .progress-fill.complete { background: #4CAF85; }
-
-    .progress-label {
       font-size: 13px;
-      color: var(--text-secondary);
       font-weight: 500;
+      color: var(--text-tertiary);
+      margin-top: 4px;
     }
 
-    /* ── Divider ─────────────────────────────────────────────────────────────── */
+    /* ── Divider ────────────────────────────────────────────────────────── */
     .divider {
       height: 1px;
       background: var(--border);
       margin: 0 24px 28px;
     }
 
-    /* ── Section ─────────────────────────────────────────────────────────────── */
+    /* ── Section ────────────────────────────────────────────────────────── */
     .section {
       padding: 0 20px;
       margin-bottom: 32px;
@@ -185,39 +169,40 @@
 
     .section-label {
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--text-tertiary);
       margin-bottom: 14px;
     }
 
-    /* ── Gift list ───────────────────────────────────────────────────────────── */
+    /* ── Gift list ──────────────────────────────────────────────────────── */
     .gift-list {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
-    /* ── Gift card ───────────────────────────────────────────────────────────── */
+    /* ── Gift card ──────────────────────────────────────────────────────── */
     .gift-card {
       background: var(--surface);
-      border-radius: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
       overflow: hidden;
-      box-shadow: 0 2px 12px rgba(28,40,32,0.06);
+      box-shadow: 0 1px 4px rgba(28,40,32,0.05);
     }
 
     .gift-card-body {
       display: flex;
-      gap: 14px;
-      padding: 14px;
+      gap: 12px;
+      padding: 12px;
+      align-items: center;
     }
 
     .gift-image-wrap {
-      width: 100px;
-      height: 100px;
-      border-radius: 12px;
+      width: 88px;
+      height: 88px;
+      border-radius: 10px;
       overflow: hidden;
       background: var(--cream2);
       flex-shrink: 0;
@@ -227,7 +212,7 @@
     .gift-image {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
     }
 
@@ -237,78 +222,91 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #EDE7DC;
-      font-size: 34px;
+      background: var(--cream2);
+    }
+
+    .gift-placeholder svg {
+      opacity: 0.4;
     }
 
     .claimed-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(42,157,143,0.72);
+      background: rgba(27,138,138,0.7);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
-      color: #fff;
-      font-weight: 700;
+    }
+
+    .claimed-check {
+      width: 28px;
+      height: 28px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .gift-details {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      justify-content: center;
+      gap: 3px;
       min-width: 0;
     }
 
     .gift-name {
-      font-family: Georgia, serif;
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 600;
       color: var(--text);
       line-height: 1.35;
-      letter-spacing: -0.2px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .gift-store {
-      font-size: 13px;
+      font-size: 12px;
+      font-weight: 400;
       color: var(--text-secondary);
     }
 
     .gift-price {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--teal);
       margin-top: 2px;
     }
 
     .shop-link {
-      font-size: 13px;
-      color: var(--teal);
+      font-size: 12px;
       font-weight: 600;
+      color: var(--teal);
       text-decoration: none;
+      margin-top: 4px;
       display: inline-block;
-      margin-top: 6px;
     }
 
     .shop-link:hover { text-decoration: underline; }
 
+    /* ── Claim button ───────────────────────────────────────────────────── */
     .gift-card-footer {
       border-top: 1px solid var(--border);
-      padding: 12px;
+      padding: 10px 12px;
     }
 
     .claim-btn {
       width: 100%;
       background: var(--teal);
-      border: none;
-      border-radius: 12px;
-      padding: 12px;
       color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.1px;
+      border: none;
+      border-radius: 10px;
+      padding: 11px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
       transition: opacity 0.15s;
     }
@@ -321,11 +319,11 @@
       cursor: default;
     }
 
-    /* ── Empty state ─────────────────────────────────────────────────────────── */
+    /* ── Empty state ────────────────────────────────────────────────────── */
     .empty-state {
       background: var(--surface);
-      border-radius: 18px;
       border: 1px solid var(--border);
+      border-radius: 16px;
       padding: 48px 24px;
       text-align: center;
       display: flex;
@@ -334,20 +332,28 @@
       gap: 10px;
     }
 
-    .empty-emoji { font-size: 40px; }
+    .empty-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--cream2);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
     .empty-text {
-      font-family: Georgia, serif;
-      font-style: italic;
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text-secondary);
     }
 
-    /* ── Download banner ─────────────────────────────────────────────────────── */
+    /* ── Download banner ────────────────────────────────────────────────── */
     .download-banner {
       background: var(--cream2);
       border-radius: 20px;
       border: 1px solid var(--border);
-      padding: 28px;
+      padding: 28px 24px;
       margin: 0 20px 16px;
       text-align: center;
       display: flex;
@@ -356,99 +362,96 @@
       gap: 8px;
     }
 
-    .download-icon  { font-size: 32px; margin-bottom: 4px; }
+    .download-icon-wrap {
+      width: 48px;
+      height: 48px;
+      background: var(--teal-muted);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
 
     .download-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--text);
-      letter-spacing: -0.4px;
+      letter-spacing: -0.3px;
       line-height: 1.25;
     }
 
     .download-subtext {
       font-size: 14px;
+      font-weight: 400;
       color: var(--text-secondary);
-      margin-bottom: 4px;
     }
 
     .download-btn {
       display: inline-block;
       background: var(--teal);
-      border-radius: 24px;
-      padding: 14px 28px;
       color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
       text-decoration: none;
-      margin-top: 4px;
+      border-radius: 24px;
+      padding: 13px 28px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 6px;
       transition: opacity 0.15s;
     }
 
     .download-btn:hover { opacity: 0.88; }
 
-    /* ── Footer ──────────────────────────────────────────────────────────────── */
+    /* ── Footer ─────────────────────────────────────────────────────────── */
     .footer {
-      text-align: center;
-      padding: 36px 24px;
-      border-top: 1px solid var(--border);
-      margin-top: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
+      padding: 32px 24px 40px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
     }
 
     .footer-wordmark {
-      font-family: Georgia, serif;
-      font-style: italic;
-      font-size: 16px;
-      color: var(--teal);
+      font-size: 15px;
       font-weight: 600;
+      color: var(--teal);
     }
 
     .footer-tagline {
-      font-family: Georgia, serif;
-      font-style: italic;
       font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.08em;
       color: var(--text-tertiary);
     }
 
-    /* ── Claim modal ─────────────────────────────────────────────────────────── */
+    /* ── Modal ──────────────────────────────────────────────────────────── */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(28,40,32,0.5);
-      z-index: 100;
+      background: rgba(28,40,32,0.4);
       align-items: flex-end;
       justify-content: center;
+      z-index: 100;
+      padding: 0;
     }
 
     .modal-overlay.visible { display: flex; }
 
-    @media (min-width: 480px) {
-      .modal-overlay { align-items: center; }
-    }
-
     .modal-card {
       background: var(--bg);
       border-radius: 24px 24px 0 0;
-      padding: 32px 28px 48px;
+      padding: 36px 28px 48px;
       width: 100%;
-      max-width: 440px;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
       position: relative;
-      text-align: center;
-    }
-
-    @media (min-width: 480px) {
-      .modal-card {
-        border-radius: 24px;
-        padding: 40px 36px;
-        margin: 0 16px;
-      }
     }
 
     .modal-close {
@@ -458,54 +461,59 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: var(--border);
       border: none;
-      cursor: pointer;
-      font-size: 14px;
+      background: var(--border);
       color: var(--text);
+      font-size: 14px;
       font-weight: 600;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .modal-emoji  { font-size: 44px; margin-bottom: 16px; display: block; }
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--teal-muted);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
 
     .modal-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--text);
-      letter-spacing: -0.4px;
-      margin-bottom: 12px;
+      text-align: center;
+      letter-spacing: -0.3px;
     }
 
     .modal-body {
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 400;
       color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 32px;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
+      text-align: center;
+      line-height: 1.6;
+      max-width: 280px;
+      margin-bottom: 12px;
     }
 
     .modal-primary-btn {
       display: block;
       width: 100%;
       background: var(--teal);
-      border: none;
-      border-radius: 28px;
-      padding: 16px;
       color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      cursor: pointer;
       text-decoration: none;
-      margin-bottom: 12px;
-      transition: opacity 0.15s;
+      border-radius: 24px;
+      padding: 15px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
       text-align: center;
+      transition: opacity 0.15s;
     }
 
     .modal-primary-btn:hover { opacity: 0.88; }
@@ -513,22 +521,19 @@
     .modal-secondary-btn {
       display: block;
       width: 100%;
-      background: transparent;
       border: 1.5px solid var(--teal);
-      border-radius: 28px;
-      padding: 16px;
       color: var(--teal);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
       text-decoration: none;
-      transition: background 0.15s;
+      border-radius: 24px;
+      padding: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
       text-align: center;
+      transition: opacity 0.15s;
     }
 
-    .modal-secondary-btn:hover { background: var(--teal-muted); }
-
-    .hidden { display: none !important; }
+    .modal-secondary-btn:hover { opacity: 0.75; }
   </style>
 </head>
 <body>
@@ -541,8 +546,12 @@
 
   <!-- Error -->
   <div id="error-screen" class="error-screen hidden">
-    <span class="error-emoji">🎁</span>
-    <h1 class="error-title">Oops!</h1>
+    <div class="error-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8A9882" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+      </svg>
+    </div>
+    <h2 class="error-title">List not found</h2>
     <p class="error-message" id="error-message">This gift list link is invalid or has expired.</p>
   </div>
 
@@ -562,12 +571,6 @@
         <h1 class="hero-title" id="hero-title"></h1>
         <p class="hero-subtitle" id="hero-subtitle"></p>
         <p class="hero-birthday hidden" id="hero-birthday"></p>
-        <div class="progress-block hidden" id="progress-block">
-          <div class="progress-track">
-            <div class="progress-fill" id="progress-fill"></div>
-          </div>
-          <p class="progress-label" id="progress-label"></p>
-        </div>
       </div>
 
       <div class="divider"></div>
@@ -582,7 +585,11 @@
 
       <!-- Download banner -->
       <div class="download-banner">
-        <span class="download-icon">🎀</span>
+        <div class="download-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1B8A8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
         <h2 class="download-title">Create wishlists for your family</h2>
         <p class="download-subtext">Free on iPhone &amp; iPad — takes two minutes to set up</p>
         <a href="https://apps.apple.com/app/w-ty/id6746818447" class="download-btn" target="_blank" rel="noopener">
@@ -603,7 +610,11 @@
   <div id="claim-modal" class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal-card">
       <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
-      <span class="modal-emoji">🎁</span>
+      <div class="modal-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1B8A8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+        </svg>
+      </div>
       <h2 class="modal-title">Claim this gift</h2>
       <p class="modal-body">Sign in to mark this as yours so no one else buys a duplicate.</p>
       <a href="https://whythankyou.com/signup" class="modal-primary-btn">Create a free account</a>
@@ -620,7 +631,6 @@
       auth: { persistSession: true, detectSessionInUrl: false },
     });
 
-    // Extract token from URL path: /list/<token>
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     const listIdx = pathParts.indexOf('list');
     const token = listIdx !== -1 ? pathParts[listIdx + 1] : null;
@@ -632,47 +642,25 @@
     async function init() {
       const { data } = await sb.auth.getSession();
       session = data.session;
-
-      if (!token) {
-        showError('No gift list token found in URL.');
-        return;
-      }
+      if (!token) { showError('No gift list found.'); return; }
       await loadGiftList();
     }
 
     async function loadGiftList() {
       try {
         const { data: tokenRow, error: tokenError } = await sb
-          .from('share_tokens')
-          .select('wishlist_id')
-          .eq('token', token)
-          .single();
-
-        if (tokenError || !tokenRow) {
-          showError('This gift list link is invalid or has expired.');
-          return;
-        }
+          .from('share_tokens').select('wishlist_id').eq('token', token).single();
+        if (tokenError || !tokenRow) { showError('This gift list link is invalid or has expired.'); return; }
 
         const wid = tokenRow.wishlist_id;
-
         const [wishlistRes, itemsRes] = await Promise.all([
-          sb.from('wishlists')
-            .select('id, name, person, birthday')
-            .eq('id', wid)
-            .single(),
-          sb.from('wishlist_items')
-            .select('id, name, price, store, store_url, photo_url, claimed')
-            .eq('wishlist_id', wid)
-            .order('created_at', { ascending: true }),
+          sb.from('wishlists').select('id, name, person, birthday').eq('id', wid).single(),
+          sb.from('wishlist_items').select('id, name, price, store, store_url, photo_url, claimed')
+            .eq('wishlist_id', wid).order('created_at', { ascending: true }),
         ]);
 
-        if (wishlistRes.error || !wishlistRes.data) {
-          showError('Could not load the gift list.');
-          return;
-        }
-
+        if (wishlistRes.error || !wishlistRes.data) { showError('Could not load the gift list.'); return; }
         renderPage(wishlistRes.data, itemsRes.data || []);
-
       } catch (err) {
         showError('Something went wrong. Please try again.');
       }
@@ -680,83 +668,57 @@
 
     function renderPage(wishlist, itemList) {
       currentItems = itemList;
-
       document.title = `${wishlist.name} — Why, Thank You!`;
       document.getElementById('hero-title').textContent = wishlist.name;
       document.getElementById('hero-subtitle').textContent = `A gift list for ${wishlist.person}`;
 
       if (wishlist.birthday) {
         const bd = new Date(wishlist.birthday + 'T00:00:00');
-        const formatted = bd.toLocaleDateString('en-US', {
-          month: 'long', day: 'numeric', year: 'numeric',
-        });
+        const formatted = bd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const el = document.getElementById('hero-birthday');
-        el.textContent = `🎂 ${formatted}`;
+        el.textContent = formatted;
         el.classList.remove('hidden');
       }
-
-      updateProgress(itemList);
 
       const count = itemList.length;
       document.getElementById('section-label').textContent =
         count === 0 ? 'Gift List' : `${count} Gift${count !== 1 ? 's' : ''}`;
 
       renderGiftCards(itemList);
-
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('main-content').classList.remove('hidden');
     }
 
-    function updateProgress(itemList) {
-      const claimed = itemList.filter(i => i.claimed).length;
-      const total = itemList.length;
-      if (total === 0) return;
-
-      const pct = Math.round((claimed / total) * 100);
-      const allClaimed = claimed === total;
-
-      const fill = document.getElementById('progress-fill');
-      fill.style.width = `${pct}%`;
-      fill.classList.toggle('complete', allClaimed);
-
-      document.getElementById('progress-label').textContent =
-        allClaimed ? '🎉 All gifts claimed!' : `${claimed} of ${total} gifts claimed`;
-      document.getElementById('progress-block').classList.remove('hidden');
-    }
+    const giftIcon = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B89A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>`;
+    const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B8A8A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
 
     function renderGiftCards(itemList) {
       const container = document.getElementById('gift-list');
       container.innerHTML = '';
-
       if (itemList.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <span class="empty-emoji">🎁</span>
+            <div class="empty-icon">${giftIcon}</div>
             <p class="empty-text">No gifts have been added yet.</p>
           </div>`;
         return;
       }
-
       itemList.forEach(item => container.appendChild(buildCard(item)));
     }
 
     function buildCard(item) {
       const price = item.price != null ? `$${Number(item.price).toFixed(2)}` : null;
-
       const imageHtml = item.photo_url
         ? `<img class="gift-image" src="${esc(item.photo_url)}" alt="${esc(item.name)}" loading="lazy">`
-        : `<div class="gift-placeholder">🎁</div>`;
-
+        : `<div class="gift-placeholder">${giftIcon}</div>`;
       const overlayHtml = item.claimed
-        ? `<div class="claimed-overlay">✓</div>` : '';
-
-      const storeHtml  = item.store     ? `<span class="gift-store">${esc(item.store)}</span>` : '';
-      const priceHtml  = price          ? `<span class="gift-price">${esc(price)}</span>` : '';
-      const shopHtml   = item.store_url
-        ? `<a class="shop-link" href="${esc(item.store_url)}" target="_blank" rel="noopener">Shop now →</a>` : '';
-
+        ? `<div class="claimed-overlay"><div class="claimed-check">${checkIcon}</div></div>` : '';
+      const storeHtml = item.store ? `<span class="gift-store">${esc(item.store)}</span>` : '';
+      const priceHtml = price ? `<span class="gift-price">${esc(price)}</span>` : '';
+      const shopHtml = item.store_url
+        ? `<a class="shop-link" href="${esc(item.store_url)}" target="_blank" rel="noopener">View item →</a>` : '';
       const btnClass = item.claimed ? 'claim-btn claimed' : 'claim-btn';
-      const btnLabel = item.claimed ? '✓  Claimed' : 'Claim this gift';
+      const btnLabel = item.claimed ? '&#10003;&nbsp; Claimed' : 'Claim this gift';
 
       const card = document.createElement('div');
       card.className = 'gift-card';
@@ -785,16 +747,10 @@
         document.getElementById('claim-modal').classList.add('visible');
         return;
       }
-
-      const { error } = await sb.from('item_claims').insert({
-        item_id: itemId,
-        claimed_by: session.user.id,
-      });
-
+      const { error } = await sb.from('item_claims').insert({ item_id: itemId, claimed_by: session.user.id });
       if (!error) {
         currentItems = currentItems.map(i => i.id === itemId ? { ...i, claimed: true } : i);
         renderGiftCards(currentItems);
-        updateProgress(currentItems);
       }
     }
 
@@ -803,7 +759,7 @@
       pendingClaimItemId = null;
     }
 
-    document.getElementById('claim-modal').addEventListener('click', function (e) {
+    document.getElementById('claim-modal').addEventListener('click', function(e) {
       if (e.target === this) closeModal();
     });
 
@@ -815,12 +771,7 @@
 
     function esc(str) {
       if (str == null) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
     }
 
     init();
