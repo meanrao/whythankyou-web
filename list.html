@@ -23,6 +23,8 @@
       --muted-lt:   #9BA49E;
       --surface:    #FFFFFF;
       --border:     #E3DED5;
+      /* iOS safe area — falls back to 0px on non-notched devices */
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -164,9 +166,11 @@
     .profile-sheet {
       background: var(--surface);
       border-radius: 24px 24px 0 0;
-      padding: 8px 24px 40px;
+      padding: 8px 24px max(40px, calc(var(--safe-bottom) + 24px));
       width: 100%;
       max-width: 440px;
+      max-height: 88dvh;
+      overflow-y: auto;
       transform: translateY(20px);
       transition: transform 0.26s cubic-bezier(.32,0,.67,0);
     }
@@ -523,16 +527,16 @@
 
     .btn-view {
       flex: 1;
-      height: 38px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 5px;
-      border-radius: 9px;
+      border-radius: 10px;
       border: 1.5px solid var(--border);
       background: transparent;
       font-family: 'Poppins', sans-serif;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--muted);
       text-decoration: none;
@@ -545,12 +549,12 @@
 
     .btn-claim {
       flex: 1;
-      height: 38px;
-      border-radius: 9px;
+      height: 44px;
+      border-radius: 10px;
       border: 1.5px solid var(--teal);
       background: var(--teal);
       font-family: 'Poppins', sans-serif;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: #fff;
       cursor: pointer;
@@ -640,9 +644,11 @@
     .modal-sheet {
       background: var(--surface);
       border-radius: 24px 24px 0 0;
-      padding: 8px 24px 40px;
+      padding: 8px 24px max(40px, calc(var(--safe-bottom) + 24px));
       width: 100%;
       max-width: 440px;
+      max-height: 92dvh;
+      overflow-y: auto;
       transform: translateY(20px);
       transition: transform 0.26s cubic-bezier(.32,0,.67,0);
     }
@@ -693,7 +699,7 @@
       border-radius: 12px;
       background: #FDFAF6;
       font-family: 'Poppins', sans-serif;
-      font-size: 15px;
+      font-size: 16px; /* 16px prevents iOS Safari auto-zoom on focus */
       font-weight: 400;
       color: var(--dark);
       padding: 0 15px;
@@ -808,7 +814,7 @@
     /* ── Toast ────────────────────────────────────────────────── */
     .toast {
       position: fixed;
-      bottom: 28px;
+      bottom: max(28px, calc(var(--safe-bottom) + 16px));
       left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: var(--dark);
@@ -1343,6 +1349,24 @@ confirmBtn.addEventListener('click', async () => {
 nameInput.addEventListener('keydown',  e => { if (e.key === 'Enter') emailInput.focus(); });
 emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') noteInput.focus(); });
 
+// ─── Swipe-to-dismiss ─────────────────────────────────────────
+// Attaches to a sheet element; fires closeFn when user swipes down ≥ 72px.
+// Uses passive listeners (no jank) and only triggers if the sheet is
+// scrolled to the very top (so normal content scroll still works).
+function addSwipeDismiss(sheetEl, closeFn) {
+  let startY = 0;
+  sheetEl.addEventListener('touchstart', e => {
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  sheetEl.addEventListener('touchend', e => {
+    const dy = e.changedTouches[0].clientY - startY;
+    if (dy > 72 && sheetEl.scrollTop === 0) closeFn();
+  }, { passive: true });
+}
+
+addSwipeDismiss(document.querySelector('#modal-overlay .modal-sheet'), closeModal);
+addSwipeDismiss(document.getElementById('profile-sheet'), closeProfileModal);
+
 // ─── API ──────────────────────────────────────────────────────
 async function fetchList(token) {
   const res = await fetch(`${API_BASE}/api/guest/${encodeURIComponent(token)}`, {
@@ -1353,45 +1377,16 @@ async function fetchList(token) {
 }
 
 async function doClaim(itemId, name, email) {
-  const shareId  = getToken();
-  const wishlist = listData?.wishlist;
-  const payload  = { item_id: itemId, claimer_name: name, claimer_email: email };
-
-  console.group('[doClaim] claim attempt');
-  console.log('share token :', shareId);
-  console.log('wishlist id :', wishlist?.id ?? '(not in payload)');
-  console.log('wishlist name:', wishlist?.name);
-  console.log('item id     :', itemId);
-  console.log('item name   :', listData?.items?.find(i => i.id === itemId)?.name);
-  console.log('payload     :', JSON.stringify(payload, null, 2));
-  console.log('endpoint    :', `${API_BASE}/api/claims`);
-  console.groupEnd();
-
   try {
     const res = await fetch(`${API_BASE}/api/claims`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON}`
-      },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON}` },
+      body: JSON.stringify({ item_id: itemId, claimer_name: name, claimer_email: email })
     });
 
-    const responseText = await res.text();
-    let responseJson = null;
-    try { responseJson = JSON.parse(responseText); } catch (_) {}
-
-    console.group('[doClaim] response');
-    console.log('status      :', res.status);
-    console.log('ok          :', res.ok);
-    console.log('body        :', responseJson ?? responseText);
-    if (responseJson?.error)   console.error('error       :', responseJson.error);
-    if (responseJson?.details) console.error('details     :', responseJson.details);
-    if (responseJson?.code)    console.error('pg code     :', responseJson.code);
-    console.groupEnd();
-
     if (!res.ok) {
-      const msg = responseJson?.error ?? responseJson?.message ?? responseText ?? `HTTP ${res.status}`;
+      let msg = `HTTP ${res.status}`;
+      try { const j = await res.json(); msg = j.error ?? j.message ?? msg; } catch (_) {}
       return { ok: false, error: msg };
     }
 
@@ -1400,8 +1395,7 @@ async function doClaim(itemId, name, email) {
     render(listData);
     return { ok: true };
   } catch (err) {
-    console.error('[doClaim] fetch threw:', err);
-    return { ok: false, error: String(err) };
+    return { ok: false, error: 'Network error — please try again.' };
   }
 }
 
