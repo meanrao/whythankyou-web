@@ -599,7 +599,7 @@
 
     .card-actions.single .btn-claim { flex: 1; }
 
-    /* ── Empty / all-claimed ──────────────────────────────────── */
+    /* ── Empty state (no items yet) ──────────────────────────── */
     .empty-state {
       text-align: center;
       padding: 64px 24px;
@@ -608,6 +608,23 @@
     .empty-state .empty-icon  { margin-bottom: 18px; opacity: 0.38; }
     .empty-state .empty-title { font-size: 16px; font-weight: 600; color: var(--dark); }
     .empty-state .empty-sub   { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+
+    /* ── All-claimed celebration banner ──────────────────────── */
+    .all-claimed-banner {
+      background: var(--teal-light);
+      border-radius: 16px;
+      padding: 22px 20px;
+      text-align: center;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .all-claimed-banner .all-claimed-icon { opacity: 0.9; line-height: 0; }
+    .all-claimed-banner .all-claimed-title { font-size: 15px; font-weight: 600; color: var(--teal-dark); }
+    .all-claimed-banner .all-claimed-sub   { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
     /* ── Loading ──────────────────────────────────────────────── */
     .loading-screen {
@@ -1142,13 +1159,6 @@ function render(data) {
         </div>
       ` : ''}
 
-      ${claimed.length > 0 && claimed.length < items.length ? `
-        <p class="section-label">Someone&rsquo;s getting these</p>
-        <div class="items-grid">
-          ${claimed.map(item => renderCard(item, true)).join('')}
-        </div>
-      ` : ''}
-
       ${items.length === 0 ? `
         <div class="empty-state animate-in">
           <div class="empty-icon">${GiftSVG}</div>
@@ -1157,16 +1167,25 @@ function render(data) {
         </div>
       ` : ''}
 
-      ${items.length > 0 && claimed.length === items.length ? `
-        <div class="empty-state animate-in">
-          <div class="empty-icon">
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-              <circle cx="24" cy="24" r="20" stroke="#0F6B6F" stroke-width="2"/>
-              <path d="M14 24l8 8 12-12" stroke="#0F6B6F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      ${items.length > 0 && available.length === 0 ? `
+        <div class="all-claimed-banner animate-in">
+          <div class="all-claimed-icon">
+            <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="#0F6B6F" stroke-width="2.4"/>
+              <path d="M14 24l8 8 12-12" stroke="#0F6B6F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <div class="empty-title">Every gift has someone getting it!</div>
-          <p class="empty-sub">This list is fully covered — what a wonderful group.</p>
+          <div class="all-claimed-title">Every gift has someone getting it!</div>
+          <p class="all-claimed-sub">This list is fully covered &mdash; what a wonderful group.</p>
+        </div>
+        <p class="section-label">All getting these</p>
+        <div class="items-grid">
+          ${claimed.map(item => renderCard(item, true)).join('')}
+        </div>
+      ` : claimed.length > 0 ? `
+        <p class="section-label">Someone&rsquo;s getting these</p>
+        <div class="items-grid">
+          ${claimed.map(item => renderCard(item, true)).join('')}
         </div>
       ` : ''}
 
