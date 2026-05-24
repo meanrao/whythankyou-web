@@ -580,10 +580,12 @@
   <div class="modal-sheet" id="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-title">Claim a gift</div>
-    <p class="modal-sub" id="modal-sub">Enter your name so the parent can keep track. Only you will know which gift you're getting!</p>
+    <p class="modal-sub" id="modal-sub">Enter your name and email so the parent can send you the mailing address. Only they will know who claimed what.</p>
     <p class="modal-input-label">Your name</p>
     <input class="modal-input" id="claimer-name" type="text" placeholder="e.g. Grandma Sue" autocomplete="given-name" />
-    <p class="modal-hint">This is kept secret from the child.</p>
+    <p class="modal-input-label" style="margin-top:12px">Your email</p>
+    <input class="modal-input" id="claimer-email" type="email" placeholder="e.g. grandma@email.com" autocomplete="email" />
+    <p class="modal-hint">Your email is only shared with the list owner.</p>
     <button class="modal-btn" id="confirm-claim-btn">Claim this gift</button>
     <button class="modal-cancel" id="cancel-claim-btn">Cancel</button>
   </div>
@@ -612,6 +614,7 @@ const API_BASE      = 'https://wdiovqjtfbkvjkcmbkzr.supabase.co/functions/v1/wis
 let listData        = null;
 let pendingItemId   = null;
 let claimerName     = localStorage.getItem('wty_claimer_name') || '';
+let claimerEmail    = localStorage.getItem('wty_claimer_email') || '';
 
 // ─────────────────────────────────────────────
 // Helpers
@@ -621,9 +624,9 @@ function getToken() {
   return parts[parts.length - 1] || new URLSearchParams(window.location.search).get('token');
 }
 
-function fmt(cents) {
-  if (!cents && cents !== 0) return '';
-  return '$' + (cents / 100).toFixed(2).replace(/\.00$/, '');
+function fmt(price) {
+  if (!price && price !== 0) return '';
+  return '$' + Number(price).toFixed(2).replace(/\.00$/, '');
 }
 
 function initials(name) {
@@ -670,11 +673,15 @@ const LinkIcon = `
 // Render
 // ─────────────────────────────────────────────
 function render(data) {
-  const { child, wishlist, items } = data;
-  const available = items.filter(i => !i.claimed_by);
-  const claimed   = items.filter(i =>  i.claimed_by);
-  const days      = daysUntil(child?.birthday);
+  const { wishlist, items } = data;
+  const available = items.filter(i => i.status !== 'claimed');
+  const claimed   = items.filter(i => i.status === 'claimed');
+  const isBirthday = wishlist?.occasion?.toLowerCase() === 'birthday';
+  const days      = isBirthday ? daysUntil(wishlist?.occasion_date) : null;
   const app       = document.getElementById('app');
+  const avatarHtml = wishlist?.avatar_url
+    ? `<img src="${escAttr(wishlist.avatar_url)}" alt="${escAttr(wishlist.person || '')}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2.5px solid #F28C79;" />`
+    : `<div class="avatar">${initials(wishlist?.person || '?')}</div>`;
 
   app.innerHTML = `
     <div class="header animate-in">
@@ -683,9 +690,9 @@ function render(data) {
 
     <div class="hero animate-in" style="animation-delay:40ms">
       <div class="child-row">
-        <div class="avatar">${initials(child?.name || wishlist?.child_name || '?')}</div>
+        ${avatarHtml}
         <div class="child-info">
-          <div class="child-name">${escHtml(child?.name || wishlist?.child_name || 'Gift List')}</div>
+          <div class="child-name">${escHtml(wishlist?.person || 'Gift List')}</div>
           <div class="child-meta">${wishlist?.name ? escHtml(wishlist.name) : ''}</div>
           ${days !== null && days >= 0 && days <= 30
             ? `<div class="birthday-soon">
@@ -774,10 +781,10 @@ function renderCard(item, isClaimed) {
         </div>
         <div class="card-body">
           <div class="item-name">${escHtml(item.name)}</div>
-          ${item.price_cents ? `<div class="item-price">${fmt(item.price_cents)}</div>` : ''}
-          ${item.note ? `<div class="item-note">${escHtml(item.note)}</div>` : ''}
-          ${item.url && !isClaimed
-            ? `<a class="item-store" href="${escAttr(item.url)}" target="_blank" rel="noopener">${LinkIcon} View item</a>`
+          ${item.price ? `<div class="item-price">${fmt(item.price)}</div>` : ''}
+          ${item.notes ? `<div class="item-note">${escHtml(item.notes)}</div>` : ''}
+          ${item.store_url
+            ? `<a class="item-store" href="${escAttr(item.store_url)}" target="_blank" rel="noopener">${LinkIcon} View item</a>`
             : ''}
           ${isClaimed
             ? `<div class="claimed-badge">${CheckIcon} Claimed</div>`
@@ -796,14 +803,14 @@ function renderCard(item, isClaimed) {
 // ─────────────────────────────────────────────
 // Modal
 // ─────────────────────────────────────────────
-const overlay = document.getElementById('modal-overlay');
-const nameInput = document.getElementById('claimer-name');
+const overlay    = document.getElementById('modal-overlay');
+const nameInput  = document.getElementById('claimer-name');
+const emailInput = document.getElementById('claimer-email');
 
 function openModal(itemId, itemName) {
   pendingItemId = itemId;
-  document.getElementById('modal-sub').textContent =
-    `Enter your name to claim "${itemName}". Only the parent can see who claimed what.`;
-  nameInput.value = claimerName;
+  nameInput.value  = claimerName;
+  emailInput.value = claimerEmail;
   overlay.classList.add('open');
   setTimeout(() => nameInput.focus(), 300);
 }
@@ -817,18 +824,22 @@ document.getElementById('cancel-claim-btn').addEventListener('click', closeModal
 overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
 document.getElementById('confirm-claim-btn').addEventListener('click', async () => {
-  const name = nameInput.value.trim();
-  if (!name) { nameInput.focus(); nameInput.style.borderColor = 'var(--coral)'; return; }
+  const name  = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  if (!name)  { nameInput.focus();  nameInput.style.borderColor  = 'var(--coral)'; return; }
   nameInput.style.borderColor = '';
-  claimerName = name;
-  localStorage.setItem('wty_claimer_name', name);
-  await doClaim(pendingItemId, name);
+  if (!email) { emailInput.focus(); emailInput.style.borderColor = 'var(--coral)'; return; }
+  emailInput.style.borderColor = '';
+  claimerName  = name;
+  claimerEmail = email;
+  localStorage.setItem('wty_claimer_name',  name);
+  localStorage.setItem('wty_claimer_email', email);
+  await doClaim(pendingItemId, name, email);
   closeModal();
 });
 
-nameInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('confirm-claim-btn').click();
-});
+nameInput.addEventListener('keydown',  e => { if (e.key === 'Enter') emailInput.focus(); });
+emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('confirm-claim-btn').click(); });
 
 // ─────────────────────────────────────────────
 // API calls
@@ -841,25 +852,24 @@ async function fetchList(token) {
   return res.json();
 }
 
-async function doClaim(itemId, claimerName) {
+async function doClaim(itemId, claimerName, claimerEmail) {
   const btn = document.querySelector(`[data-item-id="${itemId}"]`);
   if (btn) btn.disabled = true;
 
   try {
-    const res = await fetch(`${API_BASE}`, {
+    const res = await fetch(`${API_BASE}/api/claims`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${SUPABASE_ANON}`
       },
-      body: JSON.stringify({ action: 'claim_item', item_id: itemId, claimer_name: claimerName })
+      body: JSON.stringify({ item_id: itemId, claimer_name: claimerName, claimer_email: claimerEmail })
     });
 
     if (!res.ok) throw new Error(await res.text());
 
-    // Optimistically mark as claimed in state
     const item = listData.items.find(i => i.id === itemId);
-    if (item) { item.claimed_by = claimerName; item.claimed_at = new Date().toISOString(); }
+    if (item) { item.status = 'claimed'; item.claimer_name = claimerName; }
     render(listData);
     showToast('Gift claimed! It\'s a secret.');
   } catch (err) {
