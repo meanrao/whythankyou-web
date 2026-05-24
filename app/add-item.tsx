@@ -16,7 +16,9 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
-import { X, CheckCircle } from 'lucide-react-native';
+import { X, CheckCircle, ImagePlus } from 'lucide-react-native';
+import { useFonts } from 'expo-font';
+import { Poppins_400Regular } from '@expo-google-fonts/poppins';
 import { supabase } from '@/utils/supabase';
 import { apiFetch } from '@/utils/api';
 import { AvatarCircle } from '@/components/AvatarCircle';
@@ -25,8 +27,8 @@ import { useColors } from '@/hooks/useColors';
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const C = {
-  header: '#2A9D8F',
-  headerText: '#F5F0E8',
+  header: '#F6F1E8',
+  headerText: '#1F2A24',
   teal: '#1B8A8A',
   tealText: '#FFFFFF',
   placeholder: '#A89F94',
@@ -52,8 +54,8 @@ function resolveImageSource(
   return source as ImageSourcePropType;
 }
 
-function SectionLabel({ text, color }: { text: string; color: string }) {
-  return <Text style={[styles.sectionLabel, { color }]}>{text}</Text>;
+function SectionLabel({ text }: { text: string }) {
+  return <Text style={styles.sectionLabel}>{text}</Text>;
 }
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
@@ -64,10 +66,13 @@ export default function AddItemScreen() {
   const colors = useColors();
   const { wishlistId } = useLocalSearchParams<{ wishlistId: string }>();
 
+  const [fontsLoaded] = useFonts({ Poppins_400Regular });
+
   // URL auto-fill
   const [productUrl, setProductUrl] = useState('');
   const [filling, setFilling] = useState(false);
   const [fillSuccess, setFillSuccess] = useState(false);
+  const [fillHint, setFillHint] = useState(false);
   const [filledFields, setFilledFields] = useState<Set<string>>(new Set());
   const [fillAttempted, setFillAttempted] = useState(false);
 
@@ -89,6 +94,7 @@ export default function AddItemScreen() {
   function resetFillState() {
     setFilledFields(new Set());
     setFillAttempted(false);
+    setFillHint(false);
   }
 
   async function handleFillIn() {
@@ -120,11 +126,9 @@ export default function AddItemScreen() {
       if (data.image_url) { setImageUrl(data.image_url); populated.add('image'); }
       setFilledFields(populated);
       setFillAttempted(true);
-      const anyFilled = populated.size > 0;
-      if (anyFilled) {
+      setFillHint(populated.size < 4);
+      if (populated.size > 0) {
         setFillSuccess(true);
-      } else {
-        Alert.alert('Nothing found', "Couldn't extract product details — please fill in manually.");
       }
     } catch (err) {
       console.log('[AddItem] URL preview error:', err);
@@ -247,13 +251,13 @@ export default function AddItemScreen() {
 
   const nameInputStyle = nameHighlight
     ? [styles.input, { backgroundColor: C.highlightBg, borderColor: C.highlightBorder, color: colors.text }]
-    : [styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }];
+    : [styles.input, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }];
   const priceInputStyle = priceHighlight
     ? [styles.input, styles.priceInput, { backgroundColor: C.highlightBg, borderColor: C.highlightBorder, color: colors.text }]
-    : [styles.input, styles.priceInput, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }];
+    : [styles.input, styles.priceInput, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }];
   const storeInputStyle = storeHighlight
     ? [styles.input, { backgroundColor: C.highlightBg, borderColor: C.highlightBorder, color: colors.text }]
-    : [styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }];
+    : [styles.input, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }];
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -268,7 +272,7 @@ export default function AddItemScreen() {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleClose} style={styles.headerClose} hitSlop={8}>
-            <X size={22} color={C.headerText} strokeWidth={2} />
+            <X size={22} color="#1C2820" strokeWidth={2} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Add Item</Text>
           <View style={styles.headerSpacer} />
@@ -282,14 +286,14 @@ export default function AddItemScreen() {
         >
           {/* URL auto-fill section */}
           <View style={styles.section}>
-            <SectionLabel text="Paste a product URL" color={colors.text} />
+            <SectionLabel text="Paste a product URL" />
             <View style={styles.urlRow}>
               <TextInput
-                style={[styles.input, styles.urlInput, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+                style={[styles.input, styles.urlInput, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }]}
                 placeholder="https://..."
                 placeholderTextColor={C.placeholder}
                 value={productUrl}
-                onChangeText={setProductUrl}
+                onChangeText={(v) => { setProductUrl(v); setFillHint(false); setFillSuccess(false); }}
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType="url"
@@ -302,9 +306,9 @@ export default function AddItemScreen() {
                 activeOpacity={0.8}
               >
                 {filling ? (
-                  <ActivityIndicator color={C.tealText} size="small" />
+                  <ActivityIndicator color="#FFFFFF" size="small" />
                 ) : (
-                  <Text style={styles.fillButtonText}>Fill in</Text>
+                  <Text style={styles.fillButtonText}>Autofill</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -316,6 +320,11 @@ export default function AddItemScreen() {
                 </Text>
               </View>
             )}
+            {fillHint && (
+              <Text style={[styles.fillHint, fontsLoaded ? { fontFamily: 'Poppins_400Regular' } : null]}>
+                Couldn't grab details from this site — feel free to fill them in yourself.
+              </Text>
+            )}
           </View>
 
           {/* Divider */}
@@ -323,7 +332,7 @@ export default function AddItemScreen() {
 
           {/* Item name */}
           <View style={styles.section}>
-            <SectionLabel text="Item name *" color={colors.text} />
+            <SectionLabel text="Item name *" />
             <TextInput
               style={nameInputStyle}
               placeholder="e.g. LEGO Botanical Set"
@@ -336,9 +345,9 @@ export default function AddItemScreen() {
 
           {/* Price */}
           <View style={styles.section}>
-            <SectionLabel text="Price" color={colors.text} />
+            <SectionLabel text="Price" />
             <View style={styles.priceRow}>
-              <View style={[styles.pricePrefixBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <View style={[styles.pricePrefixBox, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5' }]}>
                 <Text style={[styles.pricePrefix, { color: colors.text }]}>$</Text>
               </View>
               <TextInput
@@ -355,7 +364,7 @@ export default function AddItemScreen() {
 
           {/* Store */}
           <View style={styles.section}>
-            <SectionLabel text="Store / Retailer" color={colors.text} />
+            <SectionLabel text="Store / Retailer" />
             <TextInput
               style={storeInputStyle}
               placeholder="e.g. Amazon, Target"
@@ -368,9 +377,9 @@ export default function AddItemScreen() {
 
           {/* Notes */}
           <View style={styles.section}>
-            <SectionLabel text="Notes (optional)" color={colors.text} />
+            <SectionLabel text="Notes (optional)" />
             <TextInput
-              style={[styles.input, styles.inputMultiline, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+              style={[styles.input, styles.inputMultiline, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }]}
               placeholder="e.g. Size 8, blue color preferred..."
               placeholderTextColor={C.placeholder}
               value={notes}
@@ -383,7 +392,7 @@ export default function AddItemScreen() {
 
           {/* Photo */}
           <View style={styles.section}>
-            <SectionLabel text="Photo (optional)" color={colors.text} />
+            <SectionLabel text="Photo (optional)" />
             <View style={styles.photoRow}>
               <TouchableOpacity onPress={handlePickPhoto} activeOpacity={0.8}>
                 {hasPhoto ? (
@@ -392,13 +401,15 @@ export default function AddItemScreen() {
                     style={styles.photoPreview}
                   />
                 ) : (
-                  <AvatarCircle uri={undefined} name="?" size={72} />
+                  <View style={styles.photoPlaceholder}>
+                    <ImagePlus size={24} color="#9AA89A" />
+                  </View>
                 )}
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handlePickPhoto}
                 activeOpacity={0.75}
-                style={[styles.photoPickerBtn, { borderColor: colors.border, backgroundColor: colors.surface }]}
+                style={[styles.photoPickerBtn, { borderColor: '#E3DED5', backgroundColor: '#FDFAF6' }]}
               >
                 <Text style={styles.photoPickerText}>
                   {hasPhoto ? 'Change photo' : 'Choose photo'}
@@ -433,7 +444,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: C.header,
+    backgroundColor: '#FAF7F2',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -451,7 +462,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Georgia',
-    color: C.headerText,
+    color: '#1C2820',
     letterSpacing: -0.3,
   },
   headerSpacer: {
@@ -466,13 +477,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
+    fontSize: 11,
+    fontWeight: '500',
+    letterSpacing: 0.4,
+    color: '#6E776A',
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -491,7 +502,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   fillButton: {
-    backgroundColor: C.teal,
+    backgroundColor: '#F28C79',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -503,9 +514,14 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   fillButtonText: {
-    color: C.tealText,
+    color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '600',
+  },
+  fillHint: {
+    fontSize: 12,
+    color: '#6E776A',
+    lineHeight: 18,
   },
   successBanner: {
     flexDirection: 'row',
@@ -532,7 +548,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   pricePrefixBox: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderRightWidth: 0,
     borderTopLeftRadius: 12,
     borderBottomLeftRadius: 12,
@@ -560,6 +576,16 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     overflow: 'hidden',
   },
+  photoPlaceholder: {
+    width: 72,
+    height: 72,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E3DED5',
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   photoPickerBtn: {
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -569,7 +595,7 @@ const styles = StyleSheet.create({
   photoPickerText: {
     fontSize: 14,
     fontWeight: '500',
-    color: C.header,
+    color: '#F28C79',
   },
   addButton: {
     backgroundColor: C.teal,
