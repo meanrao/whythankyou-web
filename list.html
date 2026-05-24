@@ -6,7 +6,7 @@
   <title>Why, Thank You! — Gift List</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     /* ── Tokens ───────────────────────────────────────────────── */
@@ -14,11 +14,13 @@
       --cream:      #F6F1E8;
       --cream2:     #F0EAE0;
       --teal:       #0F6B6F;
+      --teal-dark:  #0d5c60;
       --teal-light: #E8F4F4;
       --sage:       #7AA7A3;
       --coral:      #F28C79;
       --dark:       #1F2A24;
       --muted:      #6E776A;
+      --muted-lt:   #9BA49E;
       --surface:    #FFFFFF;
       --border:     #E3DED5;
     }
@@ -38,13 +40,13 @@
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       text-align: center;
-      padding: 22px 20px 18px;
+      padding: 20px 20px 16px;
     }
 
     .site-logo {
       font-family: 'Fraunces', serif;
       font-weight: 900;
-      font-size: 26px;
+      font-size: 24px;
       color: var(--teal);
       letter-spacing: -0.4px;
       line-height: 1;
@@ -54,32 +56,31 @@
 
     .site-tagline {
       font-size: 12px;
-      color: var(--muted);
-      margin-top: 5px;
-      letter-spacing: 0.2px;
+      color: var(--muted-lt);
+      margin-top: 4px;
     }
 
     /* ── Hero ─────────────────────────────────────────────────── */
     .hero {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 36px 20px 28px;
+      padding: 40px 24px 32px;
       text-align: center;
     }
 
     .hero-avatar {
-      width: 76px;
-      height: 76px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: var(--coral);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 700;
       color: #fff;
-      margin: 0 auto 18px;
-      box-shadow: 0 0 0 3px var(--coral), 0 0 0 6px var(--surface);
+      margin: 0 auto 20px;
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--coral);
       overflow: hidden;
       flex-shrink: 0;
     }
@@ -93,14 +94,25 @@
     .hero-title {
       font-family: 'Fraunces', serif;
       font-weight: 900;
-      font-size: 30px;
+      font-size: 28px;
       color: var(--dark);
       line-height: 1.18;
-      letter-spacing: -0.6px;
+      letter-spacing: -0.5px;
     }
 
     @media (min-width: 480px) {
-      .hero-title { font-size: 34px; }
+      .hero-title { font-size: 32px; }
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.6;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .hero-occasion {
@@ -109,19 +121,20 @@
       gap: 5px;
       background: #FFF0ED;
       color: var(--coral);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 4px 13px;
+      padding: 3px 11px;
       border-radius: 20px;
       margin-top: 12px;
+      letter-spacing: 0.2px;
     }
 
     .hero-helper {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted-lt);
+      margin-top: 16px;
       line-height: 1.6;
-      max-width: 380px;
+      max-width: 360px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -129,20 +142,20 @@
     .stats-row {
       display: flex;
       gap: 8px;
-      margin-top: 22px;
+      margin-top: 24px;
       justify-content: center;
     }
 
     .stat-pill {
       background: var(--cream);
       border-radius: 12px;
-      padding: 10px 18px;
+      padding: 10px 20px;
       text-align: center;
-      min-width: 76px;
+      min-width: 72px;
     }
 
     .stat-num {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--teal);
       line-height: 1;
@@ -160,14 +173,14 @@
     .main {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 28px 16px 60px;
+      padding: 28px 16px 64px;
     }
 
     .section-label {
       font-size: 11px;
       font-weight: 600;
       color: var(--muted);
-      letter-spacing: 0.7px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       margin-bottom: 14px;
       padding-left: 2px;
@@ -197,23 +210,23 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 1px 4px rgba(31,42,36,0.05);
-      transition: box-shadow 0.18s ease, transform 0.18s ease;
+      box-shadow: 0 1px 3px rgba(31,42,36,0.04), 0 1px 8px rgba(31,42,36,0.03);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
       animation: fadeUp 0.32s cubic-bezier(.22,1,.36,1) both;
     }
 
     .gift-card:hover {
-      box-shadow: 0 5px 20px rgba(15,107,111,0.11);
+      box-shadow: 0 6px 24px rgba(15,107,111,0.10);
       transform: translateY(-2px);
     }
 
     .gift-card.claimed {
-      opacity: 0.6;
+      opacity: 0.58;
     }
 
     .gift-card.claimed:hover {
       transform: none;
-      box-shadow: 0 1px 4px rgba(31,42,36,0.05);
+      box-shadow: 0 1px 3px rgba(31,42,36,0.04);
     }
 
     /* Staggered entrance */
@@ -229,7 +242,7 @@
     /* Card image */
     .card-img {
       width: 100%;
-      height: 170px;
+      height: 180px;
       background: var(--cream2);
       display: flex;
       align-items: center;
@@ -242,57 +255,60 @@
     .card-img img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      padding: 14px;
     }
 
-    .card-img-placeholder { opacity: 0.3; }
+    .card-img-placeholder { opacity: 0.28; }
 
     .card-img-claimed-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(246,241,232,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: rgba(246,241,232,0.52);
     }
 
     /* Card body */
     .card-body {
       flex: 1;
-      padding: 14px 16px 10px;
+      padding: 16px 16px 8px;
       display: flex;
       flex-direction: column;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
     .card-store {
       font-size: 10px;
       font-weight: 600;
       color: var(--sage);
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-
-    .card-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--dark);
-      line-height: 1.38;
-      word-break: break-word;
     }
 
     .card-price {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .card-name {
       font-size: 15px;
-      font-weight: 700;
-      color: var(--teal);
-      margin-top: 5px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.4;
+      word-break: break-word;
     }
 
     .card-notes {
       font-size: 12px;
       color: var(--muted);
-      line-height: 1.45;
-      margin-top: 5px;
+      line-height: 1.5;
+      margin-top: 6px;
     }
 
     .card-status {
@@ -300,10 +316,10 @@
       align-items: center;
       gap: 5px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 500;
       border-radius: 20px;
-      padding: 3px 10px;
-      margin-top: 10px;
+      padding: 3px 9px;
+      margin-top: 12px;
       width: fit-content;
     }
 
@@ -314,59 +330,61 @@
     .card-actions {
       display: flex;
       gap: 8px;
-      padding: 12px 16px 16px;
+      padding: 10px 16px 16px;
     }
 
     .btn-view {
       flex: 1;
-      height: 42px;
+      height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      border-radius: 10px;
+      gap: 5px;
+      border-radius: 9px;
       border: 1.5px solid var(--border);
       background: transparent;
       font-family: 'Poppins', sans-serif;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      color: var(--dark);
+      color: var(--muted);
       text-decoration: none;
       transition: border-color 0.15s, color 0.15s, background 0.15s;
       -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
     }
 
     .btn-view:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
 
     .btn-claim {
       flex: 1;
-      height: 42px;
-      border-radius: 10px;
-      border: none;
+      height: 38px;
+      border-radius: 9px;
+      border: 1.5px solid var(--teal);
       background: var(--teal);
       font-family: 'Poppins', sans-serif;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: #fff;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: background 0.15s, transform 0.12s;
+      gap: 5px;
+      transition: background 0.15s, border-color 0.15s, transform 0.12s;
       -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
     }
 
-    .btn-claim:hover:not(:disabled) { background: #0d5c60; }
+    .btn-claim:hover:not(:disabled)  { background: var(--teal-dark); border-color: var(--teal-dark); }
     .btn-claim:active:not(:disabled) { transform: scale(0.97); }
 
     .btn-claim.btn-claimed {
-      background: var(--cream2);
+      background: transparent;
+      border-color: var(--border);
       color: var(--muted);
       cursor: default;
     }
 
-    /* Full-width claim button when no view link */
     .card-actions.single .btn-claim { flex: 1; }
 
     /* ── Empty / all-claimed ──────────────────────────────────── */
@@ -375,9 +393,9 @@
       padding: 64px 24px;
     }
 
-    .empty-state .empty-icon { margin-bottom: 18px; opacity: 0.4; }
-    .empty-state .empty-title { font-size: 17px; font-weight: 600; }
-    .empty-state .empty-sub { font-size: 14px; color: var(--muted); margin-top: 7px; line-height: 1.55; }
+    .empty-state .empty-icon  { margin-bottom: 18px; opacity: 0.38; }
+    .empty-state .empty-title { font-size: 16px; font-weight: 600; color: var(--dark); }
+    .empty-state .empty-sub   { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
 
     /* ── Loading ──────────────────────────────────────────────── */
     .loading-screen {
@@ -390,8 +408,8 @@
     }
 
     .spinner {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border: 3px solid var(--border);
       border-top-color: var(--teal);
       border-radius: 50%;
@@ -401,22 +419,22 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { font-size: 13px; font-weight: 500; color: var(--muted); }
 
-    /* ── Error ────────────────────────────────────────────────── */
+    /* ── Error screen ─────────────────────────────────────────── */
     .error-screen {
       text-align: center;
-      padding: 80px 24px 40px;
+      padding: 72px 24px 40px;
     }
 
-    .error-title { font-size: 18px; font-weight: 700; margin-top: 18px; }
-    .error-sub   { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.55; }
+    .error-title { font-size: 18px; font-weight: 700; margin-top: 18px; color: var(--dark); }
+    .error-sub   { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
 
     /* ── Claim modal ──────────────────────────────────────────── */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(31,42,36,0.45);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: rgba(31,42,36,0.42);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
       z-index: 200;
       display: flex;
       align-items: flex-end;
@@ -436,8 +454,8 @@
       border-radius: 24px 24px 0 0;
       padding: 8px 24px 40px;
       width: 100%;
-      max-width: 520px;
-      transform: translateY(24px);
+      max-width: 440px;
+      transform: translateY(20px);
       transition: transform 0.26s cubic-bezier(.32,0,.67,0);
     }
 
@@ -447,17 +465,17 @@
     }
 
     .modal-handle {
-      width: 36px;
+      width: 32px;
       height: 4px;
       background: var(--border);
       border-radius: 2px;
-      margin: 12px auto 22px;
+      margin: 12px auto 24px;
     }
 
     .modal-title {
       font-family: 'Fraunces', serif;
       font-weight: 700;
-      font-size: 21px;
+      font-size: 20px;
       color: var(--dark);
       margin-bottom: 6px;
     }
@@ -465,102 +483,134 @@
     .modal-sub {
       font-size: 13px;
       color: var(--muted);
-      line-height: 1.55;
+      line-height: 1.58;
       margin-bottom: 22px;
     }
 
-    .modal-field { margin-bottom: 14px; }
+    .modal-field { margin-bottom: 12px; }
 
     .modal-input-label {
+      display: block;
       font-size: 11px;
       font-weight: 500;
       color: var(--muted);
-      letter-spacing: 0.4px;
+      letter-spacing: 0.35px;
       margin-bottom: 6px;
     }
 
     .modal-input {
       width: 100%;
-      height: 52px;
-      border: 0.5px solid var(--border);
-      border-radius: 14px;
+      height: 50px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
       background: #FDFAF6;
       font-family: 'Poppins', sans-serif;
       font-size: 15px;
-      font-weight: 500;
+      font-weight: 400;
       color: var(--dark);
-      padding: 0 16px;
+      padding: 0 15px;
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
-    .modal-input:focus { border-color: var(--teal); border-width: 1.5px; }
+    .modal-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(15,107,111,0.10);
+    }
 
     .modal-input.textarea {
       height: auto;
-      padding: 14px 16px;
+      padding: 13px 15px;
       resize: none;
-      min-height: 80px;
+      min-height: 76px;
       font-size: 14px;
     }
 
-    .modal-hint {
+    .modal-privacy {
       font-size: 11px;
-      color: var(--muted);
+      color: var(--muted-lt);
       margin-top: 4px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      line-height: 1.5;
     }
+
+    /* Inline error */
+    .modal-error {
+      display: none;
+      background: #FFF0ED;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #B85C3C;
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+
+    .modal-error.visible { display: block; }
 
     /* Inline success */
     .modal-success {
       display: none;
       background: var(--teal-light);
       border-radius: 14px;
-      padding: 18px 20px;
+      padding: 20px;
       text-align: center;
       margin-bottom: 20px;
     }
 
     .modal-success.visible { display: block; }
 
+    .modal-success-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+
     .modal-success-title {
-      font-weight: 600;
-      font-size: 15px;
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 17px;
       color: var(--teal);
     }
 
     .modal-success-sub {
       font-size: 13px;
       color: var(--muted);
-      margin-top: 4px;
-      line-height: 1.45;
+      margin-top: 5px;
+      line-height: 1.5;
     }
 
     .modal-btn {
       width: 100%;
-      height: 54px;
+      height: 52px;
       background: var(--teal);
       color: #fff;
       border: none;
-      border-radius: 28px;
+      border-radius: 26px;
       font-family: 'Poppins', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.15s, transform 0.12s;
+      letter-spacing: 0.1px;
     }
 
-    .modal-btn:hover:not(:disabled) { background: #0d5c60; }
+    .modal-btn:hover:not(:disabled)  { background: var(--teal-dark); }
     .modal-btn:active:not(:disabled) { transform: scale(0.98); }
-    .modal-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .modal-cancel {
       width: 100%;
-      height: 44px;
+      height: 42px;
       background: none;
       border: none;
       font-family: 'Poppins', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--muted);
       cursor: pointer;
@@ -570,15 +620,15 @@
     /* ── Toast ────────────────────────────────────────────────── */
     .toast {
       position: fixed;
-      bottom: 32px;
+      bottom: 28px;
       left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: var(--dark);
       color: #fff;
-      padding: 12px 20px;
+      padding: 11px 18px;
       border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
       white-space: nowrap;
       z-index: 300;
       transition: transform 0.28s cubic-bezier(.22,1,.36,1), opacity 0.22s;
@@ -586,6 +636,9 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      max-width: calc(100vw - 32px);
+      white-space: normal;
+      text-align: center;
     }
 
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -593,29 +646,35 @@
     /* ── Footer ───────────────────────────────────────────────── */
     .site-footer {
       text-align: center;
-      padding: 36px 20px 20px;
+      padding: 36px 20px 24px;
       border-top: 1px solid var(--border);
-      margin-top: 12px;
+      margin-top: 8px;
     }
 
     .footer-logo {
       font-family: 'Fraunces', serif;
       font-weight: 900;
-      font-size: 19px;
+      font-size: 17px;
       color: var(--teal);
       line-height: 1;
     }
 
     .footer-logo .coral { color: var(--coral); }
-    .footer-sub { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+    .footer-sub {
+      font-size: 12px;
+      color: var(--muted-lt);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
 
     /* ── Animations ───────────────────────────────────────────── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .animate-in { animation: fadeUp 0.32s cubic-bezier(.22,1,.36,1) both; }
+    .animate-in { animation: fadeUp 0.3s cubic-bezier(.22,1,.36,1) both; }
   </style>
 </head>
 <body>
@@ -628,35 +687,44 @@
 </div>
 
 <!-- Claim modal -->
-<div class="modal-overlay" id="modal-overlay" aria-modal="true" role="dialog">
+<div class="modal-overlay" id="modal-overlay" aria-modal="true" role="dialog" aria-labelledby="modal-title-el">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
 
     <div id="modal-form">
-      <div class="modal-title">Claim this gift</div>
-      <p class="modal-sub">Enter your name and email so the list owner knows who is bringing it. Your info will only be shared with the list owner.</p>
+      <div class="modal-title" id="modal-title-el">Claim this gift</div>
+      <p class="modal-sub">Let the list owner know you&rsquo;re on it — they&rsquo;ll send the mailing address to your email.</p>
 
       <div class="modal-field">
-        <p class="modal-input-label">Your name <span style="color:var(--coral)">*</span></p>
+        <label class="modal-input-label" for="claimer-name">Your name <span style="color:var(--coral)">*</span></label>
         <input class="modal-input" id="claimer-name" type="text" placeholder="e.g. Grandma Sue" autocomplete="given-name" />
       </div>
 
       <div class="modal-field">
-        <p class="modal-input-label">Your email <span style="color:var(--coral)">*</span></p>
+        <label class="modal-input-label" for="claimer-email">Your email <span style="color:var(--coral)">*</span></label>
         <input class="modal-input" id="claimer-email" type="email" placeholder="e.g. grandma@email.com" autocomplete="email" />
       </div>
 
       <div class="modal-field">
-        <p class="modal-input-label">Note <span style="color:var(--muted); font-weight:400">(optional)</span></p>
-        <textarea class="modal-input textarea" id="claimer-note" placeholder="e.g. Already ordered it!" rows="3"></textarea>
+        <label class="modal-input-label" for="claimer-note">Note <span style="font-weight:400; color:var(--muted-lt)">(optional)</span></label>
+        <textarea class="modal-input textarea" id="claimer-note" placeholder="e.g. Already ordered — so excited!" rows="2"></textarea>
       </div>
 
-      <p class="modal-hint">Your email is only shared with the list owner.</p>
+      <p class="modal-privacy">Your email is only shared with the list owner.</p>
+    </div>
+
+    <div class="modal-error" id="modal-error">
+      We couldn&rsquo;t save your claim right now. Please try again.
     </div>
 
     <div class="modal-success" id="modal-success">
+      <div class="modal-success-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10l4.5 4.5L16 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <div class="modal-success-title">Gift claimed!</div>
-      <p class="modal-success-sub">Thanks for helping make their day special.</p>
+      <p class="modal-success-sub">Thanks for helping make their day special.<br>The list owner will be in touch.</p>
     </div>
 
     <button class="modal-btn" id="confirm-claim-btn">Claim Gift</button>
@@ -664,12 +732,8 @@
   </div>
 </div>
 
-<!-- Toast -->
+<!-- Toast (informational only — errors show inline in modal) -->
 <div class="toast" id="toast">
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <circle cx="8" cy="8" r="8" fill="#F28C79"/>
-    <path d="M4.5 8L7 10.5L11.5 6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
   <span id="toast-text"></span>
 </div>
 
@@ -717,24 +781,24 @@ function escHtml(str) {
 function escAttr(str) { return escHtml(str); }
 
 // ─── SVGs ─────────────────────────────────────────────────────
-const GiftSVG = `<svg class="card-img-placeholder" width="52" height="52" viewBox="0 0 48 48" fill="none">
-  <rect x="8" y="20" width="32" height="22" rx="3" stroke="#7AA7A3" stroke-width="2.5"/>
-  <rect x="6" y="13" width="36" height="9" rx="3" stroke="#7AA7A3" stroke-width="2.5"/>
-  <path d="M24 13v29" stroke="#7AA7A3" stroke-width="2.5"/>
-  <path d="M24 13c0 0-4-9 0-9s4 9 0 9" stroke="#F28C79" stroke-width="2" stroke-linecap="round"/>
-  <path d="M24 13c0 0 4-9 0-9" stroke="#F28C79" stroke-width="2" stroke-linecap="round"/>
+const GiftSVG = `<svg class="card-img-placeholder" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <rect x="8" y="20" width="32" height="22" rx="3" stroke="#7AA7A3" stroke-width="2"/>
+  <rect x="6" y="13" width="36" height="9" rx="3" stroke="#7AA7A3" stroke-width="2"/>
+  <path d="M24 13v29" stroke="#7AA7A3" stroke-width="2"/>
+  <path d="M24 13c0 0-4-8 0-8s4 8 0 8" stroke="#F28C79" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M24 13c0 0 4-8 0-8" stroke="#F28C79" stroke-width="1.8" stroke-linecap="round"/>
 </svg>`;
 
-const ExternalLinkSVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+const ExternalLinkSVG = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none">
   <path d="M5 2H2.5A1.5 1.5 0 001 3.5v6A1.5 1.5 0 002.5 11h6A1.5 1.5 0 0010 9.5V7M7 1h4m0 0v4m0-4L5.5 6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
-const CheckSmSVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-  <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+const CheckSmSVG = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+  <path d="M2 6l3.5 3.5 5-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
-const DotSVG = `<svg width="7" height="7" viewBox="0 0 7 7" fill="none">
-  <circle cx="3.5" cy="3.5" r="3" fill="currentColor"/>
+const DotSVG = `<svg width="6" height="6" viewBox="0 0 6 6" fill="none">
+  <circle cx="3" cy="3" r="2.5" fill="currentColor"/>
 </svg>`;
 
 // ─── Render ───────────────────────────────────────────────────
@@ -749,16 +813,23 @@ function renderError(title, sub) {
   return `
     ${renderHeader()}
     <div class="error-screen animate-in" style="animation-delay:60ms">
-      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-        <circle cx="28" cy="28" r="24" stroke="#E3DED5" stroke-width="2.5"/>
-        <path d="M28 18v12M28 36v2" stroke="#6E776A" stroke-width="2.5" stroke-linecap="round"/>
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <circle cx="26" cy="26" r="22" stroke="#E3DED5" stroke-width="2"/>
+        <path d="M26 17v11M26 33v2" stroke="#9BA49E" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <div class="error-title">${escHtml(title)}</div>
+      <div class="error-title">${title}</div>
       <p class="error-sub">${sub}</p>
     </div>
-    <div style="text-align:center; padding:32px 20px 40px; border-top:1px solid var(--border); margin-top:24px">
+    <div style="text-align:center;padding:32px 20px 40px;border-top:1px solid var(--border);margin-top:40px">
       <div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
     </div>`;
+}
+
+function heroTitle(wishlist) {
+  if (wishlist?.person && wishlist?.occasion) {
+    return `${escHtml(wishlist.person)}&rsquo;s ${escHtml(wishlist.occasion)} Wishlist`;
+  }
+  return escHtml(wishlist?.name || 'Gift Wishlist');
 }
 
 function render(data) {
@@ -772,13 +843,15 @@ function render(data) {
     ? `<div class="hero-avatar"><img src="${escAttr(wishlist.avatar_url)}" alt="${escAttr(wishlist.person || '')}" /></div>`
     : `<div class="hero-avatar">${initials(wishlist?.person || '?')}</div>`;
 
-  const occasionLabel = days !== null && days >= 0 && days <= 30
-    ? `${escHtml(wishlist.occasion)} · ${days === 0 ? 'Today!' : days === 1 ? 'Tomorrow!' : `${days} days away`}`
-    : escHtml(wishlist?.occasion || '');
+  let occasionLabel = escHtml(wishlist?.occasion || '');
+  if (days !== null && days >= 0 && days <= 30) {
+    const when = days === 0 ? 'Today!' : days === 1 ? 'Tomorrow!' : `${days} days away`;
+    occasionLabel += ` · ${when}`;
+  }
 
   const occasionChip = wishlist?.occasion
     ? `<div class="hero-occasion">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <svg width="10" height="10" viewBox="0 0 11 11" fill="none">
           <path d="M5.5 1v.8M2.2 2.2l.57.57M1 5.5h.8M9.2 5.5H10M8.23 2.77l-.57.57" stroke="#F28C79" stroke-width="1.4" stroke-linecap="round"/>
           <circle cx="5.5" cy="6.5" r="3" stroke="#F28C79" stroke-width="1.3"/>
         </svg>
@@ -791,13 +864,14 @@ function render(data) {
 
     <section class="hero animate-in" style="animation-delay:40ms">
       ${avatarHtml}
-      <h1 class="hero-title">${escHtml(wishlist?.name || 'Gift List')}</h1>
+      <h1 class="hero-title">${heroTitle(wishlist)}</h1>
       ${occasionChip}
+      <p class="hero-subtitle">Thanks for celebrating with us. Here are a few things they&rsquo;d genuinely love.</p>
       <p class="hero-helper">Choose a gift, view the link, or claim it so others know it&rsquo;s taken.</p>
       <div class="stats-row">
         <div class="stat-pill">
           <div class="stat-num">${items.length}</div>
-          <div class="stat-label">Total</div>
+          <div class="stat-label">Gifts</div>
         </div>
         <div class="stat-pill">
           <div class="stat-num" style="color:var(--coral)">${available.length}</div>
@@ -836,19 +910,19 @@ function render(data) {
       ${items.length > 0 && claimed.length === items.length ? `
         <div class="empty-state animate-in">
           <div class="empty-icon">
-            <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-              <circle cx="26" cy="26" r="22" stroke="#0F6B6F" stroke-width="2.5"/>
-              <path d="M15 26l9 9 13-14" stroke="#0F6B6F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="#0F6B6F" stroke-width="2"/>
+              <path d="M14 24l8 8 12-12" stroke="#0F6B6F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <div class="empty-title">All gifts are claimed!</div>
-          <p class="empty-sub">This list is fully covered. How wonderful!</p>
+          <div class="empty-title">Every gift is claimed!</div>
+          <p class="empty-sub">This list is fully covered — what a great group.</p>
         </div>
       ` : ''}
 
       <footer class="site-footer">
         <div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
-        <div class="footer-sub">Taking the guesswork out of giving</div>
+        <div class="footer-sub">Powered by Why, Thank You! &mdash; taking the guesswork out of giving.</div>
       </footer>
     </main>
   `;
@@ -862,6 +936,12 @@ function renderCard(item, isClaimed) {
   const hasImg = !!item.image_url;
   const hasUrl = !!item.store_url;
 
+  const metaParts = [
+    item.store ? `<span class="card-store">${escHtml(item.store)}</span>` : '',
+    (item.store && item.price != null) ? `<span style="color:var(--border)">·</span>` : '',
+    item.price != null ? `<span class="card-price">${fmt(item.price)}</span>` : '',
+  ].filter(Boolean).join('');
+
   return `
     <div class="gift-card ${isClaimed ? 'claimed' : ''}">
       <div class="card-img">
@@ -873,9 +953,8 @@ function renderCard(item, isClaimed) {
       </div>
 
       <div class="card-body">
-        ${item.store ? `<div class="card-store">${escHtml(item.store)}</div>` : ''}
+        ${metaParts ? `<div class="card-meta">${metaParts}</div>` : ''}
         <div class="card-name">${escHtml(item.name)}</div>
-        ${item.price != null ? `<div class="card-price">${fmt(item.price)}</div>` : ''}
         ${item.notes ? `<div class="card-notes">${escHtml(item.notes)}</div>` : ''}
         <div class="card-status ${isClaimed ? 'claimed' : 'available'}">
           ${isClaimed ? CheckSmSVG + ' Claimed' : DotSVG + ' Available'}
@@ -884,7 +963,7 @@ function renderCard(item, isClaimed) {
 
       <div class="card-actions${hasUrl ? '' : ' single'}">
         ${hasUrl
-          ? `<a class="btn-view" href="${escAttr(item.store_url)}" target="_blank" rel="noopener">${ExternalLinkSVG} View Gift</a>`
+          ? `<a class="btn-view" href="${escAttr(item.store_url)}" target="_blank" rel="noopener noreferrer">${ExternalLinkSVG} View Gift</a>`
           : ''}
         <button
           class="btn-claim${isClaimed ? ' btn-claimed' : ''}"
@@ -898,14 +977,15 @@ function renderCard(item, isClaimed) {
 }
 
 // ─── Modal ────────────────────────────────────────────────────
-const overlay      = document.getElementById('modal-overlay');
-const nameInput    = document.getElementById('claimer-name');
-const emailInput   = document.getElementById('claimer-email');
-const noteInput    = document.getElementById('claimer-note');
-const confirmBtn   = document.getElementById('confirm-claim-btn');
-const cancelBtn    = document.getElementById('cancel-claim-btn');
-const successBox   = document.getElementById('modal-success');
-const formBox      = document.getElementById('modal-form');
+const overlay    = document.getElementById('modal-overlay');
+const nameInput  = document.getElementById('claimer-name');
+const emailInput = document.getElementById('claimer-email');
+const noteInput  = document.getElementById('claimer-note');
+const confirmBtn = document.getElementById('confirm-claim-btn');
+const cancelBtn  = document.getElementById('cancel-claim-btn');
+const successBox = document.getElementById('modal-success');
+const errorBox   = document.getElementById('modal-error');
+const formBox    = document.getElementById('modal-form');
 
 function openModal(itemId, itemName) {
   pendingItemId = itemId;
@@ -914,8 +994,9 @@ function openModal(itemId, itemName) {
   noteInput.value       = '';
   nameInput.style.borderColor  = '';
   emailInput.style.borderColor = '';
-  formBox.style.display = '';
+  formBox.style.display        = '';
   successBox.classList.remove('visible');
+  errorBox.classList.remove('visible');
   confirmBtn.textContent = 'Claim Gift';
   confirmBtn.disabled    = false;
   cancelBtn.textContent  = 'Cancel';
@@ -931,15 +1012,31 @@ function closeModal() {
 cancelBtn.addEventListener('click', closeModal);
 overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
+// Hide error when user edits inputs
+[nameInput, emailInput, noteInput].forEach(el => {
+  el.addEventListener('input', () => errorBox.classList.remove('visible'));
+});
+
 confirmBtn.addEventListener('click', async () => {
   if (successBox.classList.contains('visible')) { closeModal(); return; }
 
   const name  = nameInput.value.trim();
   const email = emailInput.value.trim();
 
-  if (!name)  { nameInput.focus();  nameInput.style.borderColor  = 'var(--coral)'; return; }
+  errorBox.classList.remove('visible');
+
+  if (!name) {
+    nameInput.focus();
+    nameInput.style.borderColor = 'var(--coral)';
+    return;
+  }
   nameInput.style.borderColor = '';
-  if (!email) { emailInput.focus(); emailInput.style.borderColor = 'var(--coral)'; return; }
+
+  if (!email) {
+    emailInput.focus();
+    emailInput.style.borderColor = 'var(--coral)';
+    return;
+  }
   emailInput.style.borderColor = '';
 
   confirmBtn.textContent = 'Claiming…';
@@ -954,11 +1051,13 @@ confirmBtn.addEventListener('click', async () => {
 
   if (ok) {
     formBox.style.display = 'none';
+    errorBox.classList.remove('visible');
     successBox.classList.add('visible');
     confirmBtn.textContent = 'Done';
     confirmBtn.disabled    = false;
     cancelBtn.textContent  = 'Close';
   } else {
+    errorBox.classList.add('visible');
     confirmBtn.textContent = 'Claim Gift';
     confirmBtn.disabled    = false;
   }
@@ -986,19 +1085,24 @@ async function doClaim(itemId, name, email) {
       },
       body: JSON.stringify({ item_id: itemId, claimer_name: name, claimer_email: email })
     });
-    if (!res.ok) throw new Error(await res.text());
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('[doClaim] HTTP', res.status, errText);
+      return false;
+    }
 
     const item = listData.items.find(i => i.id === itemId);
     if (item) { item.status = 'claimed'; item.claimer_name = name; }
     render(listData);
     return true;
-  } catch {
-    showToast('Couldn\'t claim that gift — please try again.');
+  } catch (err) {
+    console.error('[doClaim] error:', err);
     return false;
   }
 }
 
-// ─── Toast ────────────────────────────────────────────────────
+// ─── Toast (informational) ────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -1025,8 +1129,8 @@ async function init() {
     render(listData);
   } catch {
     document.getElementById('app').innerHTML = renderError(
-      'This gift list is no longer available.',
-      'The link may have expired or the list may have been made private.<br>Try asking the organiser to resend it.'
+      'This gift list isn&rsquo;t available',
+      'The link may have expired or the list may have been made private.<br>Ask the organiser to resend it.'
     );
   }
 }
