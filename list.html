@@ -835,7 +835,7 @@ nameInput.addEventListener('keydown', e => {
 // ─────────────────────────────────────────────
 async function fetchList(token) {
   const res = await fetch(`${API_BASE}?action=get_list&token=${encodeURIComponent(token)}`, {
-    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    headers: { 'Authorization': `Bearer ${SUPABASE_ANON}` }
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
@@ -850,7 +850,6 @@ async function doClaim(itemId, claimerName) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON,
         'Authorization': `Bearer ${SUPABASE_ANON}`
       },
       body: JSON.stringify({ action: 'claim_item', item_id: itemId, claimer_name: claimerName })
