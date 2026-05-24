@@ -138,7 +138,7 @@
 
     @media (prefers-reduced-motion: no-preference) {
       .avatar-btn .hero-avatar {
-        animation: avatar-ring-pulse 6s ease-in-out 1.8s infinite;
+        animation: avatar-ring-pulse 6s ease-in-out 1.2s infinite;
       }
     }
 
@@ -171,13 +171,15 @@
       max-width: 440px;
       max-height: 88dvh;
       overflow-y: auto;
-      transform: translateY(20px);
-      transition: transform 0.26s cubic-bezier(.32,0,.67,0);
+      transform: translateY(24px);
+      opacity: 0;
+      transition: transform 0.26s cubic-bezier(.32,0,.67,0), opacity 0.2s ease;
     }
 
     .profile-overlay.open .profile-sheet {
       transform: translateY(0);
-      transition: transform 0.28s cubic-bezier(.22,1,.36,1);
+      opacity: 1;
+      transition: transform 0.28s cubic-bezier(.22,1,.36,1), opacity 0.22s ease;
     }
 
     .profile-handle {
@@ -413,7 +415,7 @@
     }
 
     .gift-card.claimed {
-      opacity: 0.58;
+      opacity: 0.65;
     }
 
     .gift-card.claimed:hover {
@@ -456,7 +458,25 @@
     .card-img-claimed-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(246,241,232,0.52);
+      background: rgba(246,241,232,0.45);
+    }
+
+    .card-img-claimed-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.90);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 20px;
+      padding: 4px 9px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      pointer-events: none;
     }
 
     /* Card body */
@@ -649,13 +669,15 @@
       max-width: 440px;
       max-height: 92dvh;
       overflow-y: auto;
-      transform: translateY(20px);
-      transition: transform 0.26s cubic-bezier(.32,0,.67,0);
+      transform: translateY(24px);
+      opacity: 0;
+      transition: transform 0.26s cubic-bezier(.32,0,.67,0), opacity 0.2s ease;
     }
 
     .modal-overlay.open .modal-sheet {
       transform: translateY(0);
-      transition: transform 0.28s cubic-bezier(.22,1,.36,1);
+      opacity: 1;
+      transition: transform 0.28s cubic-bezier(.22,1,.36,1), opacity 0.22s ease;
     }
 
     .modal-handle {
@@ -750,6 +772,8 @@
       padding: 20px;
       text-align: center;
       margin-bottom: 20px;
+      opacity: 0;
+      transform: scale(0.94) translateY(8px);
     }
 
     .modal-success.visible { display: block; }
@@ -877,6 +901,14 @@
     }
 
     .animate-in { animation: fadeUp 0.3s cubic-bezier(.22,1,.36,1) both; }
+
+    /* ── Mobile spacing ───────────────────────────────────────── */
+    @media (max-width: 479px) {
+      .hero { padding: 28px 20px 24px; }
+      .main { padding: 20px 12px 52px; }
+      .items-grid { gap: 12px; }
+      .stat-pill { padding: 8px 14px; min-width: 64px; }
+    }
   </style>
 </head>
 <body>
@@ -955,10 +987,11 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const API_BASE      = 'https://wdiovqjtfbkvjkcmbkzr.supabase.co/functions/v1/wishlist-api';
 
 // ─── State ────────────────────────────────────────────────────
-let listData      = null;
-let pendingItemId = null;
-let claimerName   = localStorage.getItem('wty_claimer_name')  || '';
-let claimerEmail  = localStorage.getItem('wty_claimer_email') || '';
+let listData        = null;
+let pendingItemId   = null;
+let claimerName     = localStorage.getItem('wty_claimer_name')  || '';
+let claimerEmail    = localStorage.getItem('wty_claimer_email') || '';
+let autoCloseTimer  = null;
 
 // ─── Helpers ──────────────────────────────────────────────────
 function getToken() {
@@ -1167,7 +1200,7 @@ function renderCard(item, isClaimed) {
           ? `<img src="${escAttr(item.image_url)}" alt="${escAttr(item.name)}" loading="lazy"
                onerror="this.style.display='none';this.parentElement.innerHTML+='${GiftSVG.replace(/`/g,'\\`').replace(/"/g,"'")}'" />`
           : GiftSVG}
-        ${isClaimed ? `<div class="card-img-claimed-overlay"></div>` : ''}
+        ${isClaimed ? `<div class="card-img-claimed-overlay"></div><div class="card-img-claimed-badge">${CheckSmSVG} Taken</div>` : ''}
       </div>
 
       <div class="card-body">
@@ -1271,6 +1304,7 @@ const formBox    = document.getElementById('modal-form');
 
 function openModal(itemId, itemName) {
   pendingItemId = itemId;
+  clearTimeout(autoCloseTimer);
   nameInput.value       = claimerName;
   emailInput.value      = claimerEmail;
   noteInput.value       = '';
@@ -1278,15 +1312,18 @@ function openModal(itemId, itemName) {
   emailInput.style.borderColor = '';
   formBox.style.display        = '';
   successBox.classList.remove('visible');
+  successBox.style.cssText     = '';
   errorBox.classList.remove('visible');
   confirmBtn.textContent = 'Claim Gift';
   confirmBtn.disabled    = false;
+  confirmBtn.style.display = '';
   cancelBtn.textContent  = 'Cancel';
   overlay.classList.add('open');
   setTimeout(() => nameInput.focus(), 280);
 }
 
 function closeModal() {
+  clearTimeout(autoCloseTimer);
   overlay.classList.remove('open');
   pendingItemId = null;
 }
@@ -1335,9 +1372,17 @@ confirmBtn.addEventListener('click', async () => {
     formBox.style.display = 'none';
     errorBox.classList.remove('visible');
     successBox.classList.add('visible');
-    confirmBtn.textContent = 'Done';
-    confirmBtn.disabled    = false;
-    cancelBtn.textContent  = 'Close';
+    // Fade+scale entrance animation via double-rAF (display:block must paint first)
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      successBox.style.transition = 'opacity 0.26s ease, transform 0.32s cubic-bezier(.22,1,.36,1)';
+      successBox.style.opacity    = '1';
+      successBox.style.transform  = 'none';
+    }));
+    // Single dismiss button
+    confirmBtn.style.display = 'none';
+    cancelBtn.textContent    = 'Done';
+    // Auto-close after 2.2s
+    autoCloseTimer = setTimeout(closeModal, 2200);
   } else {
     errorBox.textContent = result.error;
     errorBox.classList.add('visible');
