@@ -76,6 +76,32 @@
       text-align: center;
     }
 
+    /* ── Avatar button wrapper ────────────────────────────────── */
+    .avatar-btn {
+      display: block;
+      margin: 0 auto 20px;
+      background: none;
+      border: none;
+      padding: 6px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      border-radius: 50%;
+      -webkit-tap-highlight-color: transparent;
+      line-height: 0;
+    }
+
+    .avatar-btn:focus { outline: none; }
+
+    .avatar-btn:focus-visible .hero-avatar {
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--teal), 0 0 0 9px rgba(15,107,111,0.25);
+    }
+
+    .avatar-btn:hover .hero-avatar {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--teal), 0 0 18px rgba(15,107,111,0.22);
+      animation: none;
+    }
+
     .hero-avatar {
       width: 80px;
       height: 80px;
@@ -87,10 +113,11 @@
       font-size: 30px;
       font-weight: 700;
       color: #fff;
-      margin: 0 auto 20px;
-      box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--coral);
+      margin: 0;
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--teal);
       overflow: hidden;
       flex-shrink: 0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .hero-avatar img {
@@ -98,6 +125,159 @@
       height: 100%;
       object-fit: cover;
     }
+
+    /* Pulse: breathes once, then rests. 6s cycle → active only first ~2.4s. */
+    @keyframes avatar-ring-pulse {
+      0%   { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--teal); }
+      18%  { box-shadow: 0 0 0 3px var(--surface), 0 0 0 9px rgba(15,107,111,0.48), 0 0 20px rgba(15,107,111,0.16); }
+      40%  { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--teal); }
+      100% { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--teal); }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .avatar-btn .hero-avatar {
+        animation: avatar-ring-pulse 6s ease-in-out 1.8s infinite;
+      }
+    }
+
+    /* ── Profile panel ────────────────────────────────────────── */
+    .profile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(31,42,36,0.42);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      z-index: 200;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s cubic-bezier(.4,0,.2,1);
+    }
+
+    .profile-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .profile-sheet {
+      background: var(--surface);
+      border-radius: 24px 24px 0 0;
+      padding: 8px 24px 40px;
+      width: 100%;
+      max-width: 440px;
+      transform: translateY(20px);
+      transition: transform 0.26s cubic-bezier(.32,0,.67,0);
+    }
+
+    .profile-overlay.open .profile-sheet {
+      transform: translateY(0);
+      transition: transform 0.28s cubic-bezier(.22,1,.36,1);
+    }
+
+    .profile-handle {
+      width: 32px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 12px auto 22px;
+    }
+
+    .profile-avatar-lg {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--coral);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 auto 14px;
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 4px var(--teal);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .profile-avatar-lg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--dark);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .profile-occasion {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    .profile-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    .profile-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted-lt);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 10px;
+    }
+
+    .profile-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .profile-pill {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 13px;
+      font-size: 13px;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .profile-interests {
+      font-size: 14px;
+      color: var(--dark);
+      line-height: 1.65;
+    }
+
+    .profile-close-btn {
+      display: block;
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .profile-close-btn:hover { background: var(--cream2); }
 
     .hero-title {
       font-family: 'Fraunces', serif;
@@ -748,6 +928,15 @@
   </div>
 </div>
 
+<!-- Profile / list-owner info panel -->
+<div class="profile-overlay" id="profile-overlay" role="dialog" aria-modal="true" aria-labelledby="profile-name-el">
+  <div class="profile-sheet" id="profile-sheet">
+    <div class="profile-handle"></div>
+    <div id="profile-body"></div>
+    <button class="profile-close-btn" id="profile-close-btn" onclick="closeProfileModal()">Close</button>
+  </div>
+</div>
+
 <!-- Toast (informational only — errors show inline in modal) -->
 <div class="toast" id="toast">
   <span id="toast-text"></span>
@@ -859,9 +1048,10 @@ function render(data) {
   const isBirthday = (wishlist?.occasion || '').toLowerCase() === 'birthday';
   const days       = isBirthday ? daysUntil(wishlist?.occasion_date) : null;
 
-  const avatarHtml = wishlist?.avatar_url
-    ? `<div class="hero-avatar"><img src="${escAttr(wishlist.avatar_url)}" alt="${escAttr(wishlist.person || '')}" /></div>`
-    : `<div class="hero-avatar">${initials(wishlist?.person || '?')}</div>`;
+  const avatarInner = wishlist?.avatar_url
+    ? `<div class="hero-avatar"><img src="${escAttr(wishlist.avatar_url)}" alt="" /></div>`
+    : `<div class="hero-avatar" aria-hidden="true">${initials(wishlist?.person || '?')}</div>`;
+  const avatarHtml = `<button class="avatar-btn" id="avatar-btn" aria-label="View ${escAttr(wishlist?.person || 'list owner')} details" aria-haspopup="dialog" onclick="openProfileModal()">${avatarInner}</button>`;
 
   let occasionLabel = escHtml(wishlist?.occasion || '');
   if (days !== null && days >= 0 && days <= 30) {
@@ -996,6 +1186,70 @@ function renderCard(item, isClaimed) {
         >${isClaimed ? CheckSmSVG + ' Claimed' : 'Claim Gift'}</button>
       </div>
     </div>`;
+}
+
+// ─── Profile panel ────────────────────────────────────────────
+const profileOverlay = document.getElementById('profile-overlay');
+
+function openProfileModal() {
+  const wishlist = listData?.wishlist;
+  if (!wishlist) return;
+
+  const avatarInner = wishlist.avatar_url
+    ? `<img src="${escAttr(wishlist.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover;" />`
+    : initials(wishlist.person || '?');
+  const avatarEl = `<div class="profile-avatar-lg">${avatarInner}</div>`;
+
+  let occasionLine = escHtml(wishlist.occasion || '');
+  if (wishlist.occasion_date) {
+    const d = new Date(wishlist.occasion_date + 'T00:00:00');
+    occasionLine += ' · ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  const pills = [];
+  if (wishlist.child_age != null)   pills.push(`Age ${wishlist.child_age}`);
+  if (wishlist.clothing_size)       pills.push(`Clothing: ${escHtml(wishlist.clothing_size)}`);
+  if (wishlist.shoe_size)           pills.push(`Shoe size: ${escHtml(wishlist.shoe_size)}`);
+
+  const pillsHtml = pills.length ? `
+    <div class="profile-divider"></div>
+    <div class="profile-section-label">Details</div>
+    <div class="profile-pills">${pills.map(p => `<span class="profile-pill">${p}</span>`).join('')}</div>` : '';
+
+  const interestsHtml = wishlist.current_interests ? `
+    <div class="profile-divider"></div>
+    <div class="profile-section-label">What they&rsquo;re into</div>
+    <p class="profile-interests">${escHtml(wishlist.current_interests)}</p>` : '';
+
+  document.getElementById('profile-body').innerHTML = `
+    ${avatarEl}
+    <div class="profile-name" id="profile-name-el">${escHtml(wishlist.person || wishlist.name || '')}</div>
+    ${occasionLine ? `<div class="profile-occasion">${occasionLine}</div>` : ''}
+    ${pillsHtml}
+    ${interestsHtml}
+  `;
+
+  profileOverlay.classList.add('open');
+  document.getElementById('profile-close-btn').focus();
+
+  function onBgClick(e) {
+    if (e.target === profileOverlay) { closeProfileModal(); }
+  }
+  function onKey(e) {
+    if (e.key === 'Escape') { closeProfileModal(); }
+  }
+  profileOverlay.addEventListener('click', onBgClick);
+  document.addEventListener('keydown', onKey);
+  profileOverlay._cleanup = () => {
+    profileOverlay.removeEventListener('click', onBgClick);
+    document.removeEventListener('keydown', onKey);
+  };
+}
+
+function closeProfileModal() {
+  profileOverlay.classList.remove('open');
+  if (profileOverlay._cleanup) { profileOverlay._cleanup(); profileOverlay._cleanup = null; }
+  document.getElementById('avatar-btn')?.focus();
 }
 
 // ─── Modal ────────────────────────────────────────────────────
