@@ -40,25 +40,27 @@
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       text-align: center;
-      padding: 20px 20px 16px;
+      padding: 14px 20px 12px;
+    }
+
+    .site-logo-link {
+      display: inline-block;
+      text-decoration: none;
     }
 
     .site-logo {
       font-family: 'Fraunces', serif;
       font-weight: 900;
-      font-size: 24px;
+      font-size: 18px;
       color: var(--teal);
-      letter-spacing: -0.4px;
+      letter-spacing: -0.3px;
       line-height: 1;
+      transition: opacity 0.15s ease;
     }
+
+    .site-logo-link:hover .site-logo { opacity: 0.75; }
 
     .site-logo .coral { color: var(--coral); }
-
-    .site-tagline {
-      font-size: 12px;
-      color: var(--muted-lt);
-      margin-top: 4px;
-    }
 
     /* ── Hero ─────────────────────────────────────────────────── */
     .hero {
@@ -646,25 +648,33 @@
     /* ── Footer ───────────────────────────────────────────────── */
     .site-footer {
       text-align: center;
-      padding: 36px 20px 24px;
+      padding: 32px 20px 28px;
       border-top: 1px solid var(--border);
       margin-top: 8px;
+    }
+
+    .footer-logo-link {
+      display: inline-block;
+      text-decoration: none;
     }
 
     .footer-logo {
       font-family: 'Fraunces', serif;
       font-weight: 900;
-      font-size: 17px;
+      font-size: 16px;
       color: var(--teal);
       line-height: 1;
+      transition: opacity 0.15s ease;
     }
+
+    .footer-logo-link:hover .footer-logo { opacity: 0.7; }
 
     .footer-logo .coral { color: var(--coral); }
 
     .footer-sub {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted-lt);
-      margin-top: 5px;
+      margin-top: 4px;
       line-height: 1.5;
     }
 
@@ -804,8 +814,9 @@ const DotSVG = `<svg width="6" height="6" viewBox="0 0 6 6" fill="none">
 // ─── Render ───────────────────────────────────────────────────
 function renderHeader() {
   return `<header class="site-header animate-in">
-    <div class="site-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
-    <div class="site-tagline">Taking the guesswork out of giving</div>
+    <a href="https://whythankyou.com" class="site-logo-link" target="_blank" rel="noopener">
+      <div class="site-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
+    </a>
   </header>`;
 }
 
@@ -821,7 +832,9 @@ function renderError(title, sub) {
       <p class="error-sub">${sub}</p>
     </div>
     <div style="text-align:center;padding:32px 20px 40px;border-top:1px solid var(--border);margin-top:40px">
-      <div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
+      <a href="https://whythankyou.com" class="footer-logo-link" target="_blank" rel="noopener">
+        <div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
+      </a>
     </div>`;
 }
 
@@ -921,8 +934,10 @@ function render(data) {
       ` : ''}
 
       <footer class="site-footer">
-        <div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
-        <div class="footer-sub">Powered by Why, Thank You! &mdash; taking the guesswork out of giving.</div>
+        <a href="https://whythankyou.com" class="footer-logo-link" target="_blank" rel="noopener">
+          <div class="footer-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
+        </a>
+        <div class="footer-sub">Taking the guesswork out of giving.</div>
       </footer>
     </main>
   `;
