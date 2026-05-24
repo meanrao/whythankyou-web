@@ -3,6 +3,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
+const FROM_EMAIL = Deno.env.get("FROM_EMAIL") ?? "no-reply@whythankyou.com";
 
 // Service-role client — bypasses RLS for all writes
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -118,6 +120,29 @@ function storeFromUrl(rawUrl: string): string | null {
     return sld.charAt(0).toUpperCase() + sld.slice(1);
   } catch {
     return null;
+  }
+}
+
+async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+  if (!RESEND_API_KEY) {
+    console.warn("[email] RESEND_API_KEY not set — skipping email to", to);
+    return;
+  }
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from: FROM_EMAIL, to, subject, html }),
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      console.error("[email] Resend error:", res.status, body);
+    }
+  } catch (err) {
+    console.error("[email] Failed to send to", to, err);
   }
 }
 
@@ -374,13 +399,13 @@ Deno.serve(async (req: Request) => {
   // POST /api/claims
   if (method === "POST" && rawPath === "/api/claims") {
     const body = await req.json();
-    const { item_id, claimer_name, claimer_email } = body;
+    const { item_id, claimer_name, claimer_email, claimer_note } = body;
     if (!item_id || !claimer_name) return json({ error: "item_id and claimer_name are required" }, 400);
 
-    // Verify item exists and isn't already claimed before inserting.
+    // Fetch item + wishlist details needed for claimed check and email.
     const { data: itemRow, error: itemErr } = await supabase
       .from("wishlist_items")
-      .select("id, claimed")
+      .select("id, name, store_url, claimed, wishlists(id, name, person, user_id)")
       .eq("id", item_id)
       .maybeSingle();
 
@@ -391,11 +416,15 @@ Deno.serve(async (req: Request) => {
     if (!itemRow) return json({ error: "Item not found" }, 404);
     if (itemRow.claimed) return json({ error: "Item already claimed" }, 409);
 
-    // Insert claim row. The trigger on item_claims derives wishlist_id internally
-    // via JOIN on wishlist_items — we do not need to supply it here.
+    // Insert claim row. The trigger on item_claims syncs wishlist_items.claimed.
     const { data: claim, error: claimErr } = await supabase
       .from("item_claims")
-      .insert({ item_id, claimer_name, claimer_email: claimer_email ?? null })
+      .insert({
+        item_id,
+        claimer_name,
+        claimer_email: claimer_email ?? null,
+        claimer_note: claimer_note ?? null,
+      })
       .select("id, item_id, claimer_name, created_at")
       .single();
 
@@ -405,16 +434,58 @@ Deno.serve(async (req: Request) => {
       return json({ error: claimErr.message, details: claimErr }, 500);
     }
 
-    // Belt-and-suspenders: the trg_sync_item_claimed trigger already sets
-    // wishlist_items.claimed = true on item_claims INSERT, but we also do it
-    // here explicitly so the update is visible immediately if the trigger fires
-    // after this response is sent.
+    // Belt-and-suspenders sync (trigger handles it, but do it explicitly too).
     const { error: syncErr } = await supabase
       .from("wishlist_items")
       .update({ claimed: true })
       .eq("id", item_id);
     if (syncErr) {
       console.error("[POST /api/claims] wishlist_items sync:", JSON.stringify(syncErr));
+    }
+
+    // Send confirmation emails. Failures are logged but never block the response.
+    const wishlist = Array.isArray(itemRow.wishlists) ? itemRow.wishlists[0] : itemRow.wishlists as any;
+    const listName = wishlist?.name ?? "the wishlist";
+    const personName = wishlist?.person ?? null;
+    const itemName = itemRow.name;
+    const storeUrl = itemRow.store_url ?? null;
+    const shopLink = storeUrl
+      ? `<p style="margin:16px 0;"><a href="${storeUrl}" style="background:#e8705a;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Shop ${itemName}</a></p>`
+      : "";
+    const noteHtml = claimer_note
+      ? `<p style="margin:8px 0;color:#666;">Note: <em>${claimer_note}</em></p>`
+      : "";
+
+    // Email to claimer (if email provided)
+    if (claimer_email) {
+      const giverSubject = `You're all set to get a gift from ${listName}!`;
+      const giverHtml = `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;color:#333;">
+          <h2 style="color:#e8705a;">You're all set! 🎁</h2>
+          <p>Hi ${claimer_name},</p>
+          <p>Thanks for letting the list know you're planning to get <strong>${itemName}</strong>${personName ? ` for ${personName}` : ""}.</p>
+          ${shopLink}
+          <p style="color:#888;font-size:0.9em;">If the list owner needs shipping details, they'll contact you directly at this email address.</p>
+        </div>`;
+      sendEmail(claimer_email, giverSubject, giverHtml).catch(() => {});
+    }
+
+    // Email to list owner
+    if (wishlist?.user_id) {
+      const { data: ownerData } = await supabase.auth.admin.getUserById(wishlist.user_id);
+      const ownerEmail = ownerData?.user?.email;
+      if (ownerEmail) {
+        const ownerSubject = `${claimer_name} is planning to get a gift from ${listName}`;
+        const ownerHtml = `
+          <div style="font-family:sans-serif;max-width:480px;margin:0 auto;color:#333;">
+            <h2 style="color:#e8705a;">Great news! 🎁</h2>
+            <p><strong>${claimer_name}</strong> is planning to get <strong>${itemName}</strong>${personName ? ` for ${personName}` : ""}.</p>
+            <p style="margin:8px 0;">Their email: <a href="mailto:${claimer_email ?? ""}">${claimer_email ?? "not provided"}</a></p>
+            ${noteHtml}
+            <p style="color:#888;font-size:0.9em;">You can reach out to them directly if you need to share shipping details.</p>
+          </div>`;
+        sendEmail(ownerEmail, ownerSubject, ownerHtml).catch(() => {});
+      }
     }
 
     return json({ claim }, 201);

@@ -205,7 +205,7 @@ function GuestItemCard({ item, index, onClaim, claiming }: ItemCardProps) {
           {isClaimed ? (
             <View style={itemStyles.claimedBadge}>
               <CheckCircle size={12} color={C.teal} strokeWidth={2} />
-              <Text style={itemStyles.claimedText}>Claimed ✓</Text>
+              <Text style={itemStyles.claimedText}>Someone&apos;s getting this</Text>
             </View>
           ) : (
             <AnimatedPressable
@@ -215,7 +215,7 @@ function GuestItemCard({ item, index, onClaim, claiming }: ItemCardProps) {
               {claiming ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
-                <Text style={itemStyles.claimButtonText}>I'll buy this</Text>
+                <Text style={itemStyles.claimButtonText}>I&apos;ll Get This</Text>
               )}
             </AnimatedPressable>
           )}
