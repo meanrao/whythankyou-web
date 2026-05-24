@@ -9,6 +9,7 @@ import {
   Alert,
   PanResponder,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -166,7 +167,7 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
                 ? `${wishlist.occasion.charAt(0).toUpperCase() + wishlist.occasion.slice(1).toLowerCase()} · ${formattedDate}`
                 : formattedDate}
             </Text>
-            <Text style={[styles.cardClaimed, { color: colors.textSecondary }]}>
+            <Text style={[styles.cardClaimed, { color: allClaimed ? '#B85C3C' : '#1B8A8A' }]}>
               {claimedText}
             </Text>
           </View>
@@ -329,6 +330,13 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [displayName, setDisplayName] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function handleRefresh() {
+    setRefreshing(true);
+    await fetchWishlists();
+    setRefreshing(false);
+  }
 
   useEffect(() => {
     async function fetchProfile() {
@@ -410,7 +418,7 @@ export default function HomeScreen() {
     router.push('/(tabs)/(profile)');
   }
 
-  const greetingText = displayName ? `Hi, ${displayName}!` : 'Why, Thank You!';
+  const greetingText = displayName ? `Hi, ${displayName}.` : 'Why, Thank You!';
   const avatarInitial = displayName ? displayName.charAt(0).toUpperCase() : 'W';
 
   return (
@@ -430,6 +438,7 @@ export default function HomeScreen() {
           wishlists.length === 0 && styles.scrollContentEmpty,
         ]}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#0F6B6F" />}
       >
         {/* List or empty state */}
         {wishlists.length === 0 ? (
@@ -462,7 +471,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerBar: {
-    backgroundColor: '#2A9D8F',
+    backgroundColor: '#FAF7F2',
     paddingHorizontal: 20,
     paddingBottom: 16,
     flexDirection: 'row',
@@ -471,17 +480,17 @@ const styles = StyleSheet.create({
   },
   headerGreeting: {
     fontFamily: 'CormorantGaramond_700Bold',
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#FAF7F2',
+    fontSize: 26,
+    fontStyle: 'italic',
+    color: '#1C2820',
     flex: 1,
     marginRight: 12,
   },
   headerAvatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: 'rgba(255,255,255,0.22)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#1B8A8A',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -532,6 +541,7 @@ const styles = StyleSheet.create({
   cardClaimed: {
     fontSize: 12,
     fontWeight: '600',
+    color: '#1B8A8A',
   },
   emptyContainer: {
     flex: 1,

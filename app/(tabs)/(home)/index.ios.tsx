@@ -9,6 +9,7 @@ import {
   Alert,
   PanResponder,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -20,6 +21,8 @@ import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { PLACEHOLDER_WISHLISTS, Wishlist } from '@/data/placeholder';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { supabase } from '@/utils/supabase';
+import { StatusBar } from 'expo-status-bar';
+import { Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 function formatDate(iso: string): string {
   const date = new Date(iso);
@@ -30,7 +33,7 @@ function formatDate(iso: string): string {
   });
 }
 
-const TEAL = '#1B8A8A';
+const TEAL = '#0F6B6F';
 const DELETE_THRESHOLD = -80;
 const DELETE_BTN_WIDTH = 80;
 
@@ -108,10 +111,24 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
   }, []);
 
   const formattedDate = formatDate(wishlist.date);
-  const allClaimed = wishlist.claimedCount === wishlist.itemCount;
-  const claimedText = allClaimed
-    ? 'All claimed'
-    : `${wishlist.claimedCount} of ${wishlist.itemCount} claimed`;
+  const allClaimed = wishlist.claimedCount === wishlist.itemCount && wishlist.itemCount > 0;
+  const claimedText = wishlist.itemCount === 0
+    ? 'No gifts yet'
+    : allClaimed
+      ? 'All claimed'
+      : `${wishlist.claimedCount} of ${wishlist.itemCount} claimed`;
+  const claimedColor = wishlist.itemCount === 0 ? '#6E776A' : allClaimed ? '#B85C3C' : '#0F6B6F';
+
+  const today = new Date();
+  const occasionDate = wishlist.date ? new Date(wishlist.date) : null;
+  const daysUntil = occasionDate
+    ? Math.ceil((occasionDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+  const showCountdown =
+    wishlist.occasion.toLowerCase() === 'birthday' &&
+    daysUntil !== null &&
+    daysUntil >= 0 &&
+    daysUntil <= 30;
 
   function handlePress() {
     console.log('[HomeScreen] Wishlist card pressed:', wishlist.id, wishlist.name);
@@ -127,7 +144,7 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
           {
             backgroundColor: colors.surface,
             borderLeftWidth: 5,
-            borderLeftColor: TEAL,
+            borderLeftColor: '#F28C79',
             borderTopWidth: 1,
             borderRightWidth: 1,
             borderBottomWidth: 1,
@@ -148,9 +165,14 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
                 ? `${wishlist.occasion.charAt(0).toUpperCase() + wishlist.occasion.slice(1).toLowerCase()} · ${formattedDate}`
                 : formattedDate}
             </Text>
-            <Text style={[styles.cardClaimed, { color: colors.textSecondary }]}>
+            <Text style={[styles.cardClaimed, { color: claimedColor }]}>
               {claimedText}
             </Text>
+            {showCountdown && daysUntil !== null && (
+              <Text style={styles.cardCountdown}>
+                {daysUntil === 0 ? 'Birthday today!' : `Birthday in ${daysUntil} day${daysUntil === 1 ? '' : 's'}`}
+              </Text>
+            )}
           </View>
         </View>
       </AnimatedPressable>
@@ -311,6 +333,13 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [displayName, setDisplayName] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function handleRefresh() {
+    setRefreshing(true);
+    await fetchWishlists();
+    setRefreshing(false);
+  }
 
   useEffect(() => {
     async function fetchProfile() {
@@ -397,6 +426,7 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <StatusBar style="dark" />
       {/* Custom teal header */}
       <View style={[styles.headerBar, { paddingTop: insets.top + 10 }]}>
         <Text style={styles.headerGreeting}>{greetingText}</Text>
@@ -412,6 +442,7 @@ export default function HomeScreen() {
           wishlists.length === 0 && styles.scrollContentEmpty,
         ]}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#0F6B6F" />}
       >
         {/* List or empty state */}
         {wishlists.length === 0 ? (
@@ -429,7 +460,7 @@ export default function HomeScreen() {
       <AnimatedPressable
         onPress={handleNewList}
         scaleValue={0.94}
-        style={[styles.fab, { backgroundColor: colors.primary }]}
+        style={[styles.fab, { backgroundColor: '#0F6B6F' }]}
         accessibilityLabel="Create new wishlist"
         accessibilityRole="button"
       >
@@ -444,7 +475,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerBar: {
-    backgroundColor: '#2A9D8F',
+    backgroundColor: '#FAF7F2',
     paddingHorizontal: 20,
     paddingBottom: 16,
     flexDirection: 'row',
@@ -452,10 +483,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerGreeting: {
-    fontFamily: 'CormorantGaramond_700Bold',
-    fontSize: 24,
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 28,
     fontWeight: '700',
-    color: '#FAF7F2',
+    color: '#1C2820',
     flex: 1,
     marginRight: 12,
   },
@@ -463,7 +494,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: 'rgba(255,255,255,0.22)',
+    backgroundColor: '#F28C79',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -488,6 +519,11 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
     padding: 16,
     boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+    shadowColor: '#1F2A24',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   cardRow: {
     flexDirection: 'row',
@@ -514,6 +550,11 @@ const styles = StyleSheet.create({
   cardClaimed: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  cardCountdown: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: '#F28C79',
   },
   emptyContainer: {
     flex: 1,
@@ -561,6 +602,6 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 4px 16px rgba(27,138,138,0.35)',
+    boxShadow: '0 4px 16px rgba(15,107,111,0.35)',
   },
 });

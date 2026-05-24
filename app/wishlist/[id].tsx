@@ -13,6 +13,7 @@ import {
   TextInput,
   TouchableOpacity,
   Linking,
+  RefreshControl,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
@@ -95,6 +96,7 @@ interface DbWishlist {
 interface ClaimRecord {
   claimer_name: string | null;
   claimer_email: string | null;
+  claimer_note: string | null;
   created_at: string;
 }
 
@@ -448,6 +450,16 @@ function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPr
                   by {item.item_claims[0].claimer_name}
                 </Text>
               ) : null}
+              {item.item_claims?.[0]?.claimer_email ? (
+                <Text style={[styles.claimerDetail, { color: colors.textTertiary }]}>
+                  {item.item_claims[0].claimer_email}
+                </Text>
+              ) : null}
+              {item.item_claims?.[0]?.claimer_note ? (
+                <Text style={[styles.claimerNote, { color: colors.textTertiary }]}>
+                  &ldquo;{item.item_claims[0].claimer_note}&rdquo;
+                </Text>
+              ) : null}
             </View>
           ) : null}
         </View>
@@ -741,10 +753,17 @@ export default function WishlistDetailScreen() {
   const [wishlist, setWishlist] = useState<DbWishlist | null>(null);
   const [items, setItems] = useState<ApiItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<ApiItem | null>(null);
   const [profileSheetVisible, setProfileSheetVisible] = useState(false);
   const [avatarTapped, setAvatarTapped] = useState(false);
+
+  async function handleRefresh() {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  }
 
   const fetchData = useCallback(async () => {
     if (!id) return;
@@ -754,7 +773,7 @@ export default function WishlistDetailScreen() {
         supabase.from('wishlists').select('*').eq('id', id).single(),
         supabase
           .from('wishlist_items')
-          .select('*, item_claims(claimer_name, claimer_email, created_at)')
+          .select('*, item_claims(claimer_name, claimer_email, claimer_note, created_at)')
           .eq('wishlist_id', id)
           .order('created_at', { ascending: false }),
       ]);
@@ -803,13 +822,17 @@ export default function WishlistDetailScreen() {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'wishlist_items', filter: `wishlist_id=eq.${id}` },
         (payload) => {
-          console.log('[WishlistDetail] Realtime UPDATE received for item:', payload.new.id);
-          // Merge the updated columns into the existing item so joined data (item_claims) is preserved
-          setItems((prev) =>
-            prev.map((item) =>
-              item.id === payload.new.id ? { ...item, ...(payload.new as Partial<ApiItem>) } : item
-            )
-          );
+          console.log('[WishlistDetail] Realtime UPDATE received for item:', payload.new.id, 'claimed:', payload.new.claimed);
+          if (payload.new.claimed === true) {
+            // Refetch so item_claims join data (claimer details) is populated
+            fetchData();
+          } else {
+            setItems((prev) =>
+              prev.map((item) =>
+                item.id === payload.new.id ? { ...item, ...(payload.new as Partial<ApiItem>) } : item
+              )
+            );
+          }
         }
       )
       .on(
@@ -925,6 +948,7 @@ export default function WishlistDetailScreen() {
           style={{ flex: 1 }}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#0F6B6F" />}
         >
           {/* Summary card */}
           <View
@@ -1512,6 +1536,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontStyle: 'italic',
     paddingLeft: 2,
+  },
+  claimerDetail: {
+    fontSize: 11,
+    paddingLeft: 2,
+    opacity: 0.75,
+  },
+  claimerNote: {
+    fontSize: 11,
+    fontStyle: 'italic',
+    paddingLeft: 2,
+    opacity: 0.75,
   },
   fab: {
     position: 'absolute',
