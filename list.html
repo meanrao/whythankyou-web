@@ -1076,6 +1076,20 @@ async function fetchList(token) {
 }
 
 async function doClaim(itemId, name, email) {
+  const shareId  = getToken();
+  const wishlist = listData?.wishlist;
+  const payload  = { item_id: itemId, claimer_name: name, claimer_email: email };
+
+  console.group('[doClaim] claim attempt');
+  console.log('share token :', shareId);
+  console.log('wishlist id :', wishlist?.id ?? '(not in payload)');
+  console.log('wishlist name:', wishlist?.name);
+  console.log('item id     :', itemId);
+  console.log('item name   :', listData?.items?.find(i => i.id === itemId)?.name);
+  console.log('payload     :', JSON.stringify(payload, null, 2));
+  console.log('endpoint    :', `${API_BASE}/api/claims`);
+  console.groupEnd();
+
   try {
     const res = await fetch(`${API_BASE}/api/claims`, {
       method: 'POST',
@@ -1083,21 +1097,30 @@ async function doClaim(itemId, name, email) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${SUPABASE_ANON}`
       },
-      body: JSON.stringify({ item_id: itemId, claimer_name: name, claimer_email: email })
+      body: JSON.stringify(payload)
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('[doClaim] HTTP', res.status, errText);
-      return false;
-    }
+    const responseText = await res.text();
+    let responseJson = null;
+    try { responseJson = JSON.parse(responseText); } catch (_) {}
+
+    console.group('[doClaim] response');
+    console.log('status      :', res.status);
+    console.log('ok          :', res.ok);
+    console.log('body        :', responseJson ?? responseText);
+    if (responseJson?.error)   console.error('error       :', responseJson.error);
+    if (responseJson?.details) console.error('details     :', responseJson.details);
+    if (responseJson?.code)    console.error('pg code     :', responseJson.code);
+    console.groupEnd();
+
+    if (!res.ok) return false;
 
     const item = listData.items.find(i => i.id === itemId);
     if (item) { item.status = 'claimed'; item.claimer_name = name; }
     render(listData);
     return true;
   } catch (err) {
-    console.error('[doClaim] error:', err);
+    console.error('[doClaim] fetch threw:', err);
     return false;
   }
 }
