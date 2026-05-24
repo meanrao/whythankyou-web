@@ -1385,6 +1385,17 @@ confirmBtn.addEventListener('click', async () => {
     cancelBtn.textContent    = 'Done';
     // Auto-close after 2.2s
     autoCloseTimer = setTimeout(closeModal, 2200);
+  } else if (result.alreadyClaimed) {
+    // Item was claimed by someone else between page-load and now.
+    // Close the modal, mark it claimed in local state, refetch authoritative data.
+    closeModal();
+    const staleItem = listData.items.find(i => i.id === pendingItemId);
+    if (staleItem) staleItem.status = 'claimed';
+    render(listData);
+    // Refetch so counts and all cards reflect true server state
+    const tok = getToken();
+    if (tok) fetchList(tok).then(data => { listData = data; render(data); }).catch(() => {});
+    showToast('Looks like someone just picked this one!');
   } else {
     errorBox.textContent = result.error;
     errorBox.classList.add('visible');
@@ -1436,7 +1447,7 @@ async function doClaim(itemId, name, email, note) {
     if (!res.ok) {
       let msg = `HTTP ${res.status}`;
       try { const j = await res.json(); msg = j.error ?? j.message ?? msg; } catch (_) {}
-      return { ok: false, error: msg };
+      return { ok: false, error: msg, alreadyClaimed: res.status === 409 };
     }
 
     const item = listData.items.find(i => i.id === itemId);

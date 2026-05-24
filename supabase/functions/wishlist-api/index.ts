@@ -368,19 +368,22 @@ Deno.serve(async (req: Request) => {
 
     if (wErr) return json({ error: wErr.message }, 500);
 
-    // Fetch items with claim info
+    // Fetch items. Read claimed from wishlist_items.claimed (authoritative boolean)
+    // AND item_claims presence — OR of both so any inconsistency shows as claimed.
     const { data: itemRows, error: iErr } = await supabase
       .from("wishlist_items")
-      .select(`id, name, price, store, store_url, notes, image_url, created_at, item_claims ( claimer_name )`)
+      .select(`id, name, price, store, store_url, notes, image_url, created_at, claimed, item_claims ( id )`)
       .eq("wishlist_id", wishlistId)
       .order("created_at", { ascending: true });
 
     if (iErr) return json({ error: iErr.message }, 500);
 
-    // Map items: derive status from item_claims presence.
-    // Do NOT expose claimer details (name/email) to anonymous public visitors.
+    // isClaimed = true if EITHER the claimed flag is set OR a claim row exists.
+    // This keeps the GET consistent with the POST guard even when the two are
+    // temporarily out of sync (e.g. trigger had an error but the explicit UPDATE ran).
     const items = (itemRows ?? []).map((item: any) => {
-      const isClaimed = Array.isArray(item.item_claims) && item.item_claims.length > 0;
+      const isClaimed = item.claimed === true ||
+        (Array.isArray(item.item_claims) && item.item_claims.length > 0);
       return {
         id: item.id,
         name: item.name,
