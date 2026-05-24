@@ -834,7 +834,7 @@ nameInput.addEventListener('keydown', e => {
 // API calls
 // ─────────────────────────────────────────────
 async function fetchList(token) {
-  const res = await fetch(`${API_BASE}?action=get_list&token=${encodeURIComponent(token)}`, {
+  const res = await fetch(`${API_BASE}/api/guest/${encodeURIComponent(token)}`, {
     headers: { 'Authorization': `Bearer ${SUPABASE_ANON}` }
   });
   if (!res.ok) throw new Error(await res.text());
