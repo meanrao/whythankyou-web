@@ -1047,9 +1047,9 @@ confirmBtn.addEventListener('click', async () => {
   localStorage.setItem('wty_claimer_name',  name);
   localStorage.setItem('wty_claimer_email', email);
 
-  const ok = await doClaim(pendingItemId, name, email);
+  const result = await doClaim(pendingItemId, name, email);
 
-  if (ok) {
+  if (result.ok) {
     formBox.style.display = 'none';
     errorBox.classList.remove('visible');
     successBox.classList.add('visible');
@@ -1057,6 +1057,7 @@ confirmBtn.addEventListener('click', async () => {
     confirmBtn.disabled    = false;
     cancelBtn.textContent  = 'Close';
   } else {
+    errorBox.textContent = result.error;
     errorBox.classList.add('visible');
     confirmBtn.textContent = 'Claim Gift';
     confirmBtn.disabled    = false;
@@ -1113,15 +1114,18 @@ async function doClaim(itemId, name, email) {
     if (responseJson?.code)    console.error('pg code     :', responseJson.code);
     console.groupEnd();
 
-    if (!res.ok) return false;
+    if (!res.ok) {
+      const msg = responseJson?.error ?? responseJson?.message ?? responseText ?? `HTTP ${res.status}`;
+      return { ok: false, error: msg };
+    }
 
     const item = listData.items.find(i => i.id === itemId);
     if (item) { item.status = 'claimed'; item.claimer_name = name; }
     render(listData);
-    return true;
+    return { ok: true };
   } catch (err) {
     console.error('[doClaim] fetch threw:', err);
-    return false;
+    return { ok: false, error: String(err) };
   }
 }
 
