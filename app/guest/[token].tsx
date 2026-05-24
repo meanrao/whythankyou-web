@@ -120,11 +120,6 @@ function GuestProfileCard({ wishlist }: { wishlist: GuestWishlist }) {
   const clothingPillText = wishlist.clothing_size ? `Clothing: ${wishlist.clothing_size}` : null;
   const shoePillText = wishlist.shoe_size ? `Shoe: ${wishlist.shoe_size}` : null;
 
-  function handleRequestAddress() {
-    console.log('[GuestProfile] Request mailing address pressed for wishlist:', wishlist.id);
-    Alert.alert('Coming soon', 'Mailing address requests will be available soon.');
-  }
-
   return (
     <View style={profileStyles.card}>
       <View style={profileStyles.headerRow}>
@@ -161,14 +156,6 @@ function GuestProfileCard({ wishlist }: { wishlist: GuestWishlist }) {
         </>
       ) : null}
 
-      <View style={profileStyles.divider} />
-      <TouchableOpacity
-        onPress={handleRequestAddress}
-        style={profileStyles.requestAddressBtn}
-        activeOpacity={0.75}
-      >
-        <Text style={profileStyles.requestAddressBtnText}>Request mailing address</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -433,21 +420,6 @@ const profileStyles = StyleSheet.create({
     lineHeight: 20,
     fontStyle: 'italic',
     color: C.textSecondary,
-  },
-  requestAddressBtn: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 11,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: C.teal,
-    backgroundColor: 'transparent',
-  },
-  requestAddressBtnText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: C.teal,
   },
 });
 

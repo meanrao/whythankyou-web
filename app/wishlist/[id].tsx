@@ -13,7 +13,6 @@ import {
   TextInput,
   TouchableOpacity,
   Linking,
-  KeyboardAvoidingView,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
@@ -28,6 +27,7 @@ import { COLORS } from '@/constants/Colors';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { supabase } from '@/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
+import { StatusBar } from 'expo-status-bar';
 
 function TappableAvatar({
   uri,
@@ -63,7 +63,7 @@ function TappableAvatar({
       <View
         style={{
           borderWidth: 2.5,
-          borderColor: '#1B8A8A',
+          borderColor: '#F28C79',
           borderRadius: (size + 8) / 2,
           padding: 4,
         }}
@@ -103,16 +103,6 @@ interface ApiItem {
   image_url: string | null;
   claimed: boolean;
   created_at: string;
-}
-
-interface ChildAddress {
-  id?: string;
-  child_id: string;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -207,20 +197,6 @@ interface ChildProfileBottomSheetProps {
 }
 
 function ChildProfileBottomSheet({ wishlist, visible, onClose, isOwner, onBirthdayChange }: ChildProfileBottomSheetProps) {
-  const [address, setAddress] = useState<ChildAddress | null>(null);
-  const [addressLoading, setAddressLoading] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [streetRevealed, setStreetRevealed] = useState(false);
-  const [zipRevealed, setZipRevealed] = useState(false);
-
-  // Edit form state
-  const [editStreet, setEditStreet] = useState('');
-  const [editCity, setEditCity] = useState('');
-  const [editState, setEditState] = useState('');
-  const [editZip, setEditZip] = useState('');
-  const [editCountry, setEditCountry] = useState('');
-
   // Birthday state
   const [editBirthday, setEditBirthday] = useState<Date | null>(null);
   const [showBirthdayPicker, setShowBirthdayPicker] = useState(false);
@@ -229,97 +205,10 @@ function ChildProfileBottomSheet({ wishlist, visible, onClose, isOwner, onBirthd
   const clothingPillText = wishlist.clothing_size ? `Clothing: ${wishlist.clothing_size}` : null;
   const shoePillText = wishlist.shoe_size ? `Shoe: ${wishlist.shoe_size}` : null;
 
-  useEffect(() => {
-    if (visible && isOwner) {
-      fetchAddress();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
-
-  async function fetchAddress() {
-    console.log('[ChildProfileSheet] Fetching address for child_id:', wishlist.id);
-    setAddressLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('child_addresses')
-        .select('child_id, street, city, state, zip, country')
-        .eq('child_id', wishlist.id)
-        .maybeSingle();
-      if (error) {
-        console.log('[ChildProfileSheet] Address fetch error:', error.message);
-      } else {
-        console.log('[ChildProfileSheet] Address loaded for child:', wishlist.id);
-        setAddress(data as ChildAddress | null);
-      }
-    } catch (err) {
-      console.log('[ChildProfileSheet] Address fetch exception:', err);
-    } finally {
-      setAddressLoading(false);
-    }
-  }
-
-  function handleStartEdit() {
-    console.log('[ChildProfileSheet] Edit address pressed for child:', wishlist.id);
-    setEditStreet(address?.street ?? '');
-    setEditCity(address?.city ?? '');
-    setEditState(address?.state ?? '');
-    setEditZip(address?.zip ?? '');
-    setEditCountry(address?.country ?? '');
-    setEditing(true);
-  }
-
-  function handleCancelEdit() {
-    console.log('[ChildProfileSheet] Cancel edit address pressed');
-    setEditing(false);
-  }
-
-  async function handleSaveAddress() {
-    console.log('[ChildProfileSheet] Save address pressed for child:', wishlist.id);
-    setSaving(true);
-    try {
-      console.log('[ChildProfileSheet] Upserting child_addresses for child:', wishlist.id);
-      const { data, error } = await supabase
-        .from('child_addresses')
-        .upsert(
-          {
-            child_id: wishlist.id,
-            street: editStreet.trim(),
-            city: editCity.trim(),
-            state: editState.trim(),
-            zip: editZip.trim(),
-            country: editCountry.trim(),
-          },
-          { onConflict: 'child_id' }
-        )
-        .select('child_id, street, city, state, zip, country')
-        .single();
-      if (error) {
-        console.log('[ChildProfileSheet] Save address error:', error.message);
-        Alert.alert('Could not save', error.message);
-        return;
-      }
-      console.log('[ChildProfileSheet] Address saved successfully');
-      setAddress(data as ChildAddress);
-      setEditing(false);
-      setStreetRevealed(false);
-      setZipRevealed(false);
-    } catch (err) {
-      console.log('[ChildProfileSheet] Save address exception:', err);
-      Alert.alert('Could not save', 'Please try again.');
-    } finally {
-      setSaving(false);
-    }
-  }
-
   function handleClose() {
     console.log('[ChildProfileSheet] Bottom sheet closed');
-    setEditing(false);
-    setStreetRevealed(false);
-    setZipRevealed(false);
     onClose();
   }
-
-  const hasAddress = address && (address.street || address.city || address.state);
 
   return (
     <Modal
@@ -328,17 +217,13 @@ function ChildProfileBottomSheet({ wishlist, visible, onClose, isOwner, onBirthd
       presentationStyle="pageSheet"
       onRequestClose={handleClose}
     >
-      <KeyboardAvoidingView
-        style={sheetStyles.root}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-      >
+      <View style={sheetStyles.root}>
         {/* Header */}
         <View style={sheetStyles.header}>
           <View style={sheetStyles.headerSpacer} />
           <Text style={sheetStyles.headerTitle}>Recipient Profile</Text>
           <TouchableOpacity onPress={handleClose} style={sheetStyles.closeButton} hitSlop={8}>
-            <X size={22} color="#F5F0E8" strokeWidth={2} />
+            <X size={22} color="#1C2820" strokeWidth={2} />
           </TouchableOpacity>
         </View>
 
@@ -459,167 +344,8 @@ function ChildProfileBottomSheet({ wishlist, visible, onClose, isOwner, onBirthd
             ) : null}
           </View>
 
-          {/* Section 2 — Mailing Address (owner only) */}
-          {isOwner ? (
-            <View style={sheetStyles.section}>
-              <View style={sheetStyles.sectionHeaderRow}>
-                <Text style={sheetStyles.sectionTitle}>Mailing Address</Text>
-                {!editing ? (
-                  <TouchableOpacity
-                    onPress={handleStartEdit}
-                    style={sheetStyles.editBtn}
-                    hitSlop={8}
-                  >
-                    <Pencil size={15} color="#4A7C5F" strokeWidth={2} />
-                    <Text style={sheetStyles.editBtnText}>Edit</Text>
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-
-              {addressLoading ? (
-                <ActivityIndicator size="small" color="#4A7C5F" style={{ marginTop: 12 }} />
-              ) : editing ? (
-                /* Edit form */
-                <View style={sheetStyles.editForm}>
-                  <View style={sheetStyles.field}>
-                    <Text style={sheetStyles.fieldLabel}>Street</Text>
-                    <TextInput
-                      style={sheetStyles.input}
-                      value={editStreet}
-                      onChangeText={setEditStreet}
-                      placeholder="123 Main St"
-                      placeholderTextColor="#A89F94"
-                    />
-                  </View>
-                  <View style={sheetStyles.field}>
-                    <Text style={sheetStyles.fieldLabel}>City</Text>
-                    <TextInput
-                      style={sheetStyles.input}
-                      value={editCity}
-                      onChangeText={setEditCity}
-                      placeholder="City"
-                      placeholderTextColor="#A89F94"
-                    />
-                  </View>
-                  <View style={sheetStyles.twoCol}>
-                    <View style={[sheetStyles.field, { flex: 1 }]}>
-                      <Text style={sheetStyles.fieldLabel}>State</Text>
-                      <TextInput
-                        style={sheetStyles.input}
-                        value={editState}
-                        onChangeText={setEditState}
-                        placeholder="CA"
-                        placeholderTextColor="#A89F94"
-                      />
-                    </View>
-                    <View style={[sheetStyles.field, { flex: 1 }]}>
-                      <Text style={sheetStyles.fieldLabel}>ZIP</Text>
-                      <TextInput
-                        style={sheetStyles.input}
-                        value={editZip}
-                        onChangeText={setEditZip}
-                        placeholder="90210"
-                        placeholderTextColor="#A89F94"
-                        keyboardType="number-pad"
-                      />
-                    </View>
-                  </View>
-                  <View style={sheetStyles.field}>
-                    <Text style={sheetStyles.fieldLabel}>Country</Text>
-                    <TextInput
-                      style={sheetStyles.input}
-                      value={editCountry}
-                      onChangeText={setEditCountry}
-                      placeholder="United States"
-                      placeholderTextColor="#A89F94"
-                    />
-                  </View>
-                  <View style={sheetStyles.editActions}>
-                    <TouchableOpacity
-                      onPress={handleCancelEdit}
-                      style={sheetStyles.cancelBtn}
-                      activeOpacity={0.75}
-                    >
-                      <Text style={sheetStyles.cancelBtnText}>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={handleSaveAddress}
-                      disabled={saving}
-                      style={[sheetStyles.saveBtn, saving && sheetStyles.saveBtnDisabled]}
-                      activeOpacity={0.85}
-                    >
-                      {saving ? (
-                        <ActivityIndicator size="small" color="#FFFFFF" />
-                      ) : (
-                        <Text style={sheetStyles.saveBtnText}>Save</Text>
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ) : hasAddress ? (
-                /* View mode */
-                <View style={sheetStyles.addressView}>
-                  <View style={sheetStyles.addressRow}>
-                    <Text style={sheetStyles.addressLabel}>Street</Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        console.log('[ChildProfileSheet] Street reveal tapped');
-                        setStreetRevealed((v) => !v);
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={[sheetStyles.addressValue, !streetRevealed && sheetStyles.redacted]}>
-                        {streetRevealed ? address!.street : '••••••••'}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={sheetStyles.addressRow}>
-                    <Text style={sheetStyles.addressLabel}>City</Text>
-                    <Text style={sheetStyles.addressValue}>{address!.city}</Text>
-                  </View>
-                  <View style={sheetStyles.addressRow}>
-                    <Text style={sheetStyles.addressLabel}>State</Text>
-                    <Text style={sheetStyles.addressValue}>{address!.state}</Text>
-                  </View>
-                  <View style={sheetStyles.addressRow}>
-                    <Text style={sheetStyles.addressLabel}>ZIP</Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        console.log('[ChildProfileSheet] ZIP reveal tapped');
-                        setZipRevealed((v) => !v);
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={[sheetStyles.addressValue, !zipRevealed && sheetStyles.redacted]}>
-                        {zipRevealed ? address!.zip : '•••••'}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  {address!.country ? (
-                    <View style={sheetStyles.addressRow}>
-                      <Text style={sheetStyles.addressLabel}>Country</Text>
-                      <Text style={sheetStyles.addressValue}>{address!.country}</Text>
-                    </View>
-                  ) : null}
-                  <Text style={sheetStyles.revealHint}>Tap street or ZIP to reveal</Text>
-                </View>
-              ) : (
-                /* No address */
-                <View style={sheetStyles.noAddressBox}>
-                  <Text style={sheetStyles.noAddressText}>No address saved</Text>
-                  <TouchableOpacity
-                    onPress={handleStartEdit}
-                    style={sheetStyles.addAddressBtn}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={sheetStyles.addAddressBtnText}>Add address</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          ) : null}
         </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }
@@ -677,7 +403,7 @@ function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPr
         <Image
           source={resolveImageSource(item.image_url)}
           style={styles.itemImage}
-          contentFit="cover"
+          contentFit="contain"
           cachePolicy="reload"
         />
         <View style={styles.itemContent}>
@@ -872,7 +598,7 @@ function EditItemModal({ item, onClose, onSaved }: EditItemModalProps) {
           <View style={editStyles.headerSpacer} />
           <Text style={editStyles.headerTitle}>Edit Item</Text>
           <TouchableOpacity onPress={onClose} style={editStyles.closeButton} hitSlop={8}>
-            <X size={22} color="#F5F0E8" strokeWidth={2} />
+            <X size={22} color="#1C2820" strokeWidth={2} />
           </TouchableOpacity>
         </View>
 
@@ -896,7 +622,7 @@ function EditItemModal({ item, onClose, onSaved }: EditItemModalProps) {
               activeOpacity={0.75}
             >
               {uploadingPhoto ? (
-                <ActivityIndicator size="small" color="#1B8A8A" />
+                <ActivityIndicator size="small" color="#0F6B6F" />
               ) : (
                 <Text style={editStyles.changePhotoText}>Change photo</Text>
               )}
@@ -1140,16 +866,17 @@ export default function WishlistDetailScreen() {
 
   return (
     <>
+      <StatusBar style="dark" />
       <Stack.Screen
         options={{
-          title: wishlist.name,
-          headerStyle: { backgroundColor: colors.primary },
-          headerTintColor: '#F5F0E8',
+          title: '',
+          headerStyle: { backgroundColor: '#FAF7F2' },
+          headerTintColor: '#1C2820',
           headerTitleStyle: {
             fontFamily: 'Georgia',
             fontSize: 18,
             fontWeight: '600',
-            color: '#F5F0E8',
+            color: '#1C2820',
           },
           headerShadowVisible: false,
           headerBackButtonDisplayMode: 'minimal',
@@ -1161,7 +888,7 @@ export default function WishlistDetailScreen() {
                 accessibilityLabel="Edit wishlist"
                 accessibilityRole="button"
               >
-                <Pencil size={20} color="#F5F0E8" strokeWidth={2} />
+                <Pencil size={20} color="#1C2820" strokeWidth={2} />
               </AnimatedPressable>
               <AnimatedPressable
                 onPress={handleShare}
@@ -1169,7 +896,7 @@ export default function WishlistDetailScreen() {
                 accessibilityLabel="Share wishlist"
                 accessibilityRole="button"
               >
-                <Share2 size={22} color="#F5F0E8" strokeWidth={2} />
+                <Share2 size={22} color="#1C2820" strokeWidth={2} />
               </AnimatedPressable>
             </View>
           ),
@@ -1224,7 +951,7 @@ export default function WishlistDetailScreen() {
               <View style={[styles.emptyState, { backgroundColor: colors.surface, borderColor: colors.border }]}>
                 <Text style={[styles.emptyTitle, { color: colors.text }]}>No items yet</Text>
                 <Text style={[styles.emptyBody, { color: colors.textSecondary }]}>
-                  Tap the + button to add gift ideas to this list.
+                  Start building your list — add gifts your child will love.
                 </Text>
               </View>
             ) : (
@@ -1248,7 +975,7 @@ export default function WishlistDetailScreen() {
         {/* FAB */}
         <AnimatedPressable
           onPress={handleAddItem}
-          style={[styles.fab, { backgroundColor: colors.primary }]}
+          style={[styles.fab, { backgroundColor: '#0F6B6F' }]}
           accessibilityLabel="Add item to wishlist"
           accessibilityRole="button"
         >
@@ -1291,7 +1018,7 @@ const sheetStyles = StyleSheet.create({
     backgroundColor: '#F5F0E8',
   },
   header: {
-    backgroundColor: '#4A7C5F',
+    backgroundColor: '#FAF7F2',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -1306,7 +1033,7 @@ const sheetStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Georgia',
-    color: '#F5F0E8',
+    color: '#1C2820',
     letterSpacing: -0.3,
   },
   closeButton: {
@@ -1389,7 +1116,7 @@ const sheetStyles = StyleSheet.create({
   birthdayEditBtn: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#1B8A8A',
+    color: '#0F6B6F',
   },
   birthdayValue: {
     fontSize: 15,
@@ -1419,155 +1146,6 @@ const sheetStyles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#5A6354',
   },
-  sectionHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    fontFamily: 'Georgia',
-    color: '#2C3B32',
-  },
-  editBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#4A7C5F',
-    backgroundColor: '#EFF5F1',
-  },
-  editBtnText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#4A7C5F',
-  },
-  addressView: {
-    gap: 10,
-  },
-  addressRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0EFEC',
-  },
-  addressLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#8E9A87',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-    width: 64,
-  },
-  addressValue: {
-    fontSize: 15,
-    color: '#2C3B32',
-    flex: 1,
-    textAlign: 'right',
-  },
-  redacted: {
-    color: '#8E9A87',
-    letterSpacing: 2,
-  },
-  revealHint: {
-    fontSize: 12,
-    color: '#8E9A87',
-    textAlign: 'center',
-    marginTop: 4,
-    fontStyle: 'italic',
-  },
-  noAddressBox: {
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 8,
-  },
-  noAddressText: {
-    fontSize: 14,
-    color: '#8E9A87',
-    fontStyle: 'italic',
-  },
-  addAddressBtn: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#4A7C5F',
-    backgroundColor: '#EFF5F1',
-  },
-  addAddressBtnText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4A7C5F',
-  },
-  editForm: {
-    gap: 14,
-  },
-  twoCol: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  field: {
-    gap: 6,
-  },
-  fieldLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#2C3B32',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  input: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#D4C9B8',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: '#2C3B32',
-  },
-  editActions: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 4,
-  },
-  cancelBtn: {
-    flex: 1,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#D4C9B8',
-    backgroundColor: '#FFFFFF',
-  },
-  cancelBtnText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#5A6354',
-  },
-  saveBtn: {
-    flex: 1,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12,
-    backgroundColor: '#1B8A8A',
-  },
-  saveBtnDisabled: {
-    opacity: 0.5,
-  },
-  saveBtnText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
 });
 
 // ─── Edit Item Modal Styles ───────────────────────────────────────────────────
@@ -1578,7 +1156,7 @@ const editStyles = StyleSheet.create({
     backgroundColor: '#F5F0E8',
   },
   header: {
-    backgroundColor: '#4A7C5F',
+    backgroundColor: '#FAF7F2',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -1593,7 +1171,7 @@ const editStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Georgia',
-    color: '#F5F0E8',
+    color: '#1C2820',
     letterSpacing: -0.3,
   },
   closeButton: {
@@ -1630,7 +1208,7 @@ const editStyles = StyleSheet.create({
   changePhotoText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#4A7C5F',
+    color: '#0F6B6F',
   },
   field: {
     gap: 8,
@@ -1682,7 +1260,7 @@ const editStyles = StyleSheet.create({
     borderBottomLeftRadius: 0,
   },
   saveButton: {
-    backgroundColor: '#1B8A8A',
+    backgroundColor: '#0F6B6F',
     borderRadius: 16,
     height: 56,
     alignItems: 'center',
@@ -1742,13 +1320,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   summaryCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     borderCurve: 'continuous',
     borderWidth: 1,
-    padding: 20,
+    padding: 24,
     alignItems: 'center',
     gap: 6,
-    boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
   },
   summaryName: {
     fontSize: 22,
@@ -1848,10 +1430,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: 'hidden',
     flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
   },
   itemImage: {
     width: 88,
     height: 88,
+    borderRadius: 10,
+    backgroundColor: '#F0EAE0',
+    margin: 10,
   },
   itemContent: {
     flex: 1,
@@ -1873,7 +1463,7 @@ const styles = StyleSheet.create({
   },
   viewItemLink: {
     fontSize: 13,
-    color: '#1B8A8A',
+    color: '#0F6B6F',
     fontWeight: '500',
     textDecorationLine: 'underline',
     marginTop: 2,
@@ -1907,6 +1497,6 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 4px 12px rgba(27,138,138,0.35)',
+    boxShadow: '0 4px 12px rgba(15,107,111,0.35)',
   },
 });

@@ -11,6 +11,9 @@ import {
   Linking,
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { useFonts } from 'expo-font';
+import { Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Gift } from 'lucide-react-native';
 import { supabase } from '@/utils/supabase';
 import type { Session } from '@supabase/supabase-js';
 
@@ -54,12 +57,6 @@ type WishlistData = {
   birthday: string | null;
 };
 
-type ChildAddress = {
-  city: string | null;
-  state: string | null;
-  country: string | null;
-};
-
 // ─── Gift card ────────────────────────────────────────────────────────────────
 
 function GiftCard({
@@ -99,7 +96,7 @@ function GiftCard({
             />
           ) : (
             <View style={styles.giftImagePlaceholder}>
-              <Text style={styles.giftPlaceholderEmoji}>🎁</Text>
+              <Gift size={36} color="#B89A8A" />
             </View>
           )}
           {item.claimed ? (
@@ -147,13 +144,13 @@ function GiftCard({
 
 export default function WebGuestScreen() {
   const { token } = useLocalSearchParams<{ token: string }>();
+  useFonts({ Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular });
   const [wishlist, setWishlist] = useState<WishlistData | null>(null);
   const [wishlistId, setWishlistId] = useState<string | null>(null);
   const [items, setItems] = useState<GiftItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [address, setAddress] = useState<ChildAddress | null>(null);
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [pendingClaimItemId, setPendingClaimItemId] = useState<string | null>(null);
 
@@ -173,13 +170,6 @@ export default function WebGuestScreen() {
     loadGiftList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
-
-  useEffect(() => {
-    if (isLoggedIn && wishlistId) {
-      console.log('[WebGuest] User logged in — fetching address for wishlist:', wishlistId);
-      loadAddress(wishlistId);
-    }
-  }, [isLoggedIn, wishlistId]);
 
   async function loadGiftList() {
     setLoading(true);
@@ -231,26 +221,6 @@ export default function WebGuestScreen() {
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function loadAddress(wid: string) {
-    console.log('[WebGuest] Fetching child_addresses for wishlist_id:', wid);
-    const { data, error: addrError } = await supabase
-      .from('child_addresses')
-      .select('city, state, country')
-      .eq('child_id', wid)
-      .maybeSingle();
-
-    if (addrError) {
-      console.log('[WebGuest] Address fetch error:', addrError.message);
-      return;
-    }
-    if (data) {
-      console.log('[WebGuest] Address loaded:', data.city, data.state, data.country);
-      setAddress(data as ChildAddress);
-    } else {
-      console.log('[WebGuest] No address found for wishlist:', wid);
     }
   }
 
@@ -316,7 +286,7 @@ export default function WebGuestScreen() {
   if (error) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorEmoji}>🎁</Text>
+        <Gift size={48} color="#B89A8A" />
         <Text style={styles.errorTitle}>Oops!</Text>
         <Text style={styles.errorMessage}>{error}</Text>
       </View>
@@ -327,22 +297,13 @@ export default function WebGuestScreen() {
 
   // ── Derived values ───────────────────────────────────────────────────────────
 
-  const claimedCount = items.filter(i => i.claimed).length;
   const totalCount = items.length;
-  const progressPercent = totalCount > 0 ? (claimedCount / totalCount) * 100 : 0;
-  const allClaimed = totalCount > 0 && claimedCount === totalCount;
 
   const formattedBirthday = wishlist.birthday
     ? new Date(wishlist.birthday + 'T00:00:00').toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric',
       })
     : null;
-
-  const hasAddress =
-    isLoggedIn && address && (address.city || address.state || address.country);
-  const addressDisplay = [address?.city, address?.state, address?.country]
-    .filter(Boolean)
-    .join(', ');
 
   // ── Render ───────────────────────────────────────────────────────────────────
 
@@ -369,27 +330,7 @@ export default function WebGuestScreen() {
               A gift list for {wishlist.person}
             </Text>
             {formattedBirthday ? (
-              <Text style={styles.heroBirthday}>🎂 {formattedBirthday}</Text>
-            ) : null}
-
-            {/* Progress */}
-            {totalCount > 0 ? (
-              <View style={styles.progressBlock}>
-                <View style={styles.progressTrack}>
-                  <View
-                    style={[
-                      styles.progressFill,
-                      { width: `${Math.round(progressPercent)}%` as any },
-                      allClaimed && styles.progressFillComplete,
-                    ]}
-                  />
-                </View>
-                <Text style={styles.progressLabel}>
-                  {allClaimed
-                    ? '🎉 All gifts claimed!'
-                    : `${claimedCount} of ${totalCount} gifts claimed`}
-                </Text>
-              </View>
+              <Text style={styles.heroBirthday}>{formattedBirthday}</Text>
             ) : null}
           </View>
 
@@ -404,7 +345,7 @@ export default function WebGuestScreen() {
 
             {items.length === 0 ? (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyEmoji}>🎁</Text>
+                <Gift size={40} color="#B89A8A" />
                 <Text style={styles.emptyText}>No gifts have been added yet.</Text>
               </View>
             ) : (
@@ -421,24 +362,9 @@ export default function WebGuestScreen() {
             )}
           </View>
 
-          {/* ── Mailing address (logged-in guests only) ── */}
-          {hasAddress ? (
-            <>
-              <View style={styles.sectionDivider} />
-              <View style={styles.section}>
-                <Text style={styles.sectionLabel}>Mailing Address</Text>
-                <View style={styles.addressCard}>
-                  <Text style={styles.addressLabel}>Ship to</Text>
-                  <Text style={styles.addressValue}>{addressDisplay}</Text>
-                </View>
-              </View>
-            </>
-          ) : null}
-
           {/* ── Download banner ── */}
           <View style={styles.sectionDivider} />
           <View style={styles.downloadBanner}>
-            <Text style={styles.downloadIcon}>🎀</Text>
             <Text style={styles.downloadTitle}>
               Create wishlists for your family
             </Text>
@@ -481,7 +407,7 @@ export default function WebGuestScreen() {
             <Text style={styles.modalCloseText}>✕</Text>
           </TouchableOpacity>
 
-          <Text style={styles.modalEmoji}>🎁</Text>
+          <Gift size={44} color="#B89A8A" style={{ marginBottom: 16 }} />
           <Text style={styles.modalTitle}>Claim this gift</Text>
           <Text style={styles.modalBody}>
             Sign in to mark this as yours so no one else buys a duplicate.
@@ -536,16 +462,14 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 15,
-    fontFamily: 'Georgia',
-    fontStyle: 'italic',
+    fontFamily: 'Poppins_400Regular',
     color: C.textSecondary,
     marginTop: 8,
   },
-  errorEmoji: { fontSize: 48 },
   errorTitle: {
     fontSize: 24,
     fontWeight: '700',
-    fontFamily: 'Georgia',
+    fontFamily: 'Poppins_700Bold',
     color: C.text,
   },
   errorMessage: {
@@ -571,8 +495,7 @@ const styles = StyleSheet.create({
     backgroundColor: C.border,
   },
   brandName: {
-    fontFamily: 'Georgia',
-    fontStyle: 'italic',
+    fontFamily: 'Poppins_400Regular',
     fontSize: 18,
     color: C.teal,
     letterSpacing: 0.2,
@@ -586,7 +509,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heroTitle: {
-    fontFamily: 'Georgia',
+    fontFamily: 'Poppins_700Bold',
     fontSize: 34,
     fontWeight: '700',
     color: C.text,
@@ -595,8 +518,7 @@ const styles = StyleSheet.create({
     lineHeight: 40,
   },
   heroSubtitle: {
-    fontFamily: 'Georgia',
-    fontStyle: 'italic',
+    fontFamily: 'Poppins_400Regular',
     fontSize: 17,
     color: C.textSecondary,
     textAlign: 'center',
@@ -607,34 +529,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 2,
   },
-  // Progress bar
-  progressBlock: {
-    marginTop: 16,
-    width: '100%',
-    alignItems: 'center',
-    gap: 8,
-  },
-  progressTrack: {
-    width: '100%',
-    height: 6,
-    backgroundColor: C.border,
-    borderRadius: 99,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: 6,
-    backgroundColor: C.teal,
-    borderRadius: 99,
-  },
-  progressFillComplete: {
-    backgroundColor: '#4CAF85',
-  },
-  progressLabel: {
-    fontSize: 13,
-    color: C.textSecondary,
-    fontWeight: '500',
-  },
-
   // ── Section divider ───────────────────────────────────────────────────────
   sectionDivider: {
     height: 1,
@@ -700,9 +594,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#EDE7DC',
   },
-  giftPlaceholderEmoji: {
-    fontSize: 36,
-  },
   // Claimed overlay on image
   claimedOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -721,7 +612,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   giftName: {
-    fontFamily: 'Georgia',
+    fontFamily: 'Poppins_600SemiBold',
     fontSize: 17,
     fontWeight: '700',
     color: C.text,
@@ -782,36 +673,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: C.border,
   },
-  emptyEmoji: { fontSize: 40 },
   emptyText: {
-    fontFamily: 'Georgia',
-    fontStyle: 'italic',
+    fontFamily: 'Poppins_400Regular',
     fontSize: 15,
     color: C.textSecondary,
     textAlign: 'center',
-  },
-
-  // ── Address card ──────────────────────────────────────────────────────────
-  addressCard: {
-    backgroundColor: C.surface,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: C.border,
-    padding: 16,
-    gap: 4,
-  },
-  addressLabel: {
-    fontSize: 11,
-    color: C.textTertiary,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    fontWeight: '600',
-  },
-  addressValue: {
-    fontFamily: 'Georgia',
-    fontSize: 16,
-    color: C.text,
-    fontWeight: '500',
   },
 
   // ── Download banner ───────────────────────────────────────────────────────
@@ -826,12 +692,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  downloadIcon: {
-    fontSize: 32,
-    marginBottom: 4,
-  },
   downloadTitle: {
-    fontFamily: 'Georgia',
+    fontFamily: 'Poppins_700Bold',
     fontSize: 22,
     fontWeight: '700',
     color: C.text,
@@ -869,16 +731,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   footerWordmark: {
-    fontFamily: 'Georgia',
-    fontStyle: 'italic',
+    fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
     color: C.teal,
     fontWeight: '600',
   },
   footerTagline: {
     fontSize: 12,
-    fontStyle: 'italic',
-    fontFamily: 'Georgia',
+    fontFamily: 'Poppins_400Regular',
     color: C.textTertiary,
   },
 
@@ -906,12 +766,8 @@ const styles = StyleSheet.create({
     color: C.text,
     fontWeight: '600',
   },
-  modalEmoji: {
-    fontSize: 44,
-    marginBottom: 16,
-  },
   modalTitle: {
-    fontFamily: 'Georgia',
+    fontFamily: 'Poppins_700Bold',
     fontSize: 28,
     fontWeight: '700',
     color: C.text,
