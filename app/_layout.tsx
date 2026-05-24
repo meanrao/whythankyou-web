@@ -109,13 +109,13 @@ function AppNavigator({ splashDone }: { splashDone: boolean }) {
             headerShown: true,
             headerBackButtonDisplayMode: "minimal",
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.primary },
-            headerTintColor: "#F5F0E8",
+            headerStyle: { backgroundColor: '#F6F1E8' },
+            headerTintColor: "#1F2A24",
             headerTitleStyle: {
               fontFamily: "Georgia",
               fontSize: 18,
               fontWeight: "600",
-              color: "#F5F0E8",
+              color: "#1F2A24",
             },
           }}
         />
@@ -143,12 +143,13 @@ function AppNavigator({ splashDone }: { splashDone: boolean }) {
           name="guest/[token]"
           options={{
             headerShown: true,
-            headerStyle: { backgroundColor: '#2A9D8F' },
-            headerTintColor: '#F5F0E8',
+            headerStyle: { backgroundColor: '#F6F1E8' },
+            headerTintColor: '#1F2A24',
             headerTitleStyle: {
               fontFamily: 'Georgia',
               fontSize: 18,
               fontWeight: '600',
+              color: '#1F2A24',
             },
             headerShadowVisible: false,
             headerBackButtonDisplayMode: 'minimal',
@@ -160,7 +161,7 @@ function AppNavigator({ splashDone }: { splashDone: boolean }) {
           options={{ headerShown: false }}
         />
       </Stack>
-      <SystemBars style="light" />
+      <SystemBars style="dark" />
     </ThemeProvider>
   );
 }
@@ -186,7 +187,7 @@ export default function RootLayout() {
 
   return (
     <DevErrorBoundary>
-      <StatusBar style="light" animated />
+      <StatusBar style="dark" animated />
       <SafeAreaProvider>
         <AuthProvider>
           <WidgetProvider>
