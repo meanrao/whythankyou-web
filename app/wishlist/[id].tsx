@@ -92,6 +92,12 @@ interface DbWishlist {
   birthday: string | null;
 }
 
+interface ClaimRecord {
+  claimer_name: string | null;
+  claimer_email: string | null;
+  created_at: string;
+}
+
 interface ApiItem {
   id: string;
   wishlist_id: string;
@@ -103,6 +109,7 @@ interface ApiItem {
   image_url: string | null;
   claimed: boolean;
   created_at: string;
+  item_claims?: ClaimRecord[];
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -431,9 +438,16 @@ function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPr
             </Text>
           ) : null}
           {isClaimed ? (
-            <View style={[styles.claimedBadge, { backgroundColor: colors.accentMuted }]}>
-              <CheckCircle size={12} color={colors.accent} strokeWidth={2} />
-              <Text style={[styles.claimedText, { color: colors.accent }]}>Claimed</Text>
+            <View style={styles.claimedSection}>
+              <View style={[styles.claimedBadge, { backgroundColor: colors.accentMuted }]}>
+                <CheckCircle size={12} color={colors.accent} strokeWidth={2} />
+                <Text style={[styles.claimedText, { color: colors.accent }]}>Claimed</Text>
+              </View>
+              {item.item_claims?.[0]?.claimer_name ? (
+                <Text style={[styles.claimerName, { color: colors.textTertiary }]}>
+                  by {item.item_claims[0].claimer_name}
+                </Text>
+              ) : null}
             </View>
           ) : null}
         </View>
@@ -740,7 +754,7 @@ export default function WishlistDetailScreen() {
         supabase.from('wishlists').select('*').eq('id', id).single(),
         supabase
           .from('wishlist_items')
-          .select('*')
+          .select('*, item_claims(claimer_name, claimer_email, created_at)')
           .eq('wishlist_id', id)
           .order('created_at', { ascending: false }),
       ]);
@@ -790,8 +804,11 @@ export default function WishlistDetailScreen() {
         { event: 'UPDATE', schema: 'public', table: 'wishlist_items', filter: `wishlist_id=eq.${id}` },
         (payload) => {
           console.log('[WishlistDetail] Realtime UPDATE received for item:', payload.new.id);
+          // Merge the updated columns into the existing item so joined data (item_claims) is preserved
           setItems((prev) =>
-            prev.map((item) => (item.id === payload.new.id ? (payload.new as ApiItem) : item))
+            prev.map((item) =>
+              item.id === payload.new.id ? { ...item, ...(payload.new as Partial<ApiItem>) } : item
+            )
           );
         }
       )
@@ -1474,6 +1491,10 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 4,
   },
+  claimedSection: {
+    marginTop: 6,
+    gap: 3,
+  },
   claimedBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1481,12 +1502,16 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    marginTop: 6,
     alignSelf: 'flex-start',
   },
   claimedText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  claimerName: {
+    fontSize: 11,
+    fontStyle: 'italic',
+    paddingLeft: 2,
   },
   fab: {
     position: 'absolute',

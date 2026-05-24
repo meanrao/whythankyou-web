@@ -352,7 +352,8 @@ Deno.serve(async (req: Request) => {
 
     if (iErr) return json({ error: iErr.message }, 500);
 
-    // Map items: derive status from item_claims presence
+    // Map items: derive status from item_claims presence.
+    // Do NOT expose claimer details (name/email) to anonymous public visitors.
     const items = (itemRows ?? []).map((item: any) => {
       const isClaimed = Array.isArray(item.item_claims) && item.item_claims.length > 0;
       return {
@@ -364,7 +365,6 @@ Deno.serve(async (req: Request) => {
         notes: item.notes,
         image_url: item.image_url,
         status: isClaimed ? "claimed" : "available",
-        claimer_name: item.item_claims?.[0]?.claimer_name ?? null,
       };
     });
 
@@ -405,8 +405,17 @@ Deno.serve(async (req: Request) => {
       return json({ error: claimErr.message, details: claimErr }, 500);
     }
 
-    // Mark the item as claimed so status reflects immediately for all viewers.
-    await supabase.from("wishlist_items").update({ claimed: true }).eq("id", item_id);
+    // Belt-and-suspenders: the trg_sync_item_claimed trigger already sets
+    // wishlist_items.claimed = true on item_claims INSERT, but we also do it
+    // here explicitly so the update is visible immediately if the trigger fires
+    // after this response is sent.
+    const { error: syncErr } = await supabase
+      .from("wishlist_items")
+      .update({ claimed: true })
+      .eq("id", item_id);
+    if (syncErr) {
+      console.error("[POST /api/claims] wishlist_items sync:", JSON.stringify(syncErr));
+    }
 
     return json({ claim }, 201);
   }
