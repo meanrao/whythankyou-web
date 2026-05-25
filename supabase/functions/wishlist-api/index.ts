@@ -136,6 +136,24 @@ function cleanProductName(raw: string): string {
     .replace(/\s{2,}/g, " ")       // collapsed whitespace
     .trim();
 
+  // ── 8. Marketing adjective removal ───────────────────────────────────────────
+  // Whole-phrase removal (order-insensitive position)
+  s = s.replace(/\bThe\s+Original\b\s*/gi, "").trim();
+  s = s.replace(/\bMusical\s+Instrument\b\s*/gi, "").trim();
+  // "Electronic" before an inherently-electronic instrument noun
+  s = s.replace(/\bElectronic\b\s+(?=(?:Keyboard|Synthesizer|Synth|Drum\s+Machine|Beat\s+Machine|Theremin|Organ|Piano)\b)/gi, "").trim();
+  // "Official" — always filler regardless of position
+  s = s.replace(/\bOfficial\b\s*/gi, "").trim();
+  // Filler adjectives that are safe to drop mid-title but NOT at start
+  // (guards against stripping brand-name-as-adjective at the very beginning)
+  s = s.replace(/(?<=\S\s)\b(?:Premium|Ultimate|Deluxe|Professional|Amazing|Perfect|Best|Great)\b\s*/gi, "").trim();
+
+  // Re-tidy after removals (may have introduced double spaces or orphan punctuation)
+  s = s
+    .replace(/[,.:;|–—]+$/, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
   return s.length >= 3 ? s : raw.trim();
 }
 

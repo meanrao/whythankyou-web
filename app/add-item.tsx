@@ -86,6 +86,16 @@ function cleanProductName(raw: string): string {
   // 7. Final tidy
   s = s.replace(/[,.:;|–—]+$/, '').replace(/\s{2,}/g, ' ').trim();
 
+  // 8. Marketing adjective removal
+  s = s.replace(/\bThe\s+Original\b\s*/gi, '').trim();
+  s = s.replace(/\bMusical\s+Instrument\b\s*/gi, '').trim();
+  s = s.replace(/\bElectronic\b\s+(?=(?:Keyboard|Synthesizer|Synth|Drum\s+Machine|Beat\s+Machine|Theremin|Organ|Piano)\b)/gi, '').trim();
+  s = s.replace(/\bOfficial\b\s*/gi, '').trim();
+  s = s.replace(/(?<=\S\s)\b(?:Premium|Ultimate|Deluxe|Professional|Amazing|Perfect|Best|Great)\b\s*/gi, '').trim();
+
+  // Re-tidy after removals
+  s = s.replace(/[,.:;|–—]+$/, '').replace(/\s{2,}/g, ' ').trim();
+
   return s.length >= 3 ? s : raw.trim();
 }
 
