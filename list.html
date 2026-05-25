@@ -485,6 +485,9 @@
       padding: 16px 16px 8px;
       display: flex;
       flex-direction: column;
+      /* Prevents the body from collapsing when title + notes are both short,
+         which would push the status badge too close to the CTA row */
+      min-height: 110px;
     }
 
     .card-meta {
@@ -508,19 +511,30 @@
       color: var(--muted);
     }
 
+    /* Mobile default: 3-line clamp */
     .card-name {
       font-size: 15px;
       font-weight: 600;
       color: var(--dark);
       line-height: 1.4;
+      /* Hard ceiling: belt-and-suspenders for browsers that don't honour
+         -webkit-line-clamp inside flex columns. 1.4em × 3 lines = 4.2em */
+      max-height: calc(1.4em * 3);
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
     }
 
+    /* Desktop 2-col / 3-col grid: tighter 2-line clamp */
     @media (min-width: 560px) {
-      .card-name { -webkit-line-clamp: 2; }
+      .card-name {
+        max-height: calc(1.4em * 2);
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
     }
 
     .card-notes {
@@ -528,10 +542,11 @@
       color: var(--muted);
       line-height: 1.5;
       margin-top: 6px;
+      max-height: calc(1.5em * 2);
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
 
     .card-status {
