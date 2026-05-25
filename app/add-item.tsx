@@ -42,8 +42,51 @@ const C = {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function cleanProductName(raw: string): string {
-  const cleaned = raw.replace(/^[^:–\-]{1,40}[:\-–]\s*/i, '').trim();
-  return cleaned.length > 0 ? cleaned : raw;
+  let s = raw.trim();
+  if (!s) return raw;
+
+  // 1. Leading site-name prefix
+  const sitePrefix = s.replace(/^[^:–\-]{1,30}[:\-–]\s*/i, '').trim();
+  if (sitePrefix.length > 0) s = sitePrefix;
+
+  // 2. Author/publisher suffix
+  s = s.replace(/:\s*[A-Z][a-z'-]+,\s+[A-Z][a-z'-]+.*$/, '').trim();
+
+  // 3. Inline SEO filler
+  const filler: RegExp[] = [
+    /,?\s*(?:Perfect|Great|Amazing|Best|Unique)\s+Gifts?\s+for\b[^|:–—]*/gi,
+    /,?\s*Gifts?\s+for\s+(?:Kids?(?:\s+and\s+Adults?)?|Boys?|Girls?|(?:Him|Her|Them))\b[^|:–—]*/gi,
+    /,?\s*for\s+Kids?\s+and\s+Adults?\b[^|:–—]*/gi,
+    /,?\s*for\s+(?:Boys?|Girls?|Kids?|Him|Her|Them|Everyone)\b(?:\s+\d[^|:–—]*)?/gi,
+    /,?\s*(?:for\s+)?Ages?\s+\d+\s*[-–—+]\s*\d*\+?/gi,
+    /,?\s*for\s+\d+\s+to\s+\d+\s+[Yy]ear/gi,
+    /,?\s*\d+\s*[-–]\s*\d+\s*[Yy]ears?\s+[Oo]ld/gi,
+    /,?\s*(?:Great\s+)?Coloring\s+Pages?\s+for\b[^|:–—]*/gi,
+    /\s*\(\d+\s*(?:Pieces?|Packs?|Sets?|Count|PCS|CT)\)/gi,
+    /,?\s*ISBN(?:-1[03])?\s*:?\s*[\d-X]{9,17}/gi,
+  ];
+  for (const re of filler) s = s.replace(re, '').trim();
+
+  // 4. Pipe split
+  if (s.includes('|')) {
+    const parts = s.split('|').map(p => p.trim()).filter(p => p.length >= 4);
+    if (parts.length > 0) s = parts[0];
+  }
+
+  // 5. Spaced em/en dash
+  const dashParts = s.split(/\s[–—]\s/);
+  if (dashParts.length > 1 && dashParts[0].trim().length >= 8) s = dashParts[0].trim();
+
+  // 6. Trailing retail-category suffix
+  s = s.replace(
+    /:\s*(?:Books?|Electronics?|Toys?\s*(?:&|and)\s*Games?|Sports?\s*(?:&|and)\s*Outdoors?|Clothing|Amazon\.com|Amazon)\s*$/i,
+    '',
+  ).trim();
+
+  // 7. Final tidy
+  s = s.replace(/[,.:;|–—]+$/, '').replace(/\s{2,}/g, ' ').trim();
+
+  return s.length >= 3 ? s : raw.trim();
 }
 
 function resolveImageSource(

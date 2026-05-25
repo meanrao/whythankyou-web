@@ -60,12 +60,83 @@ function parsePrice(raw: string | null): number | null {
 }
 
 /**
- * Strip site-name prefixes like "Amazon.com: ", "Amazon - ", "Site: ", etc.
- * Only applied if the result is non-empty.
+ * Clean a raw scraped product title into a short, human-readable display name.
+ *
+ * Rules applied in order:
+ *  1. Strip leading site-name prefix  e.g. "Amazon.com: "
+ *  2. Strip author / publisher suffix  e.g. ": Smith, Jane: Books"
+ *  3. Remove inline SEO filler phrases (gift marketing, age ranges, etc.)
+ *  4. Split on pipe `|` — keep only the first segment
+ *  5. Split on spaced em/en dash — keep first segment if it's meaningful
+ *  6. Strip trailing retail-category suffix  e.g. ": Books" / ": Toys & Games"
+ *  7. Final tidy-up (trailing punctuation, whitespace)
+ *
+ * The original title is never written back to the DB; the cleaned value
+ * becomes the editable `name` field the user sees and can override.
  */
-function cleanProductName(name: string): string {
-  const cleaned = name.replace(/^[^:–\-]{1,30}[:\-–]\s*/i, "").trim();
-  return cleaned.length > 0 ? cleaned : name;
+function cleanProductName(raw: string): string {
+  let s = raw.trim();
+  if (!s) return raw;
+
+  // ── 1. Leading site-name prefix ─────────────────────────────────────────────
+  // "Amazon.com: Product" → "Product"   "Target - Product" → "Product"
+  const sitePrefix = s.replace(/^[^:–\-]{1,30}[:\-–]\s*/i, "").trim();
+  if (sitePrefix.length > 0) s = sitePrefix;
+
+  // ── 2. Author / publisher suffix (Amazon books) ──────────────────────────────
+  // ": Lastname, Firstname: Books"  or  ": Lastname, Firstname (Author)"
+  s = s
+    .replace(/:\s*[A-Z][a-záéíóúàèìòùñü'-]+,\s+[A-Z][a-záéíóúàèìòùñü'-]+.*$/u, "")
+    .trim();
+
+  // ── 3. Inline SEO filler phrases ─────────────────────────────────────────────
+  const fillerPatterns: RegExp[] = [
+    // Gift marketing
+    /,?\s*(?:Perfect|Great|Amazing|Best|Unique)\s+Gifts?\s+for\b[^|:–—]*/gi,
+    /,?\s*Gifts?\s+for\s+(?:Kids?(?:\s+and\s+Adults?)?|Boys?|Girls?|(?:Him|Her|Them))\b[^|:–—]*/gi,
+    /,?\s*for\s+Kids?\s+and\s+Adults?\b[^|:–—]*/gi,
+    /,?\s*for\s+(?:Boys?|Girls?|Kids?|Him|Her|Them|Everyone)\b(?:\s+\d[^|:–—]*)?/gi,
+    // Age ranges
+    /,?\s*(?:for\s+)?Ages?\s+\d+\s*[-–—+]\s*\d*\+?/gi,
+    /,?\s*for\s+\d+\s+to\s+\d+\s+[Yy]ear/gi,
+    /,?\s*\d+\s*[-–]\s*\d+\s*[Yy]ears?\s+[Oo]ld/gi,
+    // Coloring/activity book filler
+    /,?\s*(?:Great\s+)?Coloring\s+Pages?\s+for\b[^|:–—]*/gi,
+    /,?\s*Activity\s+(?:Book|Pages?)\s+for\b[^|:–—]*/gi,
+    // Generic count/size clutter in parentheses
+    /\s*\(\d+\s*(?:Pieces?|Packs?|Sets?|Count|PCS|CT)\)/gi,
+    // ISBN
+    /,?\s*ISBN(?:-1[03])?\s*:?\s*[\d-X]{9,17}/gi,
+  ];
+  for (const re of fillerPatterns) {
+    s = s.replace(re, "").trim();
+  }
+
+  // ── 4. Pipe split — take first non-trivial segment ───────────────────────────
+  if (s.includes("|")) {
+    const parts = s.split("|").map((p) => p.trim()).filter((p) => p.length >= 4);
+    if (parts.length > 0) s = parts[0];
+  }
+
+  // ── 5. Spaced em/en dash — keep first segment if substantive ─────────────────
+  const dashParts = s.split(/\s[–—]\s/);
+  if (dashParts.length > 1 && dashParts[0].trim().length >= 8) {
+    s = dashParts[0].trim();
+  }
+
+  // ── 6. Trailing retail-category suffix ───────────────────────────────────────
+  s = s.replace(
+    /:\s*(?:Books?|Electronics?|Toys?\s*(?:&|and)\s*Games?|Sports?\s*(?:&|and)\s*Outdoors?|Kitchen\s*(?:&|and)\s*Dining|Home\s*(?:&|and)\s*Garden|Clothing|Apparel|Amazon\.com|Amazon)\s*$/i,
+    "",
+  ).trim();
+
+  // ── 7. Final tidy ────────────────────────────────────────────────────────────
+  s = s
+    .replace(/[,.:;|–—]+$/, "")   // trailing separators
+    .replace(/\s{2,}/g, " ")       // collapsed whitespace
+    .trim();
+
+  return s.length >= 3 ? s : raw.trim();
 }
 
 // Domain-to-store-name lookup table
