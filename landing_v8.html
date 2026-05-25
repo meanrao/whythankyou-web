@@ -36,9 +36,7 @@ nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(246,241,232,0.0);
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
+  background: transparent;
   padding: 0 2rem;
   height: 64px;
   display: flex;
@@ -81,7 +79,7 @@ nav.scrolled .nav-logo { color: var(--teal); }
 nav.scrolled .nav-cta { background: var(--teal); color: white; }
 .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
 
-/* ── HERO — full-bleed cinematic ── */
+/* ── HERO ── */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -101,22 +99,21 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
   object-fit: cover;
   object-position: center top;
 }
-/* gradient overlay: dark on the left for text legibility, clearing on the right */
 .hero-bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
     linear-gradient(to right,
-      rgba(10, 20, 16, 0.76) 0%,
-      rgba(10, 20, 16, 0.60) 38%,
-      rgba(10, 20, 16, 0.22) 62%,
-      rgba(10, 20, 16, 0.04) 80%,
+      rgba(10,20,16,0.78) 0%,
+      rgba(10,20,16,0.62) 36%,
+      rgba(10,20,16,0.20) 60%,
+      rgba(10,20,16,0.04) 78%,
       transparent 100%
     ),
     linear-gradient(to top,
-      rgba(10, 20, 16, 0.35) 0%,
-      transparent 40%
+      rgba(10,20,16,0.40) 0%,
+      transparent 38%
     );
 }
 
@@ -134,7 +131,7 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
 }
 
 .hero-left {
-  max-width: 520px;
+  max-width: 510px;
   padding: 5rem 0;
 }
 
@@ -142,7 +139,7 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.8px;
-  color: rgba(255,255,255,0.60);
+  color: rgba(255,255,255,0.55);
   text-transform: uppercase;
   margin-bottom: 1.25rem;
   opacity: 0;
@@ -156,29 +153,29 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
   color: white;
   line-height: 1.0;
   letter-spacing: -1px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
   opacity: 0;
   animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
 }
 .hero-wordmark .coral { color: var(--coral); }
 
 .hero-headline {
-  font-size: clamp(20px, 2.4vw, 28px);
+  font-size: clamp(19px, 2.2vw, 26px);
   font-weight: 600;
-  color: rgba(255,255,255,0.92);
-  line-height: 1.35;
-  margin-bottom: 1.1rem;
+  color: rgba(255,255,255,0.90);
+  line-height: 1.38;
+  margin-bottom: 1rem;
   opacity: 0;
   animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.3s forwards;
 }
 
 .hero-sub {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
-  color: rgba(255,255,255,0.72);
+  color: rgba(255,255,255,0.68);
   margin-bottom: 2.25rem;
-  max-width: 440px;
-  line-height: 1.75;
+  max-width: 420px;
+  line-height: 1.78;
   opacity: 0;
   animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.4s forwards;
 }
@@ -207,26 +204,26 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
 
 .btn-secondary {
   background: transparent;
-  color: rgba(255,255,255,0.88);
+  color: rgba(255,255,255,0.85);
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 15px;
   padding: 14px 28px;
   border-radius: 28px;
-  border: 1.5px solid rgba(255,255,255,0.40);
+  border: 1.5px solid rgba(255,255,255,0.38);
   text-decoration: none;
   transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
   display: inline-block;
 }
-.btn-secondary:hover { border-color: rgba(255,255,255,0.80); background: rgba(255,255,255,0.10); transform: translateY(-2px); }
+.btn-secondary:hover { border-color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.10); transform: translateY(-2px); }
 
-/* Phone proof — bottom-right of hero */
+/* Hero phone proof */
 .hero-phone-proof {
   position: absolute;
-  bottom: 3.5rem;
-  right: 3.5rem;
+  bottom: 4rem;
+  right: 4rem;
   z-index: 3;
-  width: 200px;
+  width: 230px;
   opacity: 0;
   animation: slideUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.85s forwards;
 }
@@ -236,11 +233,10 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
   border-radius: 36px;
   overflow: hidden;
   box-shadow:
-    0 32px 72px rgba(0,0,0,0.30),
-    0 8px 24px rgba(0,0,0,0.14),
-    0 0 0 1px rgba(0,0,0,0.08);
+    0 32px 72px rgba(0,0,0,0.28),
+    0 8px 24px rgba(0,0,0,0.12),
+    0 0 0 1px rgba(0,0,0,0.07);
   background: var(--surface);
-  position: relative;
 }
 .phone-frame img {
   display: block;
@@ -249,9 +245,9 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
   border-radius: 36px;
 }
 
-/* ── SECTIONS SHARED ── */
-.wrap { max-width: 1100px; margin: 0 auto; padding: 6rem 2rem; }
-.wrap-sm { max-width: 760px; margin: 0 auto; padding: 6rem 2rem; }
+/* ── SHARED LAYOUT ── */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 5rem 2rem; }
+.wrap-sm { max-width: 720px; margin: 0 auto; padding: 5rem 2rem; }
 
 .eyebrow {
   font-size: 11px;
@@ -265,90 +261,90 @@ nav.scrolled .nav-cta { background: var(--teal); color: white; }
 h2 {
   font-family: 'Fraunces', serif;
   font-weight: 900;
-  font-size: clamp(32px, 4.5vw, 52px);
+  font-size: clamp(30px, 4vw, 48px);
   color: var(--teal);
-  line-height: 1.08;
+  line-height: 1.1;
   margin-bottom: 1rem;
   letter-spacing: -0.5px;
 }
 h2 .coral { color: var(--coral); }
 
 .section-lead {
-  font-size: 17px;
+  font-size: 16px;
   color: var(--muted);
-  max-width: 500px;
-  margin-bottom: 3rem;
-  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 2rem;
+  line-height: 1.72;
 }
 
-/* ── HOW IT WORKS ── */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.step-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--coral);
-  border-radius: 20px;
-  padding: 2rem;
-  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
-}
-.step-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(15,107,111,0.10); }
-
-.step-num {
-  font-family: 'Fraunces', serif;
-  font-weight: 900;
-  font-size: 52px;
-  color: var(--cream2);
-  line-height: 1;
-  margin-bottom: 0.5rem;
-}
-.step-title { font-weight: 700; font-size: 17px; color: var(--dark); margin-bottom: 0.5rem; }
-.step-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-/* ── SCREENSHOT GALLERY ── */
-.screenshots-section {
-  background: var(--cream2);
+/* ── 3-PHONE SHOWCASE ── */
+.showcase-section {
+  background: radial-gradient(ellipse at 50% 65%, #EAE3D6 0%, var(--cream2) 72%);
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 
-.screenshots-strip {
-  display: flex;
-  gap: 22px;
-  overflow-x: auto;
-  padding: 0.5rem 0 1.5rem;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  align-items: flex-start;
-  margin-top: 3rem;
-}
-.screenshots-strip::-webkit-scrollbar { display: none; }
-
-.screenshot-item {
-  flex-shrink: 0;
-  width: 195px;
+.showcase-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem 4rem;
   text-align: center;
 }
 
-.screenshot-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  margin-top: 14px;
-  letter-spacing: 0.2px;
+.showcase-phones {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: 3.5rem;
+  position: relative;
 }
 
-@media (min-width: 1060px) {
-  .screenshots-strip {
-    overflow-x: visible;
-    justify-content: center;
-  }
+.sc-phone {
+  flex-shrink: 0;
+  position: relative;
+  transition: transform 0.3s ease;
 }
 
-/* ── SIMPLE STORY SECTION ── */
+.sc-phone-l {
+  width: 200px;
+  transform: rotate(-8deg) translateY(28px);
+  z-index: 1;
+  margin-right: -32px;
+  opacity: 0.85;
+}
+.sc-phone-l .phone-frame {
+  box-shadow:
+    0 20px 48px rgba(0,0,0,0.18),
+    0 4px 12px rgba(0,0,0,0.08),
+    0 0 0 1px rgba(0,0,0,0.06);
+}
+
+.sc-phone-c {
+  width: 248px;
+  z-index: 3;
+}
+.sc-phone-c .phone-frame {
+  box-shadow:
+    0 40px 88px rgba(15,107,111,0.22),
+    0 12px 32px rgba(0,0,0,0.14),
+    0 0 0 1px rgba(0,0,0,0.07);
+}
+
+.sc-phone-r {
+  width: 200px;
+  transform: rotate(8deg) translateY(28px);
+  z-index: 2;
+  margin-left: -32px;
+  opacity: 0.85;
+}
+.sc-phone-r .phone-frame {
+  box-shadow:
+    0 20px 48px rgba(0,0,0,0.18),
+    0 4px 12px rgba(0,0,0,0.08),
+    0 0 0 1px rgba(0,0,0,0.06);
+}
+
+/* ── STORY SECTION ── */
 .story-section {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -357,18 +353,18 @@ h2 .coral { color: var(--coral); }
 .story-inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 6rem 2rem;
+  padding: 5rem 2rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6rem;
+  gap: 5rem;
   align-items: center;
 }
 
 .story-steps {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
-  margin-top: 2rem;
+  gap: 1.5rem;
+  margin-top: 1.75rem;
 }
 
 .story-step {
@@ -378,21 +374,21 @@ h2 .coral { color: var(--coral); }
 }
 
 .story-step-num {
-  width: 34px; height: 34px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   background: var(--teal);
   color: white;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .story-step-text strong {
   display: block;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   color: var(--dark);
   margin-bottom: 3px;
 }
@@ -408,51 +404,51 @@ h2 .coral { color: var(--coral); }
   align-items: center;
 }
 .story-phone {
-  width: 280px;
+  width: 270px;
   flex-shrink: 0;
 }
 
 /* ── FEATURES ── */
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
 }
 
 .feature-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 1.75rem;
+  padding: 2rem 1.75rem;
   transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
 }
 .feature-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(15,107,111,0.08); }
 
 .feature-icon-wrap {
-  width: 44px; height: 44px;
-  border-radius: 12px;
+  width: 40px; height: 40px;
+  border-radius: 10px;
   background: #E8F3F3;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 1rem;
 }
-.feature-icon-wrap svg { width: 22px; height: 22px; stroke: var(--teal); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.feature-icon-wrap svg { width: 20px; height: 20px; stroke: var(--teal); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-.feature-title { font-weight: 700; font-size: 15px; color: var(--dark); margin-bottom: 0.4rem; }
+.feature-title { font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 0.35rem; }
 .feature-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
 /* ── OCCASIONS ── */
 .occasions-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 2rem;
+  gap: 8px;
+  margin-top: 1.75rem;
 }
 
 .occasion-pill {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 40px;
-  padding: 10px 22px;
+  padding: 9px 20px;
   font-size: 14px;
   font-weight: 600;
   color: var(--dark);
@@ -462,15 +458,15 @@ h2 .coral { color: var(--coral); }
   align-items: center;
   gap: 8px;
 }
-.occasion-pill svg { width: 16px; height: 16px; stroke: var(--teal-light); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-.occasion-pill:hover { background: var(--teal); color: white; border-color: var(--teal); transform: scale(1.04); }
+.occasion-pill svg { width: 15px; height: 15px; stroke: var(--teal-light); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.occasion-pill:hover { background: var(--teal); color: white; border-color: var(--teal); transform: scale(1.03); }
 .occasion-pill:hover svg { stroke: white; }
 
 /* ── PRIVACY ── */
 .privacy-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.25rem;
 }
 
 .privacy-card {
@@ -483,34 +479,35 @@ h2 .coral { color: var(--coral); }
 .privacy-card:hover { transform: translateY(-3px); }
 
 .privacy-icon-wrap {
-  width: 44px; height: 44px;
-  border-radius: 12px;
+  width: 40px; height: 40px;
+  border-radius: 10px;
   background: var(--surface);
   border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 1rem;
 }
-.privacy-icon-wrap svg { width: 20px; height: 20px; stroke: var(--teal); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.privacy-icon-wrap svg { width: 18px; height: 18px; stroke: var(--teal); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-.privacy-title { font-weight: 700; font-size: 15px; color: var(--dark); margin-bottom: 0.4rem; }
+.privacy-title { font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 0.35rem; }
 .privacy-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
 /* ── TESTIMONIALS ── */
 .testimonials-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 2.5rem;
 }
 
 .testimonial-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 1.75rem;
+  padding: 2rem;
 }
 
-.testimonial-stars { color: var(--coral); font-size: 13px; letter-spacing: 2px; margin-bottom: 1rem; }
-.testimonial-text { font-size: 14px; color: var(--dark); line-height: 1.75; margin-bottom: 1.25rem; font-style: italic; }
+.testimonial-stars { color: var(--coral); font-size: 12px; letter-spacing: 2.5px; margin-bottom: 0.9rem; }
+.testimonial-text { font-size: 14px; color: var(--dark); line-height: 1.78; margin-bottom: 1.25rem; font-style: italic; }
 .testimonial-author { font-size: 12px; font-weight: 600; color: var(--muted); }
 
 /* ── FAQ ── */
@@ -520,7 +517,7 @@ h2 .coral { color: var(--coral); }
   width: 100%;
   background: none;
   border: none;
-  padding: 1.25rem 0;
+  padding: 1.2rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -556,24 +553,24 @@ h2 .coral { color: var(--coral); }
 }
 .faq-item.open .faq-a { grid-template-rows: 1fr; }
 .faq-a-inner { overflow: hidden; }
-.faq-a-inner p { padding-bottom: 1.25rem; font-size: 14px; color: var(--muted); line-height: 1.7; }
+.faq-a-inner p { padding-bottom: 1.2rem; font-size: 14px; color: var(--muted); line-height: 1.7; }
 
 /* ── CTA ── */
 .cta-section {
   background: var(--teal);
-  padding: 7rem 2rem;
+  padding: 5.5rem 2rem;
   text-align: center;
 }
 .cta-section h2 { color: white; }
-.cta-section .section-lead { color: rgba(255,255,255,0.72); margin: 0 auto 2.5rem; }
+.cta-section .section-lead { color: rgba(255,255,255,0.72); margin: 0 auto 2.25rem; }
 
 .btn-cta-white {
   background: white;
   color: var(--teal);
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  padding: 16px 36px;
+  font-size: 15px;
+  padding: 15px 34px;
   border-radius: 28px;
   text-decoration: none;
   display: inline-block;
@@ -584,7 +581,7 @@ h2 .coral { color: var(--coral); }
 /* ── FOOTER ── */
 footer {
   background: var(--dark);
-  padding: 3.5rem 2rem 2rem;
+  padding: 3rem 2rem 2rem;
 }
 
 .footer-inner {
@@ -603,13 +600,13 @@ footer {
 .footer-brand {
   font-family: 'Fraunces', serif;
   font-weight: 900;
-  font-size: 22px;
+  font-size: 20px;
   color: white;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
   letter-spacing: -0.5px;
 }
 .footer-brand .coral { color: var(--coral); }
-.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.45); }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.40); }
 
 .footer-links { display: flex; gap: 3rem; flex-wrap: wrap; }
 
@@ -618,13 +615,13 @@ footer {
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.30);
   margin-bottom: 0.75rem;
 }
 .footer-col a {
   display: block;
   font-size: 13px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.50);
   text-decoration: none;
   margin-bottom: 0.45rem;
   transition: color 0.15s;
@@ -635,7 +632,7 @@ footer {
   max-width: 1100px;
   margin: 0 auto;
   font-size: 12px;
-  color: rgba(255,255,255,0.28);
+  color: rgba(255,255,255,0.25);
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -645,18 +642,14 @@ footer {
 /* ── SCROLL REVEAL ── */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
 }
 .reveal.visible { opacity: 1; transform: none; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: none; }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
 }
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(28px); }
@@ -664,20 +657,31 @@ footer {
 }
 
 /* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 900px) {
   .hero-inner { padding: 0 1.5rem; }
   .hero-left { padding: 5rem 0 10rem; max-width: 100%; }
-  .hero-phone-proof { width: 140px; right: 1.25rem; bottom: 2rem; }
+  .hero-phone-proof { width: 150px; right: 1.25rem; bottom: 2rem; }
   .story-inner { grid-template-columns: 1fr; gap: 3rem; }
   .story-screenshot { order: -1; }
   .story-phone { width: 240px; }
+  .sc-phone-l, .sc-phone-r { width: 160px; }
+  .sc-phone-c { width: 200px; }
   .wrap { padding: 4rem 1.5rem; }
   .wrap-sm { padding: 4rem 1.5rem; }
+  .showcase-inner { padding: 4rem 1.5rem 3rem; }
   nav { padding: 0 1.25rem; }
 }
 
 @media (max-width: 500px) {
   .hero-phone-proof { display: none; }
+  .sc-phone-l, .sc-phone-r { display: none; }
+  .sc-phone-c { width: 260px; }
+  .features-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -686,10 +690,10 @@ footer {
 <!-- NAV -->
 <nav id="main-nav">
   <a href="#" class="nav-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></a>
-  <a href="#download" class="nav-cta">Get the App — Free</a>
+  <a href="#download" class="nav-cta">Get the App &mdash; Free</a>
 </nav>
 
-<!-- HERO — full-bleed cinematic family image -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-bg">
     <img src="hero.png" alt="Family celebrating a birthday, child opening a gift with joy">
@@ -703,91 +707,49 @@ footer {
       <p class="hero-sub">Create simple wishlists for birthdays, holidays, and special moments. Share one link so family knows what to buy &mdash; and what&rsquo;s already been picked.</p>
       <div class="hero-actions">
         <a href="#download" class="btn-primary">Get the App &mdash; Free</a>
-        <a href="#how" class="btn-secondary">See how it works</a>
+        <a href="#story" class="btn-secondary">See how it works</a>
       </div>
     </div>
   </div>
 
-  <!-- One real app screenshot anchored to bottom-right -->
   <div class="hero-phone-proof">
     <div class="phone-frame">
-      <img src="assets/app-list-detail.png" alt="Gift list detail inside the app">
+      <img src="assets/app-list-detail.png" alt="Gift list inside the app">
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<div id="how" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-  <div class="wrap">
-    <p class="eyebrow reveal">How it works</p>
-    <h2 class="reveal">Three steps to<br>perfect gifts<span class="coral">.</span></h2>
-    <p class="section-lead reveal">Your family never gives a wrong gift again.</p>
-    <div class="steps">
-      <div class="step-card reveal" style="transition-delay:0s">
-        <div class="step-num">1</div>
-        <div class="step-title">Create a list</div>
-        <div class="step-body">Add a recipient profile with sizes and interests. Then paste links from any store &mdash; Amazon, Target, LEGO, Etsy &mdash; anywhere.</div>
-      </div>
-      <div class="step-card reveal" style="transition-delay:0.08s">
-        <div class="step-num">2</div>
-        <div class="step-title">Share the link</div>
-        <div class="step-body">Send one link to grandparents, aunts, uncles &mdash; anyone. No app required. The list opens beautifully in any browser.</div>
-      </div>
-      <div class="step-card reveal" style="transition-delay:0.16s">
-        <div class="step-num">3</div>
-        <div class="step-title">They claim, you relax</div>
-        <div class="step-body">Family taps &ldquo;I&rsquo;ll Get This&rdquo; on a gift. It&rsquo;s marked taken instantly so nobody doubles up. The list owner will be in touch if shipping details are needed.</div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- 3-PHONE SHOWCASE -->
+<div class="showcase-section" id="screenshots">
+  <div class="showcase-inner">
+    <p class="eyebrow reveal">The app</p>
+    <h2 class="reveal">A wishlist that feels<br>easy for everyone<span class="coral">.</span></h2>
+    <p class="section-lead reveal" style="margin: 0 auto 0; max-width: 460px;">From creating a list to sharing it with family, every screen is designed to feel simple, warm, and clear.</p>
 
-<!-- SCREENSHOT GALLERY -->
-<div class="screenshots-section" id="screenshots">
-  <div class="wrap">
-    <p class="eyebrow reveal" style="text-align:center">See it in action</p>
-    <h2 class="reveal" style="text-align:center">A wishlist that feels<br>easy for everyone<span class="coral">.</span></h2>
-    <p class="section-lead reveal" style="text-align:center; margin: 0 auto; max-width: 520px;">From creating a list to sharing it with family, every screen is designed to feel simple, warm, and clear.</p>
-    <div class="screenshots-strip reveal" style="transition-delay:0.1s">
-      <div class="screenshot-item">
+    <div class="showcase-phones reveal" style="transition-delay:0.1s">
+      <div class="sc-phone sc-phone-l">
         <div class="phone-frame">
           <img src="assets/app-dashboard.png" alt="Wishlists dashboard">
         </div>
-        <p class="screenshot-label">Your wishlists</p>
       </div>
-      <div class="screenshot-item">
+      <div class="sc-phone sc-phone-c">
         <div class="phone-frame">
           <img src="assets/app-list-detail.png" alt="Gift list detail">
         </div>
-        <p class="screenshot-label">Gift list</p>
       </div>
-      <div class="screenshot-item">
-        <div class="phone-frame">
-          <img src="assets/app-new-list.png" alt="Create a new list">
-        </div>
-        <p class="screenshot-label">Create a list</p>
-      </div>
-      <div class="screenshot-item">
+      <div class="sc-phone sc-phone-r">
         <div class="phone-frame">
           <img src="assets/app-share-list.png" alt="Share your list">
         </div>
-        <p class="screenshot-label">Share it</p>
-      </div>
-      <div class="screenshot-item">
-        <div class="phone-frame">
-          <img src="assets/app-recipient-profile.png" alt="Recipient profile">
-        </div>
-        <p class="screenshot-label">Recipient profile</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- SIMPLE STORY -->
-<div class="story-section">
+<!-- STORY -->
+<div class="story-section" id="story">
   <div class="story-inner">
     <div>
-      <p class="eyebrow reveal">How it actually feels</p>
       <h2 class="reveal">Simple for you.<br>Simple for them<span class="coral">.</span></h2>
       <div class="story-steps">
         <div class="story-step reveal" style="transition-delay:0s">
@@ -797,21 +759,21 @@ footer {
             <p>One link covers everyone &mdash; no texting ten people individually.</p>
           </div>
         </div>
-        <div class="story-step reveal" style="transition-delay:0.08s">
+        <div class="story-step reveal" style="transition-delay:0.07s">
           <div class="story-step-num">2</div>
           <div class="story-step-text">
             <strong>They choose a gift.</strong>
             <p>Family sees sizes, prices, and ideas. Everything they need to shop with confidence.</p>
           </div>
         </div>
-        <div class="story-step reveal" style="transition-delay:0.16s">
+        <div class="story-step reveal" style="transition-delay:0.14s">
           <div class="story-step-num">3</div>
           <div class="story-step-text">
             <strong>They tap &ldquo;I&rsquo;ll Get This.&rdquo;</strong>
             <p>It&rsquo;s marked taken so no one else buys the same thing. No account needed.</p>
           </div>
         </div>
-        <div class="story-step reveal" style="transition-delay:0.24s">
+        <div class="story-step reveal" style="transition-delay:0.21s">
           <div class="story-step-num">4</div>
           <div class="story-step-text">
             <strong>You keep the surprise.</strong>
@@ -824,7 +786,7 @@ footer {
     <div class="story-screenshot reveal" style="transition-delay:0.1s">
       <div class="story-phone">
         <div class="phone-frame">
-          <img src="assets/app-share-list.png" alt="Public wishlist view — family member choosing a gift">
+          <img src="assets/app-share-list.png" alt="Public wishlist — family member choosing a gift">
         </div>
       </div>
     </div>
@@ -834,31 +796,23 @@ footer {
 <!-- FEATURES -->
 <div style="background: var(--cream); border-bottom: 1px solid var(--border);">
   <div class="wrap">
-    <p class="eyebrow reveal">Features</p>
     <h2 class="reveal">Everything a family<br>gift list needs<span class="coral">.</span></h2>
-    <div class="features-grid">
+    <div class="features-grid" style="margin-top:2rem">
       <div class="feature-card reveal" style="transition-delay:0s">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        </div>
-        <div class="feature-title">Recipient profiles with sizes</div>
-        <div class="feature-body">Clothing size, shoe size, age, interests &mdash; everything a gift giver needs to shop with confidence.</div>
-      </div>
-      <div class="feature-card reveal" style="transition-delay:0.08s">
         <div class="feature-icon-wrap">
           <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <div class="feature-title">No duplicate gifts, ever</div>
         <div class="feature-body">When someone claims a gift it&rsquo;s marked taken. No more three people buying the same LEGO set.</div>
       </div>
-      <div class="feature-card reveal" style="transition-delay:0.16s">
+      <div class="feature-card reveal" style="transition-delay:0.07s">
         <div class="feature-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
         </div>
         <div class="feature-title">Add gifts from any store</div>
         <div class="feature-body">Paste any product URL and Why, Thank You! pulls the name, photo, and price automatically.</div>
       </div>
-      <div class="feature-card reveal" style="transition-delay:0.24s">
+      <div class="feature-card reveal" style="transition-delay:0.14s">
         <div class="feature-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
@@ -872,7 +826,6 @@ footer {
 <!-- OCCASIONS -->
 <div style="background: var(--surface); border-bottom: 1px solid var(--border);">
   <div class="wrap">
-    <p class="eyebrow reveal">Every celebration</p>
     <h2 class="reveal">Built for any occasion<span class="coral">.</span></h2>
     <p class="section-lead reveal">Birthdays, graduations, baby showers &mdash; Why, Thank You! works for every gifting moment.</p>
     <div class="occasions-wrap reveal">
@@ -922,26 +875,26 @@ footer {
         <div class="privacy-title">No public mailing addresses</div>
         <div class="privacy-body">Addresses are never shown on shared wishlists. The list owner will be in touch if shipping details are needed.</div>
       </div>
-      <div class="privacy-card reveal" style="transition-delay:0.08s">
+      <div class="privacy-card reveal" style="transition-delay:0.07s">
         <div class="privacy-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
-        <div class="privacy-title">Gift givers only see what they need</div>
-        <div class="privacy-body">Name, photo, price, and availability. Nothing private is exposed on the public list.</div>
+        <div class="privacy-title">Gift givers see only what they need</div>
+        <div class="privacy-body">Name, photo, price, and availability. Nothing private is exposed on the shared list.</div>
       </div>
-      <div class="privacy-card reveal" style="transition-delay:0.16s">
+      <div class="privacy-card reveal" style="transition-delay:0.14s">
         <div class="privacy-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
         </div>
         <div class="privacy-title">Claim details go to the list owner</div>
-        <div class="privacy-body">When someone taps &ldquo;I&rsquo;ll Get This,&rdquo; the list owner sees who claimed it and any note they left. Nobody else does.</div>
+        <div class="privacy-body">When someone taps &ldquo;I&rsquo;ll Get This,&rdquo; the list owner sees who claimed it and any note they left.</div>
       </div>
-      <div class="privacy-card reveal" style="transition-delay:0.24s">
+      <div class="privacy-card reveal" style="transition-delay:0.21s">
         <div class="privacy-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
         </div>
         <div class="privacy-title">Lists are viewable by link only</div>
-        <div class="privacy-body">Your wishlist isn&rsquo;t searchable or publicly indexed. Only people you send the link to can see it.</div>
+        <div class="privacy-body">Your wishlist isn&rsquo;t publicly searchable. Only people you send the link to can see it.</div>
       </div>
     </div>
   </div>
@@ -951,8 +904,8 @@ footer {
 <div style="background: var(--surface); border-bottom: 1px solid var(--border);">
   <div class="wrap">
     <p class="eyebrow reveal">Families love it</p>
-    <h2 class="reveal">Why families choose<br>Why, Thank You<span class="coral">!</span></h2>
-    <div class="testimonials-grid" style="margin-top:3rem">
+    <h2 class="reveal">Real families.<br>Real moments<span class="coral">.</span></h2>
+    <div class="testimonials-grid">
       <div class="testimonial-card reveal" style="transition-delay:0s">
         <div class="testimonial-stars">★★★★★</div>
         <p class="testimonial-text">&ldquo;Finally! No more getting three copies of the same toy. My mom and mother-in-law can both shop without stepping on each other&rsquo;s toes.&rdquo;</p>
@@ -963,11 +916,6 @@ footer {
         <p class="testimonial-text">&ldquo;As a grandma who isn&rsquo;t tech-savvy, I just clicked the link and everything was right there. The sizes, what she likes &mdash; I felt so confident shopping.&rdquo;</p>
         <div class="testimonial-author">Linda K. &mdash; grandmother</div>
       </div>
-      <div class="testimonial-card reveal" style="transition-delay:0.16s">
-        <div class="testimonial-stars">★★★★★</div>
-        <p class="testimonial-text">&ldquo;I love how simple it is for my whole family. My parents are in their 70s and they had zero trouble opening the link I sent them.&rdquo;</p>
-        <div class="testimonial-author">Marcus T. &mdash; dad of 3</div>
-      </div>
     </div>
   </div>
 </div>
@@ -975,16 +923,15 @@ footer {
 <!-- FAQ -->
 <div style="background: var(--cream); border-bottom: 1px solid var(--border);">
   <div class="wrap-sm">
-    <p class="eyebrow reveal" style="text-align:center">Frequently asked</p>
-    <h2 class="reveal" style="text-align:center; margin-bottom:3rem">Good questions<span class="coral">.</span></h2>
+    <h2 class="reveal" style="text-align:center; margin-bottom:2.5rem">Good questions<span class="coral">.</span></h2>
     <div class="reveal">
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">Do gift givers need to create an account?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><div class="faq-a-inner"><p>No account needed. Gift givers open the shared link in any browser, browse the wishlist, and tap &ldquo;I&rsquo;ll Get This&rdquo; on whatever they want to give. No download, no password, no friction.</p></div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>No account needed. Gift givers open the shared link in any browser and tap &ldquo;I&rsquo;ll Get This&rdquo; on whatever they want to give. No download, no password, no friction.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">How do gift givers know where to ship?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><div class="faq-a-inner"><p>When someone claims a gift, the list owner receives a notification. The list owner will reach out directly with any shipping details needed &mdash; keeping addresses private and off the shared link entirely.</p></div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>When someone claims a gift the list owner receives a notification and will reach out directly with shipping details. Addresses stay private and off the shared link entirely.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">Can I add gifts from any store?<span class="faq-icon">+</span></button>
@@ -992,11 +939,11 @@ footer {
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">Is Why, Thank You! free?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><div class="faq-a-inner"><p>Yes! Everything you need to create wishlists, share them, and let family claim gifts is completely free.</p></div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>Yes. Everything you need to create wishlists, share them, and let family claim gifts is completely free.</p></div></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">What occasions can I use it for?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><div class="faq-a-inner"><p>Any gifting occasion &mdash; birthdays, Christmas, Hanukkah, graduations, baby showers, weddings, and more. You can create a separate list for each person and each event.</p></div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>Any gifting occasion &mdash; birthdays, Christmas, Hanukkah, graduations, baby showers, weddings, and more. Create a separate list for each person and each event.</p></div></div>
       </div>
     </div>
   </div>
@@ -1004,9 +951,8 @@ footer {
 
 <!-- CTA -->
 <div id="download" class="cta-section">
-  <p class="eyebrow reveal" style="color:rgba(255,255,255,0.55)">Ready?</p>
-  <h2 class="reveal" style="color:white; margin-bottom:1rem">Make gift giving<br>delightful<span style="color:var(--coral)">.</span></h2>
-  <p class="section-lead reveal" style="color:rgba(255,255,255,0.7); margin: 0 auto 2.5rem;">Join families who&rsquo;ve taken the guesswork out of giving.</p>
+  <h2 class="reveal" style="color:white; margin-bottom:0.75rem">Make gift giving<br>delightful<span style="color:var(--coral)">.</span></h2>
+  <p class="section-lead reveal" style="color:rgba(255,255,255,0.68); margin: 0 auto 2rem;">Join families who&rsquo;ve taken the guesswork out of giving.</p>
   <a href="#" class="btn-cta-white reveal">Download on the App Store</a>
 </div>
 
@@ -1020,7 +966,7 @@ footer {
     <div class="footer-links">
       <div class="footer-col">
         <div class="footer-col-title">Product</div>
-        <a href="#how">How it works</a>
+        <a href="#story">How it works</a>
         <a href="#screenshots">Screenshots</a>
         <a href="#download">Download</a>
       </div>
@@ -1039,7 +985,6 @@ footer {
 </footer>
 
 <script>
-  // Scroll-reveal
   const reveals = document.querySelectorAll('.reveal');
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -1048,7 +993,6 @@ footer {
   }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
   reveals.forEach(el => revealObserver.observe(el));
 
-  // Nav scrolled state
   const nav = document.getElementById('main-nav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 60);
