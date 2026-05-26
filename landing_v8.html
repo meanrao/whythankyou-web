@@ -393,6 +393,45 @@ h2 .coral { color: var(--coral); }
   display: block;
 }
 
+/* ── EXAMPLE SECTION ── */
+.example-list-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  display: inline-block;
+  margin: 1.75rem 0;
+  min-width: 260px;
+}
+.example-list-card-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--teal-light);
+  margin-bottom: 0.9rem;
+}
+.example-list-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.example-list-card li {
+  font-size: 15px;
+  color: var(--dark);
+  padding: 7px 0 7px 1.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  line-height: 1.5;
+}
+.example-list-card li:last-child { border-bottom: none; }
+.example-list-card li::before {
+  content: '\2014';
+  position: absolute;
+  left: 0;
+  color: var(--coral);
+}
+
 /* ── FEATURES ── */
 .features-grid {
   display: grid;
@@ -689,7 +728,7 @@ footer {
       <p class="hero-eyebrow">The gift wishlist for families</p>
       <h1 class="hero-wordmark">why<span class="coral">,</span><br>thank<br>you<span class="coral">!</span></h1>
       <p class="hero-headline">Take the guesswork<br>out of giving.</p>
-      <p class="hero-sub">Create simple wishlists for birthdays, holidays, and special moments. Share one link so family knows what to buy &mdash; and what&rsquo;s already been picked.</p>
+      <p class="hero-sub">Create one simple wishlist with gift ideas from any store. Share one link so family knows what to buy, what&rsquo;s already been picked, and where to find it.</p>
       <div class="hero-actions">
         <a href="#download" class="btn-primary">Get the App &mdash; Free</a>
         <a href="#story" class="btn-secondary">See how it works</a>
@@ -740,29 +779,29 @@ footer {
         <div class="story-step reveal" style="transition-delay:0s">
           <div class="story-step-num">1</div>
           <div class="story-step-text">
-            <strong>You share one list.</strong>
-            <p>One link for the whole family. No chasing people down in separate texts.</p>
+            <strong>One list for every idea.</strong>
+            <p>Add gifts from Amazon, Target, Nike, LEGO, Etsy, or anywhere else.</p>
           </div>
         </div>
         <div class="story-step reveal" style="transition-delay:0.07s">
           <div class="story-step-num">2</div>
           <div class="story-step-text">
-            <strong>They choose a gift.</strong>
-            <p>Family sees sizes, prices, and ideas so they can shop with confidence.</p>
+            <strong>One link for the whole family.</strong>
+            <p>When someone asks what they should get, send one wishlist instead of five different links.</p>
           </div>
         </div>
         <div class="story-step reveal" style="transition-delay:0.14s">
           <div class="story-step-num">3</div>
           <div class="story-step-text">
-            <strong>They tap &ldquo;I&rsquo;ll Get This.&rdquo;</strong>
-            <p>It&rsquo;s marked as picked so no one else buys the same thing. No account needed.</p>
+            <strong>They choose what works.</strong>
+            <p>Family can view the gift, see details, and tap &ldquo;I&rsquo;ll Get This&rdquo; so everyone stays coordinated.</p>
           </div>
         </div>
         <div class="story-step reveal" style="transition-delay:0.21s">
           <div class="story-step-num">4</div>
           <div class="story-step-text">
             <strong>You keep the surprise.</strong>
-            <p>No awkward follow-ups. Just thoughtful gifts and a lot less guessing.</p>
+            <p>No scattered texts. No store-by-store wishlists. Just thoughtful gifts in one place.</p>
           </div>
         </div>
       </div>
@@ -774,6 +813,24 @@ footer {
   </div>
 </div>
 
+<!-- UNCLE JOHNNY EXAMPLE -->
+<div style="background: var(--cream2); border-bottom: 1px solid var(--border);">
+  <div class="wrap-sm">
+    <h2 class="reveal">When Uncle Johnny asks<br>what Lennon wants<span class="coral">&hellip;</span></h2>
+    <p class="section-lead reveal" style="margin-top:1.25rem; max-width:560px;">Instead of texting an Amazon link, a Nike link, a LEGO idea, and a Target screenshot &mdash; you send one link.</p>
+    <div class="example-list-card reveal">
+      <p class="example-list-card-eyebrow">Everything is there</p>
+      <ul>
+        <li>the sneakers</li>
+        <li>the LEGO set</li>
+        <li>the book</li>
+        <li>the random thing he mentioned three weeks ago</li>
+      </ul>
+    </div>
+    <p class="section-lead reveal" style="max-width:520px; margin-bottom:0;">Family can choose what to get, mark it as picked, and move on with their lives.</p>
+  </div>
+</div>
+
 <!-- FEATURES -->
 <div style="background: var(--cream); border-bottom: 1px solid var(--border);">
   <div class="wrap">
@@ -781,24 +838,24 @@ footer {
     <div class="features-grid" style="margin-top:2rem">
       <div class="feature-card reveal" style="transition-delay:0s">
         <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         </div>
-        <div class="feature-title">No duplicate gifts, ever</div>
-        <div class="feature-body">When someone claims a gift it&rsquo;s marked taken. No more three people buying the same LEGO set.</div>
+        <div class="feature-title">Any store, one wishlist</div>
+        <div class="feature-body">Paste gift ideas from wherever you find them. Amazon, Target, Etsy, Nike, LEGO, local shops &mdash; it all lives in one place.</div>
       </div>
       <div class="feature-card reveal" style="transition-delay:0.07s">
         <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </div>
-        <div class="feature-title">Add gifts from any store</div>
-        <div class="feature-body">Paste any product URL and Why, Thank You! pulls the name, photo, and price automatically.</div>
+        <div class="feature-title">One link for everyone</div>
+        <div class="feature-body">Send one share link to grandparents, aunts, uncles, and friends. No app download or account needed to view the list.</div>
       </div>
       <div class="feature-card reveal" style="transition-delay:0.14s">
         <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <div class="feature-title">No account needed to claim</div>
-        <div class="feature-body">Gift givers open the link and tap &ldquo;I&rsquo;ll Get This.&rdquo; No download, no password, no friction.</div>
+        <div class="feature-title">Picked gifts stay picked</div>
+        <div class="feature-body">When someone taps &ldquo;I&rsquo;ll Get This,&rdquo; the gift is marked as taken so the family stays coordinated.</div>
       </div>
     </div>
   </div>
@@ -889,12 +946,12 @@ footer {
     <div class="testimonials-grid">
       <div class="testimonial-card reveal" style="transition-delay:0s">
         <div class="testimonial-stars">★★★★★</div>
-        <p class="testimonial-text">&ldquo;Finally, everyone had the same list. My mom, my sister, and my in-laws all knew what Lennon wanted without texting me for ideas.&rdquo;</p>
+        <p class="testimonial-text">&ldquo;I had ideas from three different stores and didn&rsquo;t want to send my family a messy pile of links. This made it simple.&rdquo;</p>
         <div class="testimonial-author">Sarah M. &mdash; mom of 2</div>
       </div>
       <div class="testimonial-card reveal" style="transition-delay:0.08s">
         <div class="testimonial-stars">★★★★★</div>
-        <p class="testimonial-text">&ldquo;As a grandma who isn&rsquo;t tech-savvy, I just clicked the link and knew exactly what to do. The sizes and ideas were right there.&rdquo;</p>
+        <p class="testimonial-text">&ldquo;I&rsquo;m not techy, but I opened the link, picked a gift, and knew exactly what to do.&rdquo;</p>
         <div class="testimonial-author">Linda K. &mdash; grandmother</div>
       </div>
     </div>
@@ -942,7 +999,7 @@ footer {
   <div class="footer-inner">
     <div>
       <div class="footer-brand">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
-      <div class="footer-tagline">Gift ideas organized. Surprises still safe.</div>
+      <div class="footer-tagline">One wishlist. Any store. Less guesswork.</div>
     </div>
     <div class="footer-links">
       <div class="footer-col">
