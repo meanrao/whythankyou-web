@@ -329,20 +329,24 @@ h2 .coral { color: var(--coral); }
 }
 
 .story-inner {
-  max-width: 1100px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5rem;
+  gap: 4rem;
   align-items: center;
+}
+
+.story-text {
+  max-width: 460px;
 }
 
 .story-steps {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1.75rem;
+  gap: 1.1rem;
+  margin-top: 1.5rem;
 }
 
 .story-step {
@@ -374,16 +378,19 @@ h2 .coral { color: var(--coral); }
   font-size: 13px;
   color: var(--muted);
   line-height: 1.65;
+  max-width: 340px;
 }
 
-.story-screenshot {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.story-lifestyle {
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 28px 72px rgba(31,42,36,0.13), 0 6px 20px rgba(31,42,36,0.07);
+  line-height: 0;
 }
-.story-phone {
-  width: 270px;
-  flex-shrink: 0;
+.story-lifestyle img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* ── FEATURES ── */
@@ -644,9 +651,9 @@ footer {
   .hero-inner { padding: 0 1.5rem; }
   .hero-left { padding: 5rem 0 10rem; max-width: 100%; }
   .hero-phone-proof { width: 150px; right: 1.25rem; bottom: 2rem; }
-  .story-inner { grid-template-columns: 1fr; gap: 3rem; }
-  .story-screenshot { order: -1; }
-  .story-phone { width: 240px; }
+  .story-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .story-lifestyle { order: -1; border-radius: 20px; }
+  .story-lifestyle img { max-height: 320px; object-fit: cover; object-position: center top; }
   .sc-phone-l, .sc-phone-r { width: 160px; }
   .sc-phone-c { width: 200px; }
   .wrap { padding: 4rem 1.5rem; }
@@ -727,7 +734,7 @@ footer {
 <!-- STORY -->
 <div class="story-section" id="story">
   <div class="story-inner">
-    <div>
+    <div class="story-text">
       <h2 class="reveal">Simple for you.<br>Simple for them<span class="coral">.</span></h2>
       <div class="story-steps">
         <div class="story-step reveal" style="transition-delay:0s">
@@ -761,12 +768,8 @@ footer {
       </div>
     </div>
 
-    <div class="story-screenshot reveal" style="transition-delay:0.1s">
-      <div class="story-phone">
-        <div class="phone-frame">
-          <img src="assets/app-share-list.png" alt="Public wishlist — family member choosing a gift">
-        </div>
-      </div>
+    <div class="story-lifestyle reveal" style="transition-delay:0.1s">
+      <img src="assets/images/splash6.png" alt="Grandmother and granddaughter sharing a gift moment">
     </div>
   </div>
 </div>
