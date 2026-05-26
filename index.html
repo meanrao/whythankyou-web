@@ -432,34 +432,6 @@ h2 .coral { color: var(--coral); }
   color: var(--coral);
 }
 
-/* ── FEATURES ── */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-
-.feature-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2rem 1.75rem;
-  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
-}
-.feature-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(15,107,111,0.08); }
-
-.feature-icon-wrap {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: #E8F3F3;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 1rem;
-}
-.feature-icon-wrap svg { width: 20px; height: 20px; stroke: var(--teal); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-
-.feature-title { font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 0.35rem; }
-.feature-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
-
 /* ── OCCASIONS ── */
 .occasions-wrap {
   display: flex;
@@ -582,7 +554,7 @@ h2 .coral { color: var(--coral); }
 /* ── CTA ── */
 .cta-section {
   background: var(--teal);
-  padding: 5.5rem 2rem;
+  padding: 5rem 2rem 5.5rem;
   text-align: center;
 }
 .cta-section h2 { color: white; }
@@ -682,7 +654,6 @@ footer {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 960px) {
-  .features-grid { grid-template-columns: 1fr; }
   .testimonials-grid { grid-template-columns: 1fr; }
 }
 
@@ -705,7 +676,6 @@ footer {
   .hero-phone-proof { display: none; }
   .sc-phone-l, .sc-phone-r { display: none; }
   .sc-phone-c { width: 260px; }
-  .features-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -828,36 +798,6 @@ footer {
       </ul>
     </div>
     <p class="section-lead reveal" style="max-width:520px; margin-bottom:0;">Family can choose what to get, mark it as picked, and move on with their lives.</p>
-  </div>
-</div>
-
-<!-- FEATURES -->
-<div style="background: var(--cream); border-bottom: 1px solid var(--border);">
-  <div class="wrap">
-    <h2 class="reveal">Everything a family<br>gift list needs<span class="coral">.</span></h2>
-    <div class="features-grid" style="margin-top:2rem">
-      <div class="feature-card reveal" style="transition-delay:0s">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        </div>
-        <div class="feature-title">Any store, one wishlist</div>
-        <div class="feature-body">Paste gift ideas from wherever you find them. Amazon, Target, Etsy, Nike, LEGO, local shops &mdash; it all lives in one place.</div>
-      </div>
-      <div class="feature-card reveal" style="transition-delay:0.07s">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </div>
-        <div class="feature-title">One link for everyone</div>
-        <div class="feature-body">Send one share link to grandparents, aunts, uncles, and friends. No app download or account needed to view the list.</div>
-      </div>
-      <div class="feature-card reveal" style="transition-delay:0.14s">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div class="feature-title">Picked gifts stay picked</div>
-        <div class="feature-body">When someone taps &ldquo;I&rsquo;ll Get This,&rdquo; the gift is marked as taken so the family stays coordinated.</div>
-      </div>
-    </div>
   </div>
 </div>
 
