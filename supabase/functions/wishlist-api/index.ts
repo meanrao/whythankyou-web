@@ -59,6 +59,15 @@ function parsePrice(raw: string | null): number | null {
   return isNaN(n) ? null : n;
 }
 
+function escHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 /**
  * Clean a raw scraped product title into a short, human-readable display name.
  *
@@ -212,11 +221,160 @@ function storeFromUrl(rawUrl: string): string | null {
   }
 }
 
-async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+// ── Branded email templates ────────────────────────────────────────────────────
+
+function buildClaimerEmail(opts: {
+  claimerName: string;
+  giftName: string;
+  recipientName: string;
+  shareUrl: string;
+}): string {
+  const { claimerName, giftName, recipientName, shareUrl } = opts;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>You're getting a gift!</title></head>
+<body style="margin:0;padding:0;background-color:#F6F1E8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#F6F1E8;">
+  <tr><td align="center" style="padding:40px 16px 48px;">
+    <table width="100%" style="max-width:560px;" cellpadding="0" cellspacing="0" role="presentation">
+
+      <tr><td style="padding-bottom:20px;text-align:center;">
+        <span style="font-size:22px;font-weight:900;color:#0F6B6F;letter-spacing:-0.5px;font-family:Georgia,serif;">why<span style="color:#F28C79;">,</span> thank you<span style="color:#F28C79;">!</span></span>
+      </td></tr>
+
+      <tr><td style="background:#FFFFFF;border-radius:20px;overflow:hidden;">
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr><td style="background:#F28C79;height:5px;font-size:0;line-height:0;">&nbsp;</td></tr>
+        </table>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr><td style="padding:36px 36px 32px;">
+
+            <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#7AA7A3;letter-spacing:1.5px;text-transform:uppercase;">You said you&rsquo;re getting</p>
+            <p style="margin:10px 0 24px;font-size:20px;font-weight:700;color:#1F2A24;line-height:1.35;">${giftName}</p>
+
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+              <tr><td style="border-top:1px solid #E3DED5;font-size:0;line-height:0;padding-bottom:22px;">&nbsp;</td></tr>
+            </table>
+
+            <p style="margin:0 0 10px;font-size:15px;color:#6E776A;line-height:1.65;">Hi ${claimerName},</p>
+            <p style="margin:0 0 16px;font-size:15px;color:#6E776A;line-height:1.65;">Thanks for helping make <strong style="color:#1F2A24;">${recipientName}&rsquo;s</strong> day special.</p>
+            <p style="margin:0 0 28px;font-size:15px;color:#6E776A;line-height:1.65;">If you haven&rsquo;t ordered it yet, you can go back to the wishlist and use the gift link.</p>
+
+            <table cellpadding="0" cellspacing="0" role="presentation">
+              <tr><td style="border-radius:28px;background:#0F6B6F;">
+                <a href="${shareUrl}" style="display:inline-block;padding:13px 28px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:28px;">View the wishlist</a>
+              </td></tr>
+            </table>
+
+            <p style="margin:24px 0 0;font-size:13px;color:#A89F94;line-height:1.6;">If shipping details are needed, the list owner can contact you directly.</p>
+
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <tr><td style="padding:20px 0 0;text-align:center;">
+        <p style="margin:0;font-size:12px;color:#A89F94;line-height:1.6;">why, thank you! &mdash; Taking the guesswork out of giving.</p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
+}
+
+function buildOwnerEmail(opts: {
+  claimerName: string;
+  claimerEmail: string | null;
+  giftName: string;
+  listName: string;
+  note: string | null;
+  shareUrl: string;
+}): string {
+  const { claimerName, claimerEmail, giftName, listName, note, shareUrl } = opts;
+  const noteBlock = note
+    ? `<tr><td style="padding-top:16px;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#7AA7A3;letter-spacing:1px;text-transform:uppercase;">Note</p>
+        <p style="margin:0;font-size:15px;color:#6E776A;line-height:1.65;font-style:italic;">&ldquo;${note}&rdquo;</p>
+       </td></tr>`
+    : "";
+  const emailLink = claimerEmail
+    ? `<a href="mailto:${claimerEmail}" style="color:#0F6B6F;text-decoration:none;">${claimerEmail}</a>`
+    : `<span style="color:#A89F94;">Not provided</span>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${claimerName} is getting a gift</title></head>
+<body style="margin:0;padding:0;background-color:#F6F1E8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#F6F1E8;">
+  <tr><td align="center" style="padding:40px 16px 48px;">
+    <table width="100%" style="max-width:560px;" cellpadding="0" cellspacing="0" role="presentation">
+
+      <tr><td style="padding-bottom:20px;text-align:center;">
+        <span style="font-size:22px;font-weight:900;color:#0F6B6F;letter-spacing:-0.5px;font-family:Georgia,serif;">why<span style="color:#F28C79;">,</span> thank you<span style="color:#F28C79;">!</span></span>
+      </td></tr>
+
+      <tr><td style="background:#FFFFFF;border-radius:20px;overflow:hidden;">
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr><td style="background:#F28C79;height:5px;font-size:0;line-height:0;">&nbsp;</td></tr>
+        </table>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr><td style="padding:36px 36px 32px;">
+
+            <p style="margin:0 0 4px;font-size:15px;color:#6E776A;line-height:1.65;">Good news &mdash; <strong style="color:#1F2A24;">${claimerName}</strong> said they&rsquo;re getting:</p>
+            <p style="margin:10px 0 24px;font-size:20px;font-weight:700;color:#1F2A24;line-height:1.35;">${giftName}</p>
+
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+              <tr><td style="border-top:1px solid #E3DED5;font-size:0;line-height:0;padding-bottom:20px;">&nbsp;</td></tr>
+            </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+              <tr><td>
+                <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#7AA7A3;letter-spacing:1px;text-transform:uppercase;">For</p>
+                <p style="margin:0;font-size:15px;font-weight:600;color:#1F2A24;">${listName}</p>
+              </td></tr>
+              <tr><td style="padding-top:16px;">
+                <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#7AA7A3;letter-spacing:1px;text-transform:uppercase;">Claimer email</p>
+                <p style="margin:0;font-size:15px;color:#1F2A24;">${emailLink}</p>
+              </td></tr>
+              ${noteBlock}
+            </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+              <tr><td style="border-top:1px solid #E3DED5;font-size:0;line-height:0;padding:20px 0;">&nbsp;</td></tr>
+            </table>
+
+            <p style="margin:0 0 24px;font-size:15px;color:#6E776A;line-height:1.65;">If shipping details are needed, you can contact them directly.</p>
+
+            <table cellpadding="0" cellspacing="0" role="presentation">
+              <tr><td style="border-radius:28px;background:#0F6B6F;">
+                <a href="${shareUrl}" style="display:inline-block;padding:13px 28px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:28px;">View the wishlist</a>
+              </td></tr>
+            </table>
+
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <tr><td style="padding:20px 0 0;text-align:center;">
+        <p style="margin:0;font-size:12px;color:#A89F94;line-height:1.6;">why, thank you! &mdash; Taking the guesswork out of giving.</p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
+}
+
+// ── Email sender with logging ───────────────────────────────────────────────────
+
+async function sendEmail(to: string, subject: string, html: string, text: string): Promise<void> {
   if (!RESEND_API_KEY) {
     console.warn("[email] RESEND_API_KEY not set — skipping email to", to);
     return;
   }
+  console.log("[email] attempting →", to, "|", subject);
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -224,14 +382,16 @@ async function sendEmail(to: string, subject: string, html: string): Promise<voi
         "Authorization": `Bearer ${RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from: FROM_EMAIL, to, subject, html }),
+      body: JSON.stringify({ from: FROM_EMAIL, to, subject, html, text }),
     });
     if (!res.ok) {
       const body = await res.text();
-      console.error("[email] Resend error:", res.status, body);
+      console.error("[email] failed:", res.status, body);
+    } else {
+      console.log("[email] sent ✓ →", to);
     }
   } catch (err) {
-    console.error("[email] Failed to send to", to, err);
+    console.error("[email] network error →", to, ":", err);
   }
 }
 
@@ -538,28 +698,48 @@ Deno.serve(async (req: Request) => {
     // Send confirmation emails. Failures are logged but never block the response.
     const wishlist = Array.isArray(itemRow.wishlists) ? itemRow.wishlists[0] : itemRow.wishlists as any;
     const listName = wishlist?.name ?? "the wishlist";
-    const personName = wishlist?.person ?? null;
-    const itemName = itemRow.name;
-    const storeUrl = itemRow.store_url ?? null;
-    const shopLink = storeUrl
-      ? `<p style="margin:16px 0;"><a href="${storeUrl}" style="background:#e8705a;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Shop ${itemName}</a></p>`
-      : "";
-    const noteHtml = claimer_note
-      ? `<p style="margin:8px 0;color:#666;">Note: <em>${claimer_note}</em></p>`
-      : "";
+    const recipientName = wishlist?.person ?? listName;
+    const giftName = escHtml(itemRow.name);
+    const safeClaimerName = escHtml(claimer_name);
+    const safeListName = escHtml(listName);
+    const safeRecipientName = escHtml(recipientName);
+    const safeNote = claimer_note ? escHtml(claimer_note) : null;
+
+    // Fetch share token so emails can link back to the list.
+    const { data: shareTokenRow } = await supabase
+      .from("share_tokens")
+      .select("token")
+      .eq("wishlist_id", wishlist?.id ?? "")
+      .maybeSingle();
+    const shareUrl = shareTokenRow?.token
+      ? `https://whythankyou.com/list/${shareTokenRow.token}`
+      : "https://whythankyou.com";
 
     // Email to claimer (if email provided)
     if (claimer_email) {
-      const giverSubject = `You're all set to get a gift from ${listName}!`;
-      const giverHtml = `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;color:#333;">
-          <h2 style="color:#e8705a;">You're all set! 🎁</h2>
-          <p>Hi ${claimer_name},</p>
-          <p>Thanks for letting the list know you're planning to get <strong>${itemName}</strong>${personName ? ` for ${personName}` : ""}.</p>
-          ${shopLink}
-          <p style="color:#888;font-size:0.9em;">If the list owner needs shipping details, they'll contact you directly at this email address.</p>
-        </div>`;
-      sendEmail(claimer_email, giverSubject, giverHtml).catch(() => {});
+      const claimerSubject = `You're getting a gift from ${listName}`;
+      const claimerHtml = buildClaimerEmail({
+        claimerName: safeClaimerName,
+        giftName,
+        recipientName: safeRecipientName,
+        shareUrl,
+      });
+      const claimerText = [
+        `Hi ${claimer_name},`,
+        ``,
+        `Thanks for helping make ${recipientName}'s day special.`,
+        ``,
+        `You said you're getting: ${itemRow.name}`,
+        ``,
+        `If you haven't ordered it yet, you can go back to the wishlist and use the gift link:`,
+        shareUrl,
+        ``,
+        `If shipping details are needed, the list owner can contact you directly.`,
+        ``,
+        `— why, thank you!`,
+      ].join("\n");
+      sendEmail(claimer_email, claimerSubject, claimerHtml, claimerText)
+        .catch((err) => console.error("[email] uncaught error (claimer):", err));
     }
 
     // Email to list owner
@@ -567,16 +747,32 @@ Deno.serve(async (req: Request) => {
       const { data: ownerData } = await supabase.auth.admin.getUserById(wishlist.user_id);
       const ownerEmail = ownerData?.user?.email;
       if (ownerEmail) {
-        const ownerSubject = `${claimer_name} is planning to get a gift from ${listName}`;
-        const ownerHtml = `
-          <div style="font-family:sans-serif;max-width:480px;margin:0 auto;color:#333;">
-            <h2 style="color:#e8705a;">Great news! 🎁</h2>
-            <p><strong>${claimer_name}</strong> is planning to get <strong>${itemName}</strong>${personName ? ` for ${personName}` : ""}.</p>
-            <p style="margin:8px 0;">Their email: <a href="mailto:${claimer_email ?? ""}">${claimer_email ?? "not provided"}</a></p>
-            ${noteHtml}
-            <p style="color:#888;font-size:0.9em;">You can reach out to them directly if you need to share shipping details.</p>
-          </div>`;
-        sendEmail(ownerEmail, ownerSubject, ownerHtml).catch(() => {});
+        const ownerSubject = `${claimer_name} is getting a gift from ${listName}`;
+        const ownerHtml = buildOwnerEmail({
+          claimerName: safeClaimerName,
+          claimerEmail: claimer_email ?? null,
+          giftName,
+          listName: safeListName,
+          note: safeNote,
+          shareUrl,
+        });
+        const ownerText = [
+          `Good news — ${claimer_name} said they're getting:`,
+          ``,
+          itemRow.name,
+          ``,
+          `For: ${listName}`,
+          `Claimer email: ${claimer_email ?? "Not provided"}`,
+          claimer_note ? `Note: "${claimer_note}"` : "",
+          ``,
+          `If shipping details are needed, you can contact them directly.`,
+          ``,
+          `View the wishlist: ${shareUrl}`,
+          ``,
+          `— why, thank you!`,
+        ].filter((l) => l !== undefined).join("\n");
+        sendEmail(ownerEmail, ownerSubject, ownerHtml, ownerText)
+          .catch((err) => console.error("[email] uncaught error (owner):", err));
       }
     }
 
