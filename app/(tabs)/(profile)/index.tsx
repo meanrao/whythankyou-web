@@ -9,6 +9,8 @@ import {
   Alert,
   Switch,
   ScrollView,
+  Linking,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -102,6 +104,32 @@ export default function ProfileScreen() {
     router.back();
   }
 
+  async function handleFeedback() {
+    console.log('[Profile] Send feedback pressed');
+    const deviceInfo = `${Platform.OS === 'ios' ? 'iOS' : 'Android'} ${Platform.Version}`;
+    const body = [
+      'Hi Why, Thank You team,',
+      '',
+      "Here's my feedback:",
+      '',
+      '',
+      '',
+      `Device: ${deviceInfo}`,
+      `App version: ${appVersion}`,
+    ].join('\n');
+    const url = `mailto:hello@whythankyou.com?subject=${encodeURIComponent('Why, Thank You! Feedback')}&body=${encodeURIComponent(body)}`;
+    try {
+      const canOpen = await Linking.canOpenURL(url);
+      if (canOpen) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert('Send us an email', 'Email us at hello@whythankyou.com');
+      }
+    } catch {
+      Alert.alert('Send us an email', 'Email us at hello@whythankyou.com');
+    }
+  }
+
   function handlePrivacyPolicy() {
     console.log('[Profile] Privacy policy pressed');
     router.push('/privacy');
@@ -119,7 +147,7 @@ export default function ProfileScreen() {
       {/* Teal header */}
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <TouchableOpacity onPress={handleClose} style={styles.headerClose} hitSlop={8}>
-          <X size={22} color="#F5F0E8" strokeWidth={2} />
+          <X size={22} color="#1F2A24" strokeWidth={2} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
         <View style={styles.headerSpacer} />
@@ -198,7 +226,19 @@ export default function ProfileScreen() {
             <Text style={[styles.linkLabel, { color: colors.text }]}>Terms of Service</Text>
             <ChevronRight size={16} color={colors.textTertiary} strokeWidth={2} />
           </TouchableOpacity>
+
+          <View style={[styles.rowDivider, { backgroundColor: colors.border }]} />
+
+          <TouchableOpacity onPress={handleFeedback} style={styles.linkRow} activeOpacity={0.7}>
+            <Text style={[styles.linkLabel, { color: colors.text }]}>Send Feedback</Text>
+            <ChevronRight size={16} color={colors.textTertiary} strokeWidth={2} />
+          </TouchableOpacity>
         </View>
+
+        {/* Beta note */}
+        <Text style={[styles.betaNote, { color: colors.textTertiary }]}>
+          Found a bug or have an idea? We&apos;d love to hear it.
+        </Text>
 
         {/* Sign out button */}
         <TouchableOpacity
@@ -223,7 +263,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: '#1B8A8A',
+    backgroundColor: '#F6F1E8',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -241,7 +281,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     fontFamily: 'Georgia',
-    color: '#F5F0E8',
+    color: '#1F2A24',
     letterSpacing: -0.3,
   },
   headerSpacer: {
@@ -324,7 +364,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   signOutButton: {
-    backgroundColor: '#2A9D8F',
+    backgroundColor: '#0F6B6F',
     borderRadius: 16,
     height: 56,
     alignItems: 'center',
@@ -339,5 +379,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     letterSpacing: 0.2,
+  },
+  betaNote: {
+    fontSize: 13,
+    textAlign: 'center',
+    lineHeight: 18,
+    paddingHorizontal: 8,
+    marginTop: -4,
   },
 });
