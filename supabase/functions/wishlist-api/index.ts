@@ -747,7 +747,7 @@ Deno.serve(async (req: Request) => {
       const { data: ownerData } = await supabase.auth.admin.getUserById(wishlist.user_id);
       const ownerEmail = ownerData?.user?.email;
       if (ownerEmail) {
-        const ownerSubject = `${claimer_name} is getting a gift from ${listName}`;
+        const ownerSubject = `A gift was claimed for ${listName}`;
         const ownerHtml = buildOwnerEmail({
           claimerName: safeClaimerName,
           claimerEmail: claimer_email ?? null,
