@@ -6,10 +6,13 @@ import {
   StyleSheet,
   Animated,
   ActivityIndicator,
-  Alert,
   Platform,
   ImageSourcePropType,
   TouchableOpacity,
+  TextInput,
+  Modal,
+  KeyboardAvoidingView,
+  Pressable,
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
@@ -17,7 +20,6 @@ import { CheckCircle, Gift } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { apiFetch } from '@/utils/api';
-import { supabase } from '@/utils/supabase';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -25,7 +27,6 @@ const C = {
   bg: '#F5F0E8',
   teal: '#1B8A8A',
   tealBg: '#E6F7F7',
-  tealText: '#FFFFFF',
   surface: '#FFFFFF',
   border: '#D4C9B8',
   label: '#2C3B32',
@@ -33,10 +34,11 @@ const C = {
   textTertiary: '#8E9A87',
   sage: '#4A7C5F',
   sageBg: '#EFF5F1',
-  inputBg: '#FFFFFF',
   placeholder: '#A89F94',
   profileCard: '#FBF9F5',
   profileBorder: '#E8E6E0',
+  coral: '#F28C79',
+  imagePlaceholder: '#EDE8E0',
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -150,12 +152,11 @@ function GuestProfileCard({ wishlist }: { wishlist: GuestWishlist }) {
         <>
           <View style={profileStyles.divider} />
           <View style={profileStyles.interestsSection}>
-            <Text style={profileStyles.sectionLabel}>What they're into</Text>
+            <Text style={profileStyles.sectionLabel}>What they&apos;re into</Text>
             <Text style={profileStyles.interestsText}>{wishlist.current_interests}</Text>
           </View>
         </>
       ) : null}
-
     </View>
   );
 }
@@ -172,22 +173,29 @@ interface ItemCardProps {
 function GuestItemCard({ item, index, onClaim, claiming }: ItemCardProps) {
   const isClaimed = item.status === 'claimed';
   const priceDisplay = item.price != null ? `$${Number(item.price).toFixed(2)}` : null;
+  const hasImage = Boolean(item.image_url);
 
   function handleClaimPress() {
-    console.log('[GuestItem] I\'ll buy this pressed for item:', item.id, item.name);
+    if (isClaimed || claiming) return;
     onClaim(item);
   }
 
   return (
     <AnimatedListItem index={index}>
       <View style={[itemStyles.card, isClaimed && itemStyles.cardClaimed]}>
-        <Image
-          source={resolveImageSource(item.image_url)}
-          style={itemStyles.image}
-          contentFit="cover"
-        />
+        {hasImage ? (
+          <Image
+            source={resolveImageSource(item.image_url)}
+            style={itemStyles.image}
+            contentFit="cover"
+          />
+        ) : (
+          <View style={[itemStyles.image, itemStyles.imagePlaceholder]}>
+            <Gift size={22} color={C.textTertiary} strokeWidth={1.5} />
+          </View>
+        )}
         <View style={itemStyles.content}>
-          <Text style={itemStyles.name} numberOfLines={2}>
+          <Text style={itemStyles.name} numberOfLines={3}>
             {item.name}
           </Text>
           {priceDisplay ? (
@@ -211,6 +219,7 @@ function GuestItemCard({ item, index, onClaim, claiming }: ItemCardProps) {
             <AnimatedPressable
               onPress={handleClaimPress}
               style={[itemStyles.claimButton, claiming && itemStyles.claimButtonDisabled]}
+              disabled={claiming}
             >
               {claiming ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
@@ -231,10 +240,23 @@ export default function GuestScreen() {
   const { token } = useLocalSearchParams<{ token: string }>();
   const insets = useSafeAreaInsets();
 
+  // List state
   const [wishlist, setWishlist] = useState<GuestWishlist | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Claim modal state
+  const [pendingItem, setPendingItem] = useState<GuestItem | null>(null);
+  const [claimerName, setClaimerName] = useState('');
+  const [claimerEmail, setClaimerEmail] = useState('');
+  const [claimerNote, setClaimerNote] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [claimError, setClaimError] = useState<string | null>(null);
   const [claimingItemId, setClaimingItemId] = useState<string | null>(null);
+
+  // Success banner
+  const bannerOpacity = useRef(new Animated.Value(0)).current;
+  const [bannerVisible, setBannerVisible] = useState(false);
 
   const fetchWishlist = useCallback(async () => {
     console.log('[Guest] Fetching wishlist for token:', token);
@@ -255,45 +277,95 @@ export default function GuestScreen() {
     fetchWishlist();
   }, [fetchWishlist]);
 
-  async function handleClaim(item: GuestItem) {
-    if (claimingItemId) return;
-    console.log('[Guest] Claiming item via Supabase:', item.id, item.name);
-    setClaimingItemId(item.id);
+  function openClaimModal(item: GuestItem) {
+    setPendingItem(item);
+    setClaimerName('');
+    setClaimerEmail('');
+    setClaimerNote('');
+    setClaimError(null);
+  }
+
+  function closeClaimModal() {
+    if (submitting) return;
+    setPendingItem(null);
+    setClaimError(null);
+  }
+
+  function triggerSuccessBanner() {
+    setBannerVisible(true);
+    Animated.sequence([
+      Animated.timing(bannerOpacity, { toValue: 1, duration: 280, useNativeDriver: true }),
+      Animated.delay(3200),
+      Animated.timing(bannerOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
+    ]).start(() => setBannerVisible(false));
+  }
+
+  async function handleClaimSubmit() {
+    if (!pendingItem || !claimerName.trim()) return;
+    setSubmitting(true);
+    setClaimError(null);
+    setClaimingItemId(pendingItem.id);
+    console.log('[Guest] Submitting claim for item:', pendingItem.id, 'claimer:', claimerName.trim());
+
     try {
-      const { error: updateError } = await supabase
-        .from('wishlist_items')
-        .update({ claimed: true })
-        .eq('id', item.id);
-      if (updateError) {
-        console.log('[Guest] Claim update error:', updateError.message);
-        return;
-      }
-      console.log('[Guest] Claim successful, updating local state for item:', item.id);
+      await apiFetch('/api/claims', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          item_id: pendingItem.id,
+          claimer_name: claimerName.trim(),
+          claimer_email: claimerEmail.trim() || null,
+          claimer_note: claimerNote.trim() || null,
+        }),
+      });
+
+      console.log('[Guest] Claim successful for item:', pendingItem.id);
+      const claimedId = pendingItem.id;
       setWishlist((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
           items: prev.items.map((i) =>
-            i.id === item.id ? { ...i, status: 'claimed' as const } : i
+            i.id === claimedId ? { ...i, status: 'claimed' as const } : i
           ),
         };
       });
-    } catch (err) {
-      console.log('[Guest] Claim exception:', err);
+      setPendingItem(null);
+      triggerSuccessBanner();
+    } catch (err: any) {
+      const msg = String(err?.message ?? '').toLowerCase();
+      console.log('[Guest] Claim failed:', err?.message ?? err);
+      if (msg.includes('already claimed')) {
+        // Mark locally as claimed and close
+        const claimedId = pendingItem.id;
+        setWishlist((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            items: prev.items.map((i) =>
+              i.id === claimedId ? { ...i, status: 'claimed' as const } : i
+            ),
+          };
+        });
+        setPendingItem(null);
+      } else {
+        setClaimError('Something went wrong. Please try again.');
+      }
     } finally {
+      setSubmitting(false);
       setClaimingItemId(null);
     }
   }
 
   // ── Derived ───────────────────────────────────────────────────────────────
 
-  const itemCount = wishlist?.items?.length ?? 0;
-  const itemCountText = String(itemCount);
+  const itemCountText = String(wishlist?.items?.length ?? 0);
   const occasionLabel = wishlist
     ? wishlist.occasion.charAt(0).toUpperCase() + wishlist.occasion.slice(1).toLowerCase()
     : '';
+  const modalVisible = pendingItem !== null;
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  // ── Render: loading / error ────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -315,41 +387,170 @@ export default function GuestScreen() {
     );
   }
 
+  // ── Render: main ──────────────────────────────────────────────────────────
+
   return (
-    <ScrollView
-      style={[styles.root, { backgroundColor: C.bg }]}
-      contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 40 }]}
-      showsVerticalScrollIndicator={false}
-      contentInsetAdjustmentBehavior="automatic"
-    >
-      {/* Child profile card */}
-      <GuestProfileCard wishlist={wishlist} />
+    <View style={[styles.rootContainer, { backgroundColor: C.bg }]}>
 
-      {/* Items section */}
-      <View style={styles.itemsSection}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Gift ideas</Text>
-          <View style={styles.countBadge}>
-            <Text style={styles.countText}>{itemCountText}</Text>
+      {/* Success banner — fades in above content after a successful claim */}
+      {bannerVisible ? (
+        <Animated.View style={[styles.successBanner, { opacity: bannerOpacity, top: insets.top + 12 }]}>
+          <CheckCircle size={15} color="#FFFFFF" strokeWidth={2.5} />
+          <Text style={styles.successBannerText}>
+            Gift claimed. The list owner has been notified.
+          </Text>
+        </Animated.View>
+      ) : null}
+
+      <ScrollView
+        style={styles.root}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 40 }]}
+        showsVerticalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="automatic"
+      >
+        <GuestProfileCard wishlist={wishlist} />
+
+        <View style={styles.itemsSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Gift ideas</Text>
+            <View style={styles.countBadge}>
+              <Text style={styles.countText}>{itemCountText}</Text>
+            </View>
+            {occasionLabel ? (
+              <Text style={styles.occasionLabel}>{occasionLabel}</Text>
+            ) : null}
           </View>
-          {occasionLabel ? (
-            <Text style={styles.occasionLabel}>{occasionLabel}</Text>
-          ) : null}
-        </View>
 
-        <View style={styles.itemsList}>
-          {wishlist.items.map((item, index) => (
-            <GuestItemCard
-              key={item.id}
-              item={item}
-              index={index}
-              onClaim={handleClaim}
-              claiming={claimingItemId === item.id}
-            />
-          ))}
+          {wishlist.items.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Gift size={32} color={C.textTertiary} strokeWidth={1.5} />
+              <Text style={styles.emptyTitle}>No gifts added yet</Text>
+              <Text style={styles.emptyBody}>
+                Check back soon — the list owner is still building it.
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.itemsList}>
+              {wishlist.items.map((item, index) => (
+                <GuestItemCard
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  onClaim={openClaimModal}
+                  claiming={claimingItemId === item.id}
+                />
+              ))}
+            </View>
+          )}
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+
+      {/* Claim modal */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={closeClaimModal}
+      >
+        <Pressable style={modalStyles.overlay} onPress={closeClaimModal}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={modalStyles.kavWrapper}
+          >
+            {/* Inner Pressable absorbs taps so they don't dismiss the sheet */}
+            <Pressable style={modalStyles.sheet} onPress={() => {}}>
+              <View style={modalStyles.handle} />
+
+              <Text style={modalStyles.sheetTitle}>I&apos;ll Get This</Text>
+              {pendingItem ? (
+                <Text style={modalStyles.giftName} numberOfLines={2}>
+                  {pendingItem.name}
+                </Text>
+              ) : null}
+
+              <View style={modalStyles.fields}>
+                <View style={modalStyles.field}>
+                  <Text style={modalStyles.fieldLabel}>
+                    Your name{' '}
+                    <Text style={modalStyles.required}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={modalStyles.input}
+                    placeholder="So the family knows who's getting it"
+                    placeholderTextColor={C.placeholder}
+                    value={claimerName}
+                    onChangeText={setClaimerName}
+                    autoFocus
+                    returnKeyType="next"
+                  />
+                </View>
+
+                <View style={modalStyles.field}>
+                  <Text style={modalStyles.fieldLabel}>
+                    Email{' '}
+                    <Text style={modalStyles.optional}>(optional)</Text>
+                  </Text>
+                  <TextInput
+                    style={modalStyles.input}
+                    placeholder="For shipping coordination if needed"
+                    placeholderTextColor={C.placeholder}
+                    value={claimerEmail}
+                    onChangeText={setClaimerEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    returnKeyType="next"
+                  />
+                </View>
+
+                <View style={modalStyles.field}>
+                  <Text style={modalStyles.fieldLabel}>
+                    Note{' '}
+                    <Text style={modalStyles.optional}>(optional)</Text>
+                  </Text>
+                  <TextInput
+                    style={modalStyles.input}
+                    placeholder="Leave a message for the family"
+                    placeholderTextColor={C.placeholder}
+                    value={claimerNote}
+                    onChangeText={setClaimerNote}
+                    returnKeyType="done"
+                  />
+                </View>
+              </View>
+
+              {claimError ? (
+                <Text style={modalStyles.claimError}>{claimError}</Text>
+              ) : null}
+
+              <TouchableOpacity
+                onPress={handleClaimSubmit}
+                style={[
+                  modalStyles.confirmButton,
+                  (!claimerName.trim() || submitting) && modalStyles.confirmButtonDisabled,
+                ]}
+                disabled={!claimerName.trim() || submitting}
+                activeOpacity={0.85}
+              >
+                {submitting ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={modalStyles.confirmButtonText}>Confirm</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={closeClaimModal}
+                style={modalStyles.cancelButton}
+                disabled={submitting}
+                activeOpacity={0.7}
+              >
+                <Text style={modalStyles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </Pressable>
+          </KeyboardAvoidingView>
+        </Pressable>
+      </Modal>
+    </View>
   );
 }
 
@@ -441,15 +642,20 @@ const itemStyles = StyleSheet.create({
     width: 88,
     height: 88,
   },
+  imagePlaceholder: {
+    backgroundColor: C.imagePlaceholder,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   content: {
     flex: 1,
     padding: 12,
     gap: 3,
   },
   name: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
-    lineHeight: 20,
+    lineHeight: 19,
     color: C.label,
   },
   price: {
@@ -459,14 +665,14 @@ const itemStyles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   store: {
-    fontSize: 13,
+    fontSize: 12,
     color: C.textSecondary,
   },
   notes: {
-    fontSize: 13,
+    fontSize: 12,
     fontStyle: 'italic',
-    lineHeight: 18,
-    marginTop: 4,
+    lineHeight: 17,
+    marginTop: 2,
     color: C.textTertiary,
   },
   claimedBadge: {
@@ -481,7 +687,7 @@ const itemStyles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   claimedText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: C.teal,
   },
@@ -505,9 +711,114 @@ const itemStyles = StyleSheet.create({
   },
 });
 
+// ─── Modal Styles ─────────────────────────────────────────────────────────────
+
+const modalStyles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(10,20,16,0.45)',
+    justifyContent: 'flex-end',
+  },
+  kavWrapper: {
+    width: '100%',
+  },
+  sheet: {
+    backgroundColor: C.surface,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 24,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 28,
+    paddingTop: 16,
+  },
+  handle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: C.border,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  sheetTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    fontFamily: 'Georgia',
+    color: C.label,
+    marginBottom: 4,
+  },
+  giftName: {
+    fontSize: 14,
+    color: C.textSecondary,
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  fields: {
+    gap: 14,
+    marginBottom: 4,
+  },
+  field: {
+    gap: 5,
+  },
+  fieldLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: C.textSecondary,
+    letterSpacing: 0.2,
+  },
+  required: {
+    color: C.coral,
+  },
+  optional: {
+    color: C.textTertiary,
+    fontWeight: '400',
+  },
+  input: {
+    backgroundColor: '#F8F5F0',
+    borderWidth: 1,
+    borderColor: C.border,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === 'ios' ? 12 : 10,
+    fontSize: 15,
+    color: C.label,
+  },
+  claimError: {
+    fontSize: 13,
+    color: '#B94040',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  confirmButton: {
+    backgroundColor: C.teal,
+    borderRadius: 14,
+    height: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  confirmButtonDisabled: {
+    opacity: 0.45,
+  },
+  confirmButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  cancelButton: {
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  cancelButtonText: {
+    fontSize: 15,
+    color: C.textSecondary,
+  },
+});
+
 // ─── Main Styles ──────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
+  rootContainer: {
+    flex: 1,
+  },
   root: {
     flex: 1,
   },
@@ -535,6 +846,31 @@ const styles = StyleSheet.create({
     color: C.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
+  },
+  successBanner: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    zIndex: 100,
+    backgroundColor: C.teal,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  successBannerText: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    lineHeight: 20,
   },
   itemsSection: {
     gap: 12,
@@ -568,5 +904,22 @@ const styles = StyleSheet.create({
   },
   itemsList: {
     gap: 10,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+    gap: 10,
+  },
+  emptyTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: C.label,
+  },
+  emptyBody: {
+    fontSize: 14,
+    color: C.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20,
+    maxWidth: 260,
   },
 });

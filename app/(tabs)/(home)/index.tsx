@@ -263,7 +263,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       </View>
       <Text style={[styles.emptyTitle, { color: colors.text }]}>No lists yet</Text>
       <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-        Create your first wishlist and share it with family
+        Create a list, add gift ideas from any store — Amazon, Target, Etsy, Nike, LEGO, and more — then share one link with family.
       </Text>
       <AnimatedPressable
         onPress={handleCreate}

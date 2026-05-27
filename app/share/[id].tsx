@@ -14,12 +14,13 @@ import * as Clipboard from 'expo-clipboard';
 import { X, Link2, Share2 } from 'lucide-react-native';
 import { apiFetch } from '@/utils/api';
 import { useColors } from '@/hooks/useColors';
+import { StatusBar } from 'expo-status-bar';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const C = {
-  header: '#2A9D8F',
-  headerText: '#F5F0E8',
+  header: '#FAF7F2',
+  headerText: '#1C2820',
   teal: '#1B8A8A',
   sage: '#4A7C5F',
 };
@@ -80,9 +81,9 @@ export default function ShareScreen() {
     console.log('[Share] Share via pressed, URL:', shareUrl);
     try {
       await Share.share({
-        message: `Check out this gift wishlist! ${shareUrl}`,
+        message: `Here's the wishlist — one link with gift ideas from every store. Pick something and I'll know who's getting what. ${shareUrl}`,
         url: shareUrl,
-        title: 'Share Wishlist',
+        title: 'Gift Wishlist',
       });
     } catch (err) {
       console.log('[Share] Share via error:', err);
@@ -93,10 +94,11 @@ export default function ShareScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top, backgroundColor: colors.background }]}>
+      <StatusBar style="dark" />
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleClose} style={styles.headerClose} hitSlop={8}>
-          <X size={22} color={C.headerText} strokeWidth={2} />
+          <X size={22} color="#1C2820" strokeWidth={2} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Share List</Text>
         <View style={styles.headerSpacer} />
@@ -152,7 +154,7 @@ export default function ShareScreen() {
 
             {/* Helper text */}
             <Text style={[styles.helperText, { color: colors.textTertiary }]}>
-              Anyone with this link can view the list and claim gifts.
+              Send this to family. They can browse gift ideas from any store, choose what to get, and mark it as picked — no app needed.
             </Text>
           </>
         )}
@@ -233,7 +235,7 @@ const styles = StyleSheet.create({
   },
   linkCardAccent: {
     width: 5,
-    backgroundColor: C.teal,
+    backgroundColor: '#F28C79',
   },
   linkCardBody: {
     flex: 1,
@@ -264,7 +266,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   copyButtonCopied: {
-    backgroundColor: '#4A7C5F',
+    backgroundColor: '#0F6B6F',
   },
   copyButtonText: {
     color: '#FFFFFF',

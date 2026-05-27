@@ -992,7 +992,7 @@ export default function WishlistDetailScreen() {
               <View style={[styles.emptyState, { backgroundColor: colors.surface, borderColor: colors.border }]}>
                 <Text style={[styles.emptyTitle, { color: colors.text }]}>No items yet</Text>
                 <Text style={[styles.emptyBody, { color: colors.textSecondary }]}>
-                  Start building your list — add gifts your child will love.
+                  Add gift ideas from anywhere — Amazon, Target, Etsy, Nike, LEGO, and more.
                 </Text>
               </View>
             ) : (
