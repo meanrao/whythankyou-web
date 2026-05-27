@@ -717,7 +717,7 @@ Deno.serve(async (req: Request) => {
 
     // Email to claimer (if email provided)
     if (claimer_email) {
-      const claimerSubject = `You're getting a gift from ${listName}`;
+      const claimerSubject = `You claimed a gift for ${listName}`;
       const claimerHtml = buildClaimerEmail({
         claimerName: safeClaimerName,
         giftName,
