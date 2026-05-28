@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why, Thank You! — The Gift Wishlist for Families</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F6F1E8;
+    --cream2: #F0EAE0;
+    --teal: #0F6B6F;
+    --teal-light: #7AA7A3;
+    --coral: #F28C79;
+    --dark: #1F2A24;
+    --muted: #6E776A;
+    --surface: #FFFFFF;
+    --border: #E3DED5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(246,241,232,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--teal);
+    text-decoration: none;
+    line-height: 1;
+  }
+
+  .nav-logo .comma,
+  .nav-logo .bang { color: var(--coral); }
+
+  .nav-cta {
+    background: var(--teal);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 28px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .nav-cta:hover {
+    background: #0a5457;
+    transform: translateY(-1px);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 7rem 2rem 4rem;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--teal-light);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+  }
+
+  .hero-wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(56px, 10vw, 96px);
+    color: var(--teal);
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  }
+
+  .hero-wordmark .comma,
+  .hero-wordmark .bang { color: var(--coral); }
+
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 20px);
+    font-weight: 400;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+  }
+
+  .btn-primary {
+    background: var(--teal);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 28px;
+    text-decoration: none;
+    transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: #0a5457;
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--teal);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 28px;
+    border: 1.5px solid var(--teal);
+    text-decoration: none;
+    transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-block;
+  }
+
+  .btn-secondary:hover {
+    background: var(--cream2);
+    transform: translateY(-2px);
+  }
+
+  /* MOCK CARD floating below hero */
+  .hero-card-wrap {
+    margin-top: 4rem;
+    opacity: 0;
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
+  }
+
+  .mock-card {
+    background: var(--surface);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    padding: 20px;
+    max-width: 340px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(15,107,111,0.10), 0 4px 16px rgba(0,0,0,0.06);
+    text-align: left;
+  }
+
+  .mock-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mock-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--cream2);
+    border: 2px solid var(--coral);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--coral);
+    flex-shrink: 0;
+  }
+
+  .mock-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--dark);
+  }
+
+  .mock-meta {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .mock-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mock-item:last-child { border-bottom: none; }
+
+  .mock-item-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--cream2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .mock-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    flex: 1;
+  }
+
+  .mock-item-price {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .mock-item-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #E8F3F3;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+
+  .mock-item-badge.claimed {
+    background: #FEF0ED;
+    color: var(--coral);
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-full {
+    max-width: 100%;
+    padding: 6rem 2rem;
+  }
+
+  .section-full > .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--teal-light);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(32px, 5vw, 52px);
+    color: var(--teal);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  h2 .coral { color: var(--coral); }
+
+  .section-lead {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 3.5rem;
+  }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    border-left: 4px solid var(--coral);
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
+  }
+
+  .step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(15,107,111,0.10);
+  }
+
+  .step-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 48px;
+    color: var(--cream2);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-title {
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .step-body {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* FEATURES GRID */
+  .features-bg {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature-item {
+    padding: 1.5rem;
+    border-radius: 16px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .feature-item:hover { transform: translateY(-3px); }
+
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #E8F3F3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 20px;
+  }
+
+  .feature-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* OCCASIONS */
+  .occasions-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2rem;
+  }
+
+  .occasion-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: default;
+  }
+
+  .occasion-pill:hover {
+    background: var(--teal);
+    color: white;
+    border-color: var(--teal);
+    transform: scale(1.04);
+  }
+
+  /* PRIVACY */
+  .privacy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .privacy-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.75rem;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .privacy-card:hover { transform: translateY(-3px); }
+
+  .privacy-icon {
+    font-size: 28px;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .privacy-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .privacy-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* TESTIMONIALS */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .testimonial-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.75rem;
+    position: relative;
+  }
+
+  .testimonial-stars {
+    color: var(--coral);
+    font-size: 14px;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .testimonial-text {
+    font-size: 14px;
+    color: var(--dark);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  /* FAQ */
+  .faq-list {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1.25rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--dark);
+    cursor: pointer;
+    text-align: left;
+    gap: 1rem;
+  }
+
+  .faq-q:hover { color: var(--teal); }
+
+  .faq-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--cream2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--teal);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+  .faq-a {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .faq-item.open .faq-a {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-a-inner {
+    overflow: hidden;
+  }
+
+  .faq-a-inner p {
+    padding-bottom: 1.25rem;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    text-align: center;
+    background: var(--teal);
+    padding: 6rem 2rem;
+  }
+
+  .cta-section h2 {
+    color: white;
+  }
+
+  .cta-section .section-lead {
+    color: rgba(255,255,255,0.75);
+    margin: 0 auto 2.5rem;
+  }
+
+  .btn-cta-white {
+    background: white;
+    color: var(--teal);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 16px 36px;
+    border-radius: 28px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn-cta-white:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.6);
+    padding: 3rem 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .footer-brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-brand .comma,
+  .footer-brand .bang { color: var(--coral); }
+
+  .footer-tagline {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-col-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-col a {
+    display: block;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    margin-bottom: 0.4rem;
+    transition: color 0.15s;
+  }
+
+  .footer-col a:hover { color: white; }
+
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 2rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1.25rem; }
+    section { padding: 4rem 1.25rem; }
+    .section-full { padding: 4rem 1.25rem; }
+    .hero { padding: 6rem 1.25rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">why<span class="comma">,</span> thank you<span class="bang">!</span></a>
+  <a href="#download" class="nav-cta">Download Free</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">The gift wishlist for families</p>
+  <h1 class="hero-wordmark">why<span class="comma">,</span><br>thank<br>you<span class="bang">!</span></h1>
+  <p class="hero-sub">Create wishlists for your kids, share with family, and let them claim gifts — no duplicates, no wrong sizes, no surprises ruined.</p>
+  <div class="hero-actions">
+    <a href="#download" class="btn-primary">Get the App — Free</a>
+    <a href="#how" class="btn-secondary">See how it works</a>
+  </div>
+  <div class="hero-card-wrap">
+    <div class="mock-card">
+      <div class="mock-card-header">
+        <div class="mock-avatar">J</div>
+        <div>
+          <div class="mock-name">Juniper's Birthday 🎂</div>
+          <div class="mock-meta">Age 9 · Size 10/12 · Shoe 4</div>
+        </div>
+      </div>
+      <div class="mock-item">
+        <div class="mock-item-img">🧸</div>
+        <div style="flex:1">
+          <div class="mock-item-name">Panda Hoodie</div>
+          <div class="mock-item-price">$23.00</div>
+        </div>
+        <span class="mock-item-badge">Available</span>
+      </div>
+      <div class="mock-item">
+        <div class="mock-item-img">🎨</div>
+        <div style="flex:1">
+          <div class="mock-item-name">Art Supply Set</div>
+          <div class="mock-item-price">$48.00</div>
+        </div>
+        <span class="mock-item-badge claimed">Claimed</span>
+      </div>
+      <div class="mock-item">
+        <div class="mock-item-img">📚</div>
+        <div style="flex:1">
+          <div class="mock-item-name">Book Collection</div>
+          <div class="mock-item-price">$34.00</div>
+        </div>
+        <span class="mock-item-badge">Available</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <p class="eyebrow reveal">How it works</p>
+  <h2 class="reveal">Three steps to<br>perfect gifts<span class="coral">.</span></h2>
+  <p class="section-lead reveal">Your family never gives a wrong gift again.</p>
+  <div class="steps">
+    <div class="step-card reveal" style="transition-delay:0s">
+      <div class="step-num">1</div>
+      <div class="step-title">Create a list</div>
+      <div class="step-body">Add your child's profile — sizes, interests, birthday. Then paste links from any store to add gift ideas. Amazon, Target, Nike — anywhere.</div>
+    </div>
+    <div class="step-card reveal" style="transition-delay:0.08s">
+      <div class="step-num">2</div>
+      <div class="step-title">Share the link</div>
+      <div class="step-body">Send one link to grandparents, aunts, uncles — anyone. No app required for them. The list opens beautifully in any browser.</div>
+    </div>
+    <div class="step-card reveal" style="transition-delay:0.16s">
+      <div class="step-num">3</div>
+      <div class="step-title">They claim, you relax</div>
+      <div class="step-body">Family members claim gifts so no one doubles up. They get the mailing address. Everyone gives with confidence.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<div class="section-full features-bg">
+  <section>
+    <p class="eyebrow reveal">Features</p>
+    <h2 class="reveal">Everything a family<br>gift list needs<span class="coral">.</span></h2>
+    <div class="features-grid">
+      <div class="feature-item reveal" style="transition-delay:0s">
+        <div class="feature-icon">👤</div>
+        <div class="feature-title">Recipient profiles with sizes</div>
+        <div class="feature-body">Clothing size, shoe size, age, interests — everything a gift giver needs to shop confidently.</div>
+      </div>
+      <div class="feature-item reveal" style="transition-delay:0.08s">
+        <div class="feature-icon">🚫</div>
+        <div class="feature-title">No duplicate gifts, ever</div>
+        <div class="feature-body">When someone claims a gift, it's marked taken. No more three people buying the same LEGO set.</div>
+      </div>
+      <div class="feature-item reveal" style="transition-delay:0.16s">
+        <div class="feature-icon">📍</div>
+        <div class="feature-title">Mailing address, safely shared</div>
+        <div class="feature-body">Family members can only see the mailing address after claiming a gift — encrypted and protected.</div>
+      </div>
+      <div class="feature-item reveal" style="transition-delay:0.24s">
+        <div class="feature-icon">🔗</div>
+        <div class="feature-title">Add from any store</div>
+        <div class="feature-body">Paste any product URL and Why, Thank You! pulls the name, photo, and price automatically.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- OCCASIONS -->
+<section>
+  <p class="eyebrow reveal">Every celebration</p>
+  <h2 class="reveal">Built for any occasion<span class="coral">.</span></h2>
+  <p class="section-lead reveal">Birthdays, graduations, baby showers — Why, Thank You! works for every gifting moment.</p>
+  <div class="occasions-wrap reveal">
+    <div class="occasion-pill">🎂 Birthday</div>
+    <div class="occasion-pill">🎓 Graduation</div>
+    <div class="occasion-pill">👶 Baby Shower</div>
+    <div class="occasion-pill">🎄 Christmas</div>
+    <div class="occasion-pill">✡️ Hanukkah</div>
+    <div class="occasion-pill">💍 Wedding</div>
+    <div class="occasion-pill">🎉 Any occasion</div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<div class="section-full" style="background: var(--cream2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <section>
+    <p class="eyebrow reveal">Built for families</p>
+    <h2 class="reveal">Private by design<span class="coral">.</span></h2>
+    <p class="section-lead reveal">Gift giving should feel warm, not exposed. Every feature is built with privacy in mind.</p>
+    <div class="privacy-grid">
+      <div class="privacy-card reveal" style="transition-delay:0s">
+        <span class="privacy-icon">🔒</span>
+        <div class="privacy-title">Encrypted addresses</div>
+        <div class="privacy-body">Mailing addresses are encrypted and only revealed to verified gift claimers — never exposed publicly.</div>
+      </div>
+      <div class="privacy-card reveal" style="transition-delay:0.08s">
+        <span class="privacy-icon">✅</span>
+        <div class="privacy-title">Verified claimers only</div>
+        <div class="privacy-body">Anyone who wants to claim a gift must create an account first. No anonymous claiming.</div>
+      </div>
+      <div class="privacy-card reveal" style="transition-delay:0.16s">
+        <span class="privacy-icon">🔗</span>
+        <div class="privacy-title">You control sharing</div>
+        <div class="privacy-body">Share links only go to people you send them to. Lists aren't publicly searchable.</div>
+      </div>
+      <div class="privacy-card reveal" style="transition-delay:0.24s">
+        <span class="privacy-icon">🛡️</span>
+        <div class="privacy-title">Secure by Supabase</div>
+        <div class="privacy-body">Enterprise-grade database security with row-level security policies protecting every list.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- TESTIMONIALS -->
+<section>
+  <p class="eyebrow reveal">Families love it</p>
+  <h2 class="reveal">Why families choose<br>Why, Thank You<span class="coral">!</span></h2>
+  <div class="testimonials-grid" style="margin-top:3rem">
+    <div class="testimonial-card reveal" style="transition-delay:0s">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Finally! No more getting three copies of the same toy. My mom and mother-in-law can both shop without stepping on each other's toes."</p>
+      <div class="testimonial-author">Sarah M. — mom of 2</div>
+    </div>
+    <div class="testimonial-card reveal" style="transition-delay:0.08s">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"As a grandma who isn't tech-savvy, I just clicked the link and everything was right there. The sizes, what she likes — I felt so confident shopping."</p>
+      <div class="testimonial-author">Linda K. — grandmother</div>
+    </div>
+    <div class="testimonial-card reveal" style="transition-delay:0.16s">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"The mailing address feature is genius. I just claimed the gift and they sent me the address. No awkward texts asking where to ship it."</p>
+      <div class="testimonial-author">Marcus T. — dad of 3</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<div class="section-full" style="background: var(--surface); border-top: 1px solid var(--border);">
+  <section style="max-width:760px">
+    <p class="eyebrow reveal" style="text-align:center">Frequently asked</p>
+    <h2 class="reveal" style="text-align:center; margin-bottom:3rem">Good questions<span class="coral">.</span></h2>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do gift givers need the app?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner"><p>No app needed! Gift givers just open the shared link in any browser. They can view the wishlist and claim gifts without downloading anything.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is the mailing address safe?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Completely. Addresses are encrypted and only revealed after someone claims a gift and creates an account. They're never visible on the public wishlist.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I add gifts from any store?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Yes — paste any product URL from Amazon, Target, Walmart, LEGO, Nike, Etsy, and thousands more. Why, Thank You! imports the name, photo, and price automatically.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is Why, Thank You! free?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Yes! The core app is free for families. We offer optional upgrades for power users, but everything you need to share wishlists and claim gifts is free forever.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What occasions can I use it for?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Any gifting occasion — birthdays, Christmas, Hanukkah, graduations, baby showers, weddings, and more. You can label each list with the occasion type.</p></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CTA -->
+<div id="download" class="cta-section">
+  <p class="eyebrow reveal" style="color: rgba(255,255,255,0.6)">Ready?</p>
+  <h2 class="reveal" style="color:white; margin-bottom:1rem">Make gift giving<br>delightful<span style="color:var(--coral)">.</span></h2>
+  <p class="section-lead reveal" style="color:rgba(255,255,255,0.7); margin:0 auto 2.5rem">Join families who've taken the guesswork out of giving.</p>
+  <a href="#" class="btn-cta-white reveal">Download on the App Store</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">why<span class="comma">,</span> thank you<span class="bang">!</span></div>
+      <div class="footer-tagline">The wishlist that keeps surprises safe.</div>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <a href="#how">How it works</a>
+        <a href="#download">Download</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Why, Thank You! All rights reserved.</span>
+    <span>Some links may earn affiliate commissions at no extra cost to gift buyers.</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>

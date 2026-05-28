@@ -14,7 +14,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Plus, Gift } from 'lucide-react-native';
+import { Plus, Gift, X } from 'lucide-react-native';
 import Svg, { Circle, Ellipse, Path, Rect, Line } from 'react-native-svg';
 import { useColors } from '@/hooks/useColors';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
@@ -23,6 +23,7 @@ import { AvatarCircle } from '@/components/AvatarCircle';
 import { supabase } from '@/utils/supabase';
 import { StatusBar } from 'expo-status-bar';
 import { Poppins_700Bold } from '@expo-google-fonts/poppins';
+import { useOnboardingHints } from '@/hooks/useOnboardingHints';
 
 function formatDate(iso: string): string {
   const date = new Date(iso);
@@ -86,11 +87,22 @@ function WishlistIcon({ occasion, color }: { occasion: string; color: string }) 
   );
 }
 
-function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }) {
+function WishlistCard({
+  wishlist,
+  index,
+  pulseAvatar,
+  onDismissHint,
+}: {
+  wishlist: Wishlist;
+  index: number;
+  pulseAvatar?: boolean;
+  onDismissHint?: () => void;
+}) {
   const colors = useColors();
   const router = useRouter();
-  const opacity = useRef(new Animated.Value(0)).current;
+  const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(16)).current;
+  const pulseScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     Animated.parallel([
@@ -109,6 +121,27 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
     ]).start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Two gentle pulses on the avatar when a fresh profile hint is active
+  useEffect(() => {
+    if (!pulseAvatar) {
+      pulseScale.setValue(1);
+      return;
+    }
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseScale, { toValue: 1.1, duration: 680, useNativeDriver: true }),
+        Animated.timing(pulseScale, { toValue: 1,   duration: 680, useNativeDriver: true }),
+      ]),
+      { iterations: 2 },
+    );
+    const timer = setTimeout(() => pulse.start(), 450);
+    return () => {
+      clearTimeout(timer);
+      pulse.stop();
+      pulseScale.setValue(1);
+    };
+  }, [pulseAvatar]);
 
   const formattedDate = formatDate(wishlist.date);
   const allClaimed = wishlist.claimedCount === wishlist.itemCount && wishlist.itemCount > 0;
@@ -132,6 +165,7 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
 
   function handlePress() {
     console.log('[HomeScreen] Wishlist card pressed:', wishlist.id, wishlist.name);
+    onDismissHint?.();
     router.push(`/wishlist/${wishlist.id}`);
   }
 
@@ -155,7 +189,9 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
         ]}
       >
         <View style={styles.cardRow}>
-          <AvatarCircle uri={wishlist.avatarUrl} name={wishlist.person} size={90} />
+          <Animated.View style={{ transform: [{ scale: pulseScale }] }}>
+            <AvatarCircle uri={wishlist.avatarUrl} name={wishlist.person} size={90} />
+          </Animated.View>
           <View style={styles.cardTextCol}>
             <Text style={[styles.cardListName, { color: colors.text }]} numberOfLines={1}>
               {wishlist.name}
@@ -180,7 +216,19 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
   );
 }
 
-function SwipeableCard({ wishlist, index, onDelete }: { wishlist: Wishlist; index: number; onDelete: (id: string) => void }) {
+function SwipeableCard({
+  wishlist,
+  index,
+  onDelete,
+  pulseAvatar,
+  onDismissHint,
+}: {
+  wishlist: Wishlist;
+  index: number;
+  onDelete: (id: string) => void;
+  pulseAvatar?: boolean;
+  onDismissHint?: () => void;
+}) {
   const translateX = useRef(new Animated.Value(0)).current;
 
   const panResponder = useRef(
@@ -221,7 +269,12 @@ function SwipeableCard({ wishlist, index, onDelete }: { wishlist: Wishlist; inde
       </View>
       {/* Card on top */}
       <Animated.View style={{ transform: [{ translateX }] }} {...panResponder.panHandlers}>
-        <WishlistCard wishlist={wishlist} index={index} />
+        <WishlistCard
+          wishlist={wishlist}
+          index={index}
+          pulseAvatar={pulseAvatar}
+          onDismissHint={onDismissHint}
+        />
       </Animated.View>
     </View>
   );
@@ -278,6 +331,72 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
   );
 }
 
+// ─── Tooltip bubble shared by both hints ──────────────────────────────────────
+
+function HintBubble({
+  text,
+  onDismiss,
+}: {
+  text: string;
+  onDismiss: () => void;
+}) {
+  return (
+    <View style={hintStyles.bubble}>
+      <TouchableOpacity
+        onPress={onDismiss}
+        style={hintStyles.closeBtn}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        accessibilityLabel="Dismiss hint"
+      >
+        <X size={13} color="#9AA89A" strokeWidth={2.5} />
+      </TouchableOpacity>
+      <Text style={hintStyles.text}>{text}</Text>
+    </View>
+  );
+}
+
+const hintStyles = StyleSheet.create({
+  bubble: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(15,107,111,0.16)',
+    paddingTop: 10,
+    paddingBottom: 11,
+    paddingLeft: 12,
+    paddingRight: 32,
+    shadowColor: '#1F2A24',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+  },
+  text: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#3A4A3E',
+    maxWidth: 195,
+  },
+  // Down-pointing arrow (rotated square, shows bottom-right border)
+  arrowDown: {
+    width: 11,
+    height: 11,
+    backgroundColor: '#FFFFFF',
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'rgba(15,107,111,0.16)',
+    transform: [{ rotate: '45deg' }],
+    marginTop: -6,
+  },
+});
+
+// ─── Data helpers ─────────────────────────────────────────────────────────────
+
 function mapDbRow(row: Record<string, unknown>): Wishlist {
   return {
     id: String(row.id),
@@ -303,7 +422,7 @@ function mapDbRow(row: Record<string, unknown>): Wishlist {
 }
 
 function mapDbRowWithItems(row: Record<string, unknown>): Wishlist {
-  const items = Array.isArray(row.wishlist_items) ? row.wishlist_items as {id: string, claimed: boolean}[] : [];
+  const items = Array.isArray(row.wishlist_items) ? row.wishlist_items as { id: string; claimed: boolean }[] : [];
   const itemCount = items.length;
   const claimedCount = items.filter(i => i.claimed === true).length;
   return {
@@ -327,13 +446,17 @@ function mapDbRowWithItems(row: Record<string, unknown>): Wishlist {
   };
 }
 
+// ─── Screen ───────────────────────────────────────────────────────────────────
+
 export default function HomeScreen() {
-  const colors = useColors();
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const [wishlists, setWishlists] = useState<Wishlist[]>([]);
-  const [displayName, setDisplayName] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
+  const colors  = useColors();
+  const router  = useRouter();
+  const insets  = useSafeAreaInsets();
+  const [wishlists,    setWishlists]    = useState<Wishlist[]>([]);
+  const [displayName,  setDisplayName]  = useState('');
+  const [refreshing,   setRefreshing]   = useState(false);
+
+  const { showPlusHint, showProfileHint, hintsLoaded, dismissPlus, dismissProfile } = useOnboardingHints();
 
   async function handleRefresh() {
     setRefreshing(true);
@@ -408,11 +531,13 @@ export default function HomeScreen() {
 
   function handleNewList() {
     console.log('[HomeScreen] FAB new list button pressed');
+    dismissPlus();
     router.push('/create-list');
   }
 
   function handleCreateFromEmpty() {
     console.log('[HomeScreen] Empty state navigating to create-list');
+    dismissPlus();
     router.push('/create-list');
   }
 
@@ -421,8 +546,12 @@ export default function HomeScreen() {
     router.push('/(tabs)/(profile)');
   }
 
-  const greetingText = displayName ? `Hi, ${displayName}!` : 'Why, Thank You!';
+  const greetingText  = displayName ? `Hi, ${displayName}!` : 'Why, Thank You!';
   const avatarInitial = displayName ? displayName.charAt(0).toUpperCase() : 'W';
+
+  // Show FAB hint only while the list is empty; profile hint only once there's ≥1 list.
+  const showFabHint     = hintsLoaded && showPlusHint    && wishlists.length === 0;
+  const showProfileHintActive = hintsLoaded && showProfileHint && wishlists.length > 0;
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -449,8 +578,26 @@ export default function HomeScreen() {
           <EmptyState onCreate={handleCreateFromEmpty} />
         ) : (
           <View style={styles.listContainer}>
+            {/* Profile hint floats above the first card, arrow points at the avatar */}
+            {showProfileHintActive && (
+              <View style={styles.profileHintWrapper}>
+                <HintBubble
+                  text="Tap here to view and edit this person's details."
+                  onDismiss={dismissProfile}
+                />
+                {/* Arrow pointing down-left toward the first card's avatar */}
+                <View style={[hintStyles.arrowDown, styles.profileHintArrow]} />
+              </View>
+            )}
             {wishlists.map((wishlist, index) => (
-              <SwipeableCard key={wishlist.id} wishlist={wishlist} index={index} onDelete={handleDelete} />
+              <SwipeableCard
+                key={wishlist.id}
+                wishlist={wishlist}
+                index={index}
+                onDelete={handleDelete}
+                pulseAvatar={index === 0 && showProfileHintActive}
+                onDismissHint={index === 0 ? dismissProfile : undefined}
+              />
             ))}
           </View>
         )}
@@ -466,9 +613,22 @@ export default function HomeScreen() {
       >
         <Plus size={24} color="#FFFFFF" strokeWidth={2.5} />
       </AnimatedPressable>
+
+      {/* FAB hint — floats above the plus button, arrow points down to FAB center */}
+      {showFabHint && (
+        <View pointerEvents="box-none" style={styles.fabHintAnchor}>
+          <HintBubble
+            text="Add a child profile to start building wish lists."
+            onDismiss={dismissPlus}
+          />
+          <View style={[hintStyles.arrowDown, styles.fabHintArrow]} />
+        </View>
+      )}
     </View>
   );
 }
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   root: {
@@ -514,6 +674,28 @@ const styles = StyleSheet.create({
   listContainer: {
     gap: 14,
   },
+
+  // Profile hint: sits inside listContainer, arrow ~aligned with avatar center
+  profileHintWrapper: {
+    marginBottom: -4, // tighten the gap to the first card
+  },
+  profileHintArrow: {
+    marginLeft: 52, // ≈ card padding (16) + half avatar (45) − half arrow (6) − scrollContent padding accounted for
+    marginTop: -6,
+  },
+
+  // FAB hint: absolutely positioned above the FAB
+  fabHintAnchor: {
+    position: 'absolute',
+    bottom: 168, // FAB bottom (100) + FAB height (56) + gap (12)
+    right: 20,
+    alignItems: 'flex-end',
+  },
+  fabHintArrow: {
+    marginRight: 21, // centers arrow over the FAB (FAB width 56 / 2 − arrow half)
+    alignSelf: 'flex-end',
+  },
+
   card: {
     borderRadius: 20,
     borderCurve: 'continuous',

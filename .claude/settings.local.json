@@ -18,7 +18,32 @@
       "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a push)",
       "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Fix hero card and left panel polish\")",
       "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Full-bleed hero, app screenshots, photo strip, remove pills\")",
-      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Update photo strip images\")"
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Update photo strip images\")",
+      "Bash(npx tsc *)",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a status)",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a status list.html)",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a remote -v)",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a add list.html)",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Rebuild list.html with new brand\")",
+      "Bash(git -C /Users/meenal/Downloads/be5ff1e2-2951-4097-ae32-c22b4be3e92a commit -m \"Remove apikey header from fetch calls to fix CORS\")",
+      "Bash(curl *)",
+      "Bash(echo \"raw:$\\(curl -s ...\\)\")",
+      "Bash(supabase --version)",
+      "Bash(npm --version)",
+      "Bash(npx supabase *)",
+      "Bash(xargs ls -la)",
+      "Bash(xargs cat)",
+      "Bash(grep -v \"^.*\\\\.btn-claim\\\\b.*{$\\\\|btn-claim:\\\\|btn-claimed\\\\|card-img-claimed-overlay\\\\|card-img-claimed-badge.*{\\\\|card-status.*{\")",
+      "Bash(git -C /Users/meenal/Downloads/WTY ls-files .env)",
+      "Bash(supabase db *)",
+      "Read(//Users/meenal/.supabase/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(brew list *)",
+      "Bash(git -C /Users/meenal/Downloads/WTY log --oneline supabase/functions/wishlist-api/index.ts)",
+      "Bash(git -C /Users/meenal/Downloads/WTY log --oneline --all)",
+      "Bash(git -C /Users/meenal/Downloads/WTY log --oneline --follow supabase/functions/wishlist-api/index.ts)",
+      "Bash(git *)",
+      "Bash(npx eas-cli *)"
     ]
   }
 }

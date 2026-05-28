@@ -21,6 +21,7 @@ import { X } from 'lucide-react-native';
 import { supabase } from '@/utils/supabase';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { useColors } from '@/hooks/useColors';
+import { StatusBar } from 'expo-status-bar';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -28,11 +29,11 @@ const OCCASIONS = ['Birthday', 'Christmas', 'Graduation', 'Baby Shower', 'Holida
 type Occasion = typeof OCCASIONS[number];
 
 const C = {
-  header: '#2A9D8F',
-  headerText: '#F5F0E8',
-  pillSelected: '#4A7C5F',
+  header: '#FAF7F2',
+  headerText: '#1C2820',
+  pillSelected: '#0F6B6F',
   pillSelectedText: '#F5F0E8',
-  button: '#4A7C5F',
+  button: '#0F6B6F',
   buttonText: '#F5F0E8',
   placeholder: '#A89F94',
 };
@@ -269,7 +270,7 @@ export default function EditListScreen() {
       <View style={[styles.root, styles.centered, { paddingTop: insets.top, backgroundColor: colors.background }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleClose} style={styles.headerClose} hitSlop={8}>
-            <X size={22} color={C.headerText} strokeWidth={2} />
+            <X size={22} color="#1C2820" strokeWidth={2} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Edit List</Text>
           <View style={styles.headerSpacer} />
@@ -289,10 +290,11 @@ export default function EditListScreen() {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={[styles.root, { paddingTop: insets.top, backgroundColor: colors.background }]}>
+        <StatusBar style="dark" />
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleClose} style={styles.headerClose} hitSlop={8}>
-            <X size={22} color={C.headerText} strokeWidth={2} />
+            <X size={22} color="#1C2820" strokeWidth={2} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Edit List</Text>
           <View style={styles.headerSpacer} />
@@ -306,9 +308,9 @@ export default function EditListScreen() {
         >
           {/* Row 1 — Child's name */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>Recipient name</Text>
+            <Text style={styles.sectionLabel}>Recipient name</Text>
             <TextInput
-              style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+              style={[styles.input, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }]}
               placeholder="e.g. Emma"
               placeholderTextColor={C.placeholder}
               value={name}
@@ -319,7 +321,7 @@ export default function EditListScreen() {
 
           {/* Row 2 — Occasion */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>Occasion</Text>
+            <Text style={styles.sectionLabel}>Occasion</Text>
             <View style={styles.pillRow}>
               {OCCASIONS.map((o) => {
                 const isSelected = occasion === o;
@@ -347,16 +349,16 @@ export default function EditListScreen() {
 
           {/* Row 3 — Occasion date */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>Occasion date</Text>
+            <Text style={styles.sectionLabel}>Occasion date</Text>
             <TouchableOpacity
               onPress={handleDateFieldPress}
-              style={[styles.dateField, { backgroundColor: colors.surface, borderColor: colors.border }]}
+              style={[styles.dateField, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5' }]}
               activeOpacity={0.75}
             >
               <Text style={[styles.dateFieldText, { color: colors.text }]}>{displayDate}</Text>
             </TouchableOpacity>
             {isIOSPickerVisible && (
-              <View style={[styles.iosDatePickerWrapper, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <View style={[styles.iosDatePickerWrapper, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5' }]}>
                 <DateTimePicker
                   value={occasionDate}
                   mode="date"
@@ -381,9 +383,9 @@ export default function EditListScreen() {
           <View style={styles.section}>
             <View style={styles.twoCol}>
               <View style={styles.colHalf}>
-                <Text style={[styles.sectionLabel, { color: colors.text }]}>Age</Text>
+                <Text style={styles.sectionLabel}>Age</Text>
                 <TextInput
-                  style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+                  style={[styles.input, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }]}
                   placeholder="Age"
                   placeholderTextColor={C.placeholder}
                   value={age}
@@ -393,9 +395,9 @@ export default function EditListScreen() {
                 />
               </View>
               <View style={styles.colHalf}>
-                <Text style={[styles.sectionLabel, { color: colors.text }]}>Clothing size</Text>
+                <Text style={styles.sectionLabel}>Clothing size</Text>
                 <TextInput
-                  style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+                  style={[styles.input, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }]}
                   placeholder="e.g. 7/8"
                   placeholderTextColor={C.placeholder}
                   value={clothingSize}
@@ -408,9 +410,9 @@ export default function EditListScreen() {
 
           {/* Row 5 — Shoe size */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>Shoe size</Text>
+            <Text style={styles.sectionLabel}>Shoe size</Text>
             <TextInput
-              style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+              style={[styles.input, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }]}
               placeholder="e.g. Kids 3"
               placeholderTextColor={C.placeholder}
               value={shoeSize}
@@ -421,9 +423,9 @@ export default function EditListScreen() {
 
           {/* Row 6 — Interests */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>What they're into right now</Text>
+            <Text style={styles.sectionLabel}>What they're into right now</Text>
             <TextInput
-              style={[styles.input, styles.inputMultiline, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+              style={[styles.input, styles.inputMultiline, { backgroundColor: '#FDFAF6', borderColor: '#E3DED5', color: colors.text }]}
               placeholder="e.g. dinosaurs, Minecraft, painting..."
               placeholderTextColor={C.placeholder}
               value={interests}
@@ -436,7 +438,7 @@ export default function EditListScreen() {
 
           {/* Row 7 — Child photo */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>Recipient photo</Text>
+            <Text style={styles.sectionLabel}>Recipient photo</Text>
             <View style={styles.avatarRow}>
               <TouchableOpacity onPress={handlePickAvatar} activeOpacity={0.8}>
                 {avatarUrl ? (
@@ -448,7 +450,7 @@ export default function EditListScreen() {
                   <AvatarCircle uri={undefined} name={name || '?'} size={72} />
                 )}
               </TouchableOpacity>
-              <TouchableOpacity onPress={handlePickAvatar} activeOpacity={0.75} style={[styles.avatarPickerBtn, { borderColor: colors.border, backgroundColor: colors.surface }]}>
+              <TouchableOpacity onPress={handlePickAvatar} activeOpacity={0.75} style={[styles.avatarPickerBtn, { borderColor: '#E3DED5', backgroundColor: '#FDFAF6' }]}>
                 <Text style={styles.avatarPickerText}>
                   {avatarUrl ? 'Change photo' : 'Choose photo'}
                 </Text>
@@ -523,13 +525,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
+    fontSize: 11,
+    fontWeight: '500',
+    letterSpacing: 0.4,
+    color: '#6E776A',
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -545,10 +547,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   pill: {
-    borderRadius: 20,
+    borderRadius: 24,
     paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderWidth: 1,
+    paddingVertical: 6,
+    borderWidth: 0.5,
   },
   pillText: {
     fontSize: 14,
@@ -597,7 +599,7 @@ const styles = StyleSheet.create({
   avatarPickerText: {
     fontSize: 14,
     fontWeight: '500',
-    color: C.header,
+    color: '#F28C79',
   },
   saveButton: {
     backgroundColor: C.button,

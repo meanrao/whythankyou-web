@@ -1,10 +1,16 @@
 {
   "version": 2,
   "builds": [
-    { "src": "*.html",      "use": "@vercel/static" },
-    { "src": "assets/**",   "use": "@vercel/static" }
+    { "src": "*.html",                                     "use": "@vercel/static" },
+    { "src": "assets/**",                                  "use": "@vercel/static" },
+    { "src": ".well-known/apple-app-site-association",     "use": "@vercel/static" }
   ],
   "routes": [
+    {
+      "src": "/.well-known/apple-app-site-association",
+      "dest": "/.well-known/apple-app-site-association",
+      "headers": { "Content-Type": "application/json" }
+    },
     { "src": "/",          "dest": "/index.html" },
     { "src": "/list/(.*)", "dest": "/list.html"  }
   ]

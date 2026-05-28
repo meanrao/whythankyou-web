@@ -8,7 +8,7 @@ interface AuthContextValue {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -55,9 +55,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  async function signUp(email: string, password: string) {
+  async function signUp(email: string, password: string, displayName?: string) {
     console.log('[Auth] signUp called for:', email);
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const options = displayName ? { data: { display_name: displayName } } : undefined;
+    const { data, error } = await supabase.auth.signUp({ email, password, options });
     if (error) {
       console.log('[Auth] signUp error:', error.message);
       throw error;

@@ -21,6 +21,7 @@ import { X } from 'lucide-react-native';
 import { supabase } from '@/utils/supabase';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { useColors } from '@/hooks/useColors';
+import { StatusBar } from 'expo-status-bar';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -28,8 +29,8 @@ const OCCASIONS = ['Birthday', 'Christmas', 'Graduation', 'Baby Shower', 'Holida
 type Occasion = typeof OCCASIONS[number];
 
 const C = {
-  header: '#2A9D8F',
-  headerText: '#F5F0E8',
+  header: '#FAF7F2',
+  headerText: '#1C2820',
   pillSelected: '#4A7C5F',
   pillSelectedText: '#F5F0E8',
   button: '#4A7C5F',
@@ -231,6 +232,7 @@ export default function CreateListScreen() {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={[styles.root, { paddingTop: insets.top, backgroundColor: colors.background }]}>
+        <StatusBar style="dark" />
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleClose} style={styles.headerClose} hitSlop={8}>
@@ -531,10 +533,10 @@ const styles = StyleSheet.create({
   avatarPickerText: {
     fontSize: 14,
     fontWeight: '500',
-    color: C.header,
+    color: '#F28C79',
   },
   createButton: {
-    backgroundColor: C.button,
+    backgroundColor: '#0F6B6F',
     borderRadius: 16,
     height: 56,
     marginHorizontal: 0,

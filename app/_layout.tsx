@@ -160,6 +160,10 @@ function AppNavigator({ splashDone }: { splashDone: boolean }) {
           name="web-guest/[token]"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="list/[token]"
+          options={{ headerShown: false }}
+        />
       </Stack>
       <SystemBars style="dark" />
     </ThemeProvider>

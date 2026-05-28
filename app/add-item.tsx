@@ -126,6 +126,7 @@ export default function AddItemScreen() {
   const [filling, setFilling] = useState(false);
   const [fillSuccess, setFillSuccess] = useState(false);
   const [fillHint, setFillHint] = useState(false);
+  const [fillFailed, setFillFailed] = useState(false);
   const [filledFields, setFilledFields] = useState<Set<string>>(new Set());
   const [fillAttempted, setFillAttempted] = useState(false);
 
@@ -148,6 +149,7 @@ export default function AddItemScreen() {
     setFilledFields(new Set());
     setFillAttempted(false);
     setFillHint(false);
+    setFillFailed(false);
   }
 
   async function handleFillIn() {
@@ -159,6 +161,7 @@ export default function AddItemScreen() {
     console.log('[AddItem] Fill-in button pressed, fetching URL preview:', trimmed);
     setFilling(true);
     setFillSuccess(false);
+    setFillFailed(false);
     try {
       const data = await apiFetch('/api/url-preview', {
         method: 'POST',
@@ -167,9 +170,16 @@ export default function AddItemScreen() {
       });
       console.log('[AddItem] URL preview response:', data);
       if (data.error) {
-        Alert.alert('Could not fetch URL', data.error);
+        // Partial data may still be present (e.g. store name derived from domain)
+        const populated = new Set<string>();
+        if (data.name)        { setItemName(cleanProductName(data.name)); populated.add('name'); }
+        if (data.price != null) { setPrice(String(data.price)); populated.add('price'); }
+        if (data.store)       { setStore(data.store); populated.add('store'); }
+        if (data.image_url)   { setImageUrl(data.image_url); populated.add('image'); }
+        setFilledFields(populated);
         setFillAttempted(true);
-        setFilledFields(new Set());
+        setFillFailed(true);
+        setFillSuccess(false);
         return;
       }
       const populated = new Set<string>();
@@ -187,7 +197,7 @@ export default function AddItemScreen() {
       console.log('[AddItem] URL preview error:', err);
       setFillAttempted(true);
       setFilledFields(new Set());
-      Alert.alert('Could not fetch URL', 'Check the URL and try again.');
+      setFillFailed(true);
     } finally {
       setFilling(false);
     }
@@ -346,7 +356,7 @@ export default function AddItemScreen() {
                 placeholder="https://..."
                 placeholderTextColor={C.placeholder}
                 value={productUrl}
-                onChangeText={(v) => { setProductUrl(v); setFillHint(false); setFillSuccess(false); }}
+                onChangeText={(v) => { setProductUrl(v); setFillHint(false); setFillSuccess(false); setFillFailed(false); }}
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType="url"
@@ -365,6 +375,9 @@ export default function AddItemScreen() {
                 )}
               </TouchableOpacity>
             </View>
+            <Text style={styles.urlHelperText}>
+              Some stores, including Etsy, may not allow automatic importing.
+            </Text>
             {fillSuccess && (
               <View style={styles.successBanner}>
                 <CheckCircle size={14} color={C.successText} strokeWidth={2} />
@@ -373,9 +386,14 @@ export default function AddItemScreen() {
                 </Text>
               </View>
             )}
-            {fillHint && (
+            {fillFailed && (
               <Text style={[styles.fillHint, fontsLoaded ? { fontFamily: 'Poppins_400Regular' } : null]}>
-                Couldn't grab details from this site — feel free to fill them in yourself.
+                Couldn't import item details. Please enter the gift information manually.
+              </Text>
+            )}
+            {fillHint && !fillFailed && (
+              <Text style={[styles.fillHint, fontsLoaded ? { fontFamily: 'Poppins_400Regular' } : null]}>
+                Couldn't grab all details — check and fill in anything that's missing.
               </Text>
             )}
           </View>
@@ -570,6 +588,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '600',
+  },
+  urlHelperText: {
+    fontSize: 12,
+    color: '#9AA89A',
+    lineHeight: 17,
   },
   fillHint: {
     fontSize: 12,

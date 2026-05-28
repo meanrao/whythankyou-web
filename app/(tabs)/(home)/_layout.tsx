@@ -11,10 +11,6 @@ export default function HomeLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        headerStyle: { backgroundColor: colors.primary },
-        headerTintColor: '#F5F0E8',
-        headerShadowVisible: false,
-        headerBackButtonDisplayMode: 'minimal',
       }}
     />
   );

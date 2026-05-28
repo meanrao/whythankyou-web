@@ -1,19 +1,25 @@
 export const COLORS = {
   // Backgrounds
-  background: '#FAF7F2',
+  background: '#F6F1E8',
   surface: '#FFFFFF',
   surfaceSecondary: '#F2EDE5',
 
   // Text
-  text: '#1C2018',
-  textSecondary: '#5A6354',
-  textTertiary: '#8E9A87',
+  text: '#1F2A24',
+  textSecondary: '#6E776A',
+  textTertiary: '#9AA89A',
 
   // Brand
-  primary: '#2A9D8F',
+  primary: '#0F6B6F',
   primaryMuted: '#E8F5F3',
-  accent: '#2A9D8F',
+  accent: '#0F6B6F',
   accentMuted: '#E8F5F3',
+
+  // Extended palette
+  sage: '#7AA7A3',
+  coral: '#F28C79',
+  border: '#E3DED5',
+  divider: '#EDE8DF',
 
   // Occasion accents
   occasionBirthday: '#E8866A',
@@ -28,8 +34,6 @@ export const COLORS = {
   occasionOtherBg: '#F3F1FA',
 
   // Structural
-  border: 'rgba(26,32,24,0.10)',
-  divider: 'rgba(26,32,24,0.06)',
   warning: '#D4A853',
   danger: '#C0392B',
 };
@@ -41,9 +45,9 @@ export const DARK_COLORS = {
   text: '#FFFFFF',
   textSecondary: '#A0A0A0',
   textTertiary: '#707070',
-  primary: '#2A9D8F',
+  primary: '#0F6B6F',
   primaryMuted: '#1A3535',
-  accent: '#2A9D8F',
+  accent: '#0F6B6F',
   accentMuted: '#1A3535',
   occasionBirthday: '#E8866A',
   occasionChristmas: '#6BA882',

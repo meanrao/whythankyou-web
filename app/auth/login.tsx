@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import { Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/utils/supabase';
 
@@ -38,6 +40,10 @@ export default function LoginScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { signIn } = useAuth();
+
+  const [fontsLoaded] = useFonts({ Poppins_700Bold, Poppins_400Regular });
+  const poppins700 = fontsLoaded ? 'Poppins_700Bold' : 'Georgia';
+  const poppins400 = fontsLoaded ? 'Poppins_400Regular' : 'Georgia';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -100,20 +106,18 @@ export default function LoginScreen() {
       <View style={[styles.root, { paddingTop: insets.top }]}>
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 48 }]}
+          contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 16 }]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* Brand */}
           <View style={styles.brandSection}>
-            <Text style={styles.appWordmark}>Why, Thank You!</Text>
-            <Text style={styles.tagline}>Take the guesswork out of giving.</Text>
+            <Text style={[styles.appWordmark, { fontFamily: poppins700 }]}>Why, Thank You!</Text>
+            <Text style={[styles.tagline, { fontFamily: poppins400 }]}>Take the guesswork out of giving.</Text>
           </View>
 
           {/* Form */}
           <View style={styles.formSection}>
-            <Text style={styles.formHeading}>Welcome back</Text>
-
             {error ? (
               <View style={styles.errorBox}>
                 <Text style={styles.errorText}>{error}</Text>
@@ -199,13 +203,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontFamily: 'Georgia',
     fontWeight: '700',
-    color: C.brand,
+    color: '#0F6B6F',
     letterSpacing: -0.5,
   },
   tagline: {
     fontSize: 14,
     fontFamily: 'Georgia',
-    fontStyle: 'italic',
     color: C.tagline,
     marginTop: 6,
     textAlign: 'center',
@@ -238,16 +241,15 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   label: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: C.label,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
+    fontSize: 11,
+    fontWeight: '500',
+    color: '#6E776A',
+    letterSpacing: 0.4,
   },
   input: {
     backgroundColor: C.inputBg,
-    borderWidth: 1.5,
-    borderColor: C.border,
+    borderWidth: 0.5,
+    borderColor: '#E3DED5',
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 15,
@@ -255,7 +257,7 @@ const styles = StyleSheet.create({
     color: C.heading,
   },
   primaryButton: {
-    backgroundColor: C.teal,
+    backgroundColor: '#0F6B6F',
     borderRadius: 28,
     height: 56,
     alignItems: 'center',
@@ -288,7 +290,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 15,
-    color: C.linkText,
+    color: '#0F6B6F',
     fontWeight: '600',
   },
 });

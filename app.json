@@ -4,27 +4,32 @@
     "slug": "w-ty",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/handbox.png",
+    "icon": "./assets/images/app_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/handbox.png",
+      "image": "./assets/images/app_icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2A9D8F"
+      "backgroundColor": "#F6F1E8"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.placeholder.app",
+      "bundleIdentifier": "com.drumshakers.whythankyou",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSPhotoLibraryUsageDescription": "Why, Thank You! needs access to your photo library to add photos to gift items and child profiles."
-      }
+        "NSPhotoLibraryUsageDescription": "Why, Thank You! needs access to your photo library to add photos to gift items and child profiles.",
+        "CFBundleDisplayName": "W,TY!"
+      },
+      "associatedDomains": [
+        "applinks:whythankyou.com",
+        "applinks:www.whythankyou.com"
+      ]
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/handbox.png",
+        "foregroundImage": "./assets/images/app_icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.placeholder.app",
+      "package": "com.drumshakers.whythankyou",
       "permissions": [
         "READ_MEDIA_IMAGES"
       ]
@@ -48,7 +53,11 @@
       "router": {},
       "backendUrl": "https://8nsdd27yxhenvw8tnazbfv4kd9vumew6.app.specular.dev",
       "supabaseUrl": "https://wdiovqjtfbkvjkcmbkzr.supabase.co",
-      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkaW92cWp0ZmJrdmprY21ia3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzQ5OTUsImV4cCI6MjA5NDM1MDk5NX0.Pdoh7mPt_3YhTvPN8xFdda7M9L7E8t-_oDOqZ_fL3T8"
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkaW92cWp0ZmJrdmprY21ia3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzQ5OTUsImV4cCI6MjA5NDM1MDk5NX0.Pdoh7mPt_3YhTvPN8xFdda7M9L7E8t-_oDOqZ_fL3T8",
+      "eas": {
+        "projectId": "ea64ffc8-2009-4138-873e-9f86dd79bd22"
+      },
+      "apiUrl": "https://wdiovqjtfbkvjkcmbkzr.supabase.co/functions/v1/wishlist-api"
     }
   }
 }

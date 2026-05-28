@@ -5,8 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronLeft } from 'lucide-react-native';
 import { useColors } from '@/hooks/useColors';
 
-const HEADER_COLOR = '#2A9D8F';
-const HEADER_TEXT = '#FAF7F2';
+const HEADER_COLOR = '#F6F1E8';
+const HEADER_TEXT = '#1F2A24';
 
 export default function PrivacyScreen() {
   const router = useRouter();

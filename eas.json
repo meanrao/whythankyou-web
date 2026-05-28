@@ -12,5 +12,15 @@
     "production": {
       "autoIncrement": true
     }
+  },
+  "cli": {
+    "appVersionSource": "remote"
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "info@drumshakers.com"
+      }
+    }
   }
 }

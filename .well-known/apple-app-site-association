@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["KGDGB34J7R.com.drumshakers.whythankyou"],
+        "components": [
+          {
+            "/": "/list/*",
+            "comment": "Shared wishlist links"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -54,8 +54,9 @@ export default function ShareScreen() {
         console.log('[Share] Share token received:', data.token);
         setToken(data.token);
       } catch (err) {
-        console.log('[Share] Error fetching share token:', err);
-        setError('Could not generate share link. Please try again.');
+        const detail = err instanceof Error ? err.message : String(err);
+        console.log('[Share] Error fetching share token:', detail);
+        setError(`Could not generate share link. Please try again.\n\n${detail.slice(0, 120)}`);
       } finally {
         setLoading(false);
       }

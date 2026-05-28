@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why, Thank You! — The Gift Wishlist for Families</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #F6F1E8;
+  --cream2: #F0EAE0;
+  --teal: #0F6B6F;
+  --teal-light: #7AA7A3;
+  --coral: #F28C79;
+  --dark: #1F2A24;
+  --muted: #6E776A;
+  --surface: #FFFFFF;
+  --border: #E3DED5;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--dark);
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(246,241,232,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--teal);
+  text-decoration: none;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+.nav-logo .coral { color: var(--coral); }
+
+.nav-cta {
+  background: var(--teal);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 28px;
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav-cta:hover { background: #0a5457; transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  padding-top: 64px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+}
+
+.hero-left {
+  padding: 5rem 3rem 5rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--teal-light);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
+}
+
+.hero-wordmark {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: clamp(48px, 6vw, 80px);
+  color: var(--teal);
+  line-height: 1.0;
+  letter-spacing: -1px;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
+}
+.hero-wordmark .coral { color: var(--coral); }
+
+.hero-pain {
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.32s forwards;
+}
+
+.hero-pain p {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.8;
+  padding-left: 1rem;
+  border-left: 3px solid var(--coral);
+}
+
+.hero-sub {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  max-width: 420px;
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.42s forwards;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.52s forwards;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: 28px;
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  display: inline-block;
+}
+.btn-primary:hover { background: #0a5457; transform: translateY(-2px) scale(1.02); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--teal);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: 28px;
+  border: 1.5px solid var(--teal);
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  display: inline-block;
+}
+.btn-secondary:hover { background: var(--cream2); transform: translateY(-2px); }
+
+/* ── HERO RIGHT — photo + floating card ── */
+.hero-right {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0;
+  animation: fadeIn 1s cubic-bezier(0.22,1,0.36,1) 0.3s forwards;
+}
+
+/* cream gradient fade on left edge so photo blends into text side */
+.hero-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--cream) 0%, rgba(246,241,232,0.5) 30%, transparent 55%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* subtle cream vignette bottom */
+.hero-right::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 180px;
+  background: linear-gradient(to top, var(--cream) 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Floating app card over photo */
+.hero-float-card {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 1.5rem;
+  z-index: 2;
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  padding: 16px;
+  width: 260px;
+  box-shadow: 0 20px 60px rgba(15,107,111,0.15), 0 4px 16px rgba(0,0,0,0.08);
+  opacity: 0;
+  animation: slideUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.8s forwards;
+}
+
+.float-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.float-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cream2);
+  border: 2px solid var(--coral);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--coral);
+  flex-shrink: 0;
+}
+
+.float-name { font-weight: 700; font-size: 13px; color: var(--dark); }
+.float-meta { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+.float-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.float-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.float-item-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--cream2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.float-item-name { font-size: 11px; font-weight: 600; color: var(--dark); flex: 1; line-height: 1.3; }
+.float-item-price { font-size: 10px; color: var(--muted); }
+
+.float-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.float-badge.avail { background: #E8F3F3; color: var(--teal); }
+.float-badge.claimed { background: #FEF0ED; color: var(--coral); }
+
+/* ── SECTIONS SHARED ── */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 6rem 2rem; }
+.wrap-sm { max-width: 760px; margin: 0 auto; padding: 6rem 2rem; }
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--teal-light);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: clamp(32px, 4.5vw, 52px);
+  color: var(--teal);
+  line-height: 1.08;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+h2 .coral { color: var(--coral); }
+
+.section-lead {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 500px;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+/* ── HOW IT WORKS ── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--coral);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+}
+.step-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(15,107,111,0.10); }
+
+.step-num {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 52px;
+  color: var(--cream2);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.step-title { font-weight: 700; font-size: 17px; color: var(--dark); margin-bottom: 0.5rem; }
+.step-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+/* ── UNCLE JOHNNY SCENARIO (split) ── */
+.scenario-section {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.scenario-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.scenario-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.scenario-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.scenario-step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.scenario-step-text strong {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--dark);
+  margin-bottom: 2px;
+}
+.scenario-step-text p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Big product mockup */
+.big-mockup {
+  background: var(--cream);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  padding: 20px;
+  box-shadow: 0 24px 64px rgba(15,107,111,0.10), 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.mockup-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mockup-avatar-lg {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--cream2);
+  border: 2.5px solid var(--coral);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--coral);
+  flex-shrink: 0;
+}
+
+.mockup-profile-name { font-weight: 700; font-size: 16px; color: var(--dark); }
+.mockup-profile-meta { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+.mockup-sizes {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.mockup-size-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--cream2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.mockup-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease;
+}
+.mockup-item:last-child { margin-bottom: 0; }
+
+.mockup-item-thumb {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: var(--cream2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.mockup-item-info { flex: 1; min-width: 0; }
+.mockup-item-name { font-size: 13px; font-weight: 600; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mockup-item-price { font-size: 11px; color: var(--muted); font-weight: 500; }
+
+.mockup-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+.mockup-badge.avail { background: #E8F3F3; color: var(--teal); }
+.mockup-badge.claimed { background: #FEF0ED; color: var(--coral); }
+
+.mockup-address-unlock {
+  margin-top: 14px;
+  background: linear-gradient(135deg, #E8F3F3 0%, #F0EAE0 100%);
+  border: 1px solid #c5dede;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.unlock-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.unlock-label { font-size: 11px; font-weight: 600; color: var(--teal); }
+.unlock-sub { font-size: 10px; color: var(--muted); }
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.75rem;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+}
+.feature-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(15,107,111,0.08); }
+
+.feature-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: #E8F3F3;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+}
+
+/* SVG line icons */
+.feature-icon-wrap svg { width: 22px; height: 22px; stroke: var(--teal); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+.feature-title { font-weight: 700; font-size: 15px; color: var(--dark); margin-bottom: 0.4rem; }
+.feature-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+/* ── OCCASIONS ── */
+.occasions-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2rem;
+}
+
+.occasion-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.occasion-pill svg { width: 16px; height: 16px; stroke: var(--teal-light); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.occasion-pill:hover { background: var(--teal); color: white; border-color: var(--teal); transform: scale(1.04); }
+.occasion-pill:hover svg { stroke: white; }
+
+/* ── PRIVACY ── */
+.privacy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.privacy-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.75rem;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.privacy-card:hover { transform: translateY(-3px); }
+
+.privacy-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+}
+.privacy-icon-wrap svg { width: 20px; height: 20px; stroke: var(--teal); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+.privacy-title { font-weight: 700; font-size: 15px; color: var(--dark); margin-bottom: 0.4rem; }
+.privacy-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+/* ── TESTIMONIALS ── */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.testimonial-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.75rem;
+}
+
+.testimonial-stars { color: var(--coral); font-size: 13px; letter-spacing: 2px; margin-bottom: 1rem; }
+.testimonial-text { font-size: 14px; color: var(--dark); line-height: 1.75; margin-bottom: 1.25rem; font-style: italic; }
+.testimonial-author { font-size: 12px; font-weight: 600; color: var(--muted); }
+
+/* ── FAQ ── */
+.faq-item { border-bottom: 1px solid var(--border); }
+
+.faq-q {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--dark);
+  cursor: pointer;
+  text-align: left;
+  gap: 1rem;
+  transition: color 0.15s;
+}
+.faq-q:hover { color: var(--teal); }
+
+.faq-icon {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--cream2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+  color: var(--teal);
+  font-weight: 400;
+  line-height: 1;
+  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+
+.faq-a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22,1,0.36,1);
+}
+.faq-item.open .faq-a { grid-template-rows: 1fr; }
+.faq-a-inner { overflow: hidden; }
+.faq-a-inner p { padding-bottom: 1.25rem; font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+/* ── CTA ── */
+.cta-section {
+  background: var(--teal);
+  padding: 7rem 2rem;
+  text-align: center;
+}
+.cta-section h2 { color: white; }
+.cta-section .section-lead { color: rgba(255,255,255,0.72); margin: 0 auto 2.5rem; }
+
+.btn-cta-white {
+  background: white;
+  color: var(--teal);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 16px 36px;
+  border-radius: 28px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.btn-cta-white:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--dark);
+  padding: 3.5rem 2rem 2rem;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 1.5rem;
+}
+
+.footer-brand {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 22px;
+  color: white;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.5px;
+}
+.footer-brand .coral { color: var(--coral); }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.45); }
+
+.footer-links { display: flex; gap: 3rem; flex-wrap: wrap; }
+
+.footer-col-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.75rem;
+}
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  margin-bottom: 0.45rem;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: white; }
+
+.footer-bottom {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-size: 12px;
+  color: rgba(255,255,255,0.28);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-left { padding: 5rem 1.5rem 2rem; }
+  .hero-right { height: 55vw; min-height: 320px; }
+  .hero-right::before { background: linear-gradient(to bottom, var(--cream) 0%, transparent 20%); }
+  .hero-float-card { left: 1rem; bottom: 1rem; width: 220px; }
+  .scenario-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .wrap { padding: 4rem 1.5rem; }
+  .wrap-sm { padding: 4rem 1.5rem; }
+  nav { padding: 0 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></a>
+  <a href="#download" class="nav-cta">Download Free</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">The gift wishlist for families</p>
+    <h1 class="hero-wordmark">why<span class="coral">,</span><br>thank<br>you<span class="coral">!</span></h1>
+    <div class="hero-pain">
+      <p>No more duplicate gifts.<br>No more wrong sizes.<br>No more "what does she even want?" texts.</p>
+    </div>
+    <p class="hero-sub">Create wishlists for your kids, share with family, and let them secretly claim gifts. Everyone gives with confidence.</p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary">Get the App — Free</a>
+      <a href="#how" class="btn-secondary">See how it works</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <img src="hero.png" alt="Family celebrating a birthday, child opening a gift with joy" class="hero-photo">
+
+    <!-- Floating app card -->
+    <div class="hero-float-card">
+      <div class="float-card-header">
+        <div class="float-avatar">J</div>
+        <div>
+          <div class="float-name">Lennon's Birthday</div>
+          <div class="float-meta">Age 8 · Size 7/8 · Shoe 2</div>
+        </div>
+      </div>
+      <div class="float-item">
+        <div class="float-item-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--teal-light)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="float-item-name">Panda Hoodie</div>
+          <div class="float-item-price">$23.00</div>
+        </div>
+        <span class="float-badge avail">Open</span>
+      </div>
+      <div class="float-item">
+        <div class="float-item-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--teal-light)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="float-item-name">Art Supply Set</div>
+          <div class="float-item-price">$48.00</div>
+        </div>
+        <span class="float-badge claimed">Claimed</span>
+      </div>
+      <div class="float-item">
+        <div class="float-item-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--teal-light)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="float-item-name">Book Collection</div>
+          <div class="float-item-price">$34.00</div>
+        </div>
+        <span class="float-badge avail">Open</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div id="how" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="wrap">
+    <p class="eyebrow reveal">How it works</p>
+    <h2 class="reveal">Three steps to<br>perfect gifts<span class="coral">.</span></h2>
+    <p class="section-lead reveal">Your family never gives a wrong gift again.</p>
+    <div class="steps">
+      <div class="step-card reveal" style="transition-delay:0s">
+        <div class="step-num">1</div>
+        <div class="step-title">Create a list</div>
+        <div class="step-body">Add your child's profile — sizes, interests, birthday. Then paste links from any store. Amazon, Target, Nike — anywhere.</div>
+      </div>
+      <div class="step-card reveal" style="transition-delay:0.08s">
+        <div class="step-num">2</div>
+        <div class="step-title">Share the link</div>
+        <div class="step-body">Send one link to grandparents, aunts, uncles — anyone. No app required. The list opens beautifully in any browser.</div>
+      </div>
+      <div class="step-card reveal" style="transition-delay:0.16s">
+        <div class="step-num">3</div>
+        <div class="step-title">They claim, you relax</div>
+        <div class="step-body">Family members secretly claim gifts so no one doubles up. They get the mailing address. Everyone gives with confidence.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UNCLE JOHNNY SCENARIO -->
+<div class="scenario-section">
+  <div class="scenario-inner">
+    <div>
+      <p class="eyebrow reveal">Real life</p>
+      <h2 class="reveal">Uncle Johnny wants<br>to give a great gift<span class="coral">.</span></h2>
+      <p class="section-lead reveal" style="margin-bottom:0">Here's how it goes.</p>
+      <div class="scenario-steps">
+        <div class="scenario-step reveal" style="transition-delay:0s">
+          <div class="scenario-step-num">1</div>
+          <div class="scenario-step-text">
+            <strong>You send one link</strong>
+            <p>No group texts. No forwarding spreadsheets. Just a link to Lennon's birthday list.</p>
+          </div>
+        </div>
+        <div class="scenario-step reveal" style="transition-delay:0.08s">
+          <div class="scenario-step-num">2</div>
+          <div class="scenario-step-text">
+            <strong>He sees everything he needs</strong>
+            <p>Sizes, interests, gift ideas with photos and prices — and which gifts are already claimed.</p>
+          </div>
+        </div>
+        <div class="scenario-step reveal" style="transition-delay:0.16s">
+          <div class="scenario-step-num">3</div>
+          <div class="scenario-step-text">
+            <strong>He claims a gift</strong>
+            <p>One tap. It's marked taken so no one else buys the same thing.</p>
+          </div>
+        </div>
+        <div class="scenario-step reveal" style="transition-delay:0.24s">
+          <div class="scenario-step-num">4</div>
+          <div class="scenario-step-text">
+            <strong>The address unlocks</strong>
+            <p>He gets the mailing address automatically. No awkward texts. Done.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Big mockup -->
+    <div class="big-mockup reveal" style="transition-delay:0.1s">
+      <div class="mockup-top-bar">
+        <div class="mockup-avatar-lg">J</div>
+        <div>
+          <div class="mockup-profile-name">Lennon's Birthday</div>
+          <div class="mockup-profile-meta">Age 8</div>
+          <div class="mockup-sizes">
+            <span class="mockup-size-pill">Clothing 7/8</span>
+            <span class="mockup-size-pill">Shoe 2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup-item">
+        <div class="mockup-item-thumb">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="var(--teal-light)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+        </div>
+        <div class="mockup-item-info">
+          <div class="mockup-item-name">Kipswiza Panda Hoodie</div>
+          <div class="mockup-item-price">$23.00 · Amazon</div>
+        </div>
+        <span class="mockup-badge avail">Available</span>
+      </div>
+
+      <div class="mockup-item">
+        <div class="mockup-item-thumb">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="var(--teal-light)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+        </div>
+        <div class="mockup-item-info">
+          <div class="mockup-item-name">Faber-Castell Art Set</div>
+          <div class="mockup-item-price">$48.00 · Target</div>
+        </div>
+        <span class="mockup-badge claimed">Claimed</span>
+      </div>
+
+      <div class="mockup-item">
+        <div class="mockup-item-thumb">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="var(--teal-light)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+        </div>
+        <div class="mockup-item-info">
+          <div class="mockup-item-name">Dork Diaries Book Set</div>
+          <div class="mockup-item-price">$34.00 · Barnes &amp; Noble</div>
+        </div>
+        <span class="mockup-badge avail">Available</span>
+      </div>
+
+      <div class="mockup-address-unlock">
+        <div class="unlock-icon">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div>
+          <div class="unlock-label">Mailing address unlocked</div>
+          <div class="unlock-sub">Revealed after claiming · encrypted &amp; protected</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div style="background: var(--cream); border-bottom: 1px solid var(--border);">
+  <div class="wrap">
+    <p class="eyebrow reveal">Features</p>
+    <h2 class="reveal">Everything a family<br>gift list needs<span class="coral">.</span></h2>
+    <div class="features-grid">
+      <div class="feature-card reveal" style="transition-delay:0s">
+        <div class="feature-icon-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div class="feature-title">Recipient profiles with sizes</div>
+        <div class="feature-body">Clothing size, shoe size, age, interests — everything a gift giver needs to shop confidently.</div>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.08s">
+        <div class="feature-icon-wrap">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="feature-title">No duplicate gifts, ever</div>
+        <div class="feature-body">When someone claims a gift, it's marked taken. No more three people buying the same LEGO set.</div>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.16s">
+        <div class="feature-icon-wrap">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div class="feature-title">Mailing address, safely shared</div>
+        <div class="feature-body">Only revealed after someone claims a gift and creates an account. Never visible publicly.</div>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.24s">
+        <div class="feature-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <div class="feature-title">Add from any store</div>
+        <div class="feature-body">Paste any product URL and Why, Thank You! pulls the name, photo, and price automatically.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OCCASIONS -->
+<div style="background: var(--surface); border-bottom: 1px solid var(--border);">
+  <div class="wrap">
+    <p class="eyebrow reveal">Every celebration</p>
+    <h2 class="reveal">Built for any occasion<span class="coral">.</span></h2>
+    <p class="section-lead reveal">Birthdays, graduations, baby showers — Why, Thank You! works for every gifting moment.</p>
+    <div class="occasions-wrap reveal">
+      <div class="occasion-pill">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Birthday
+      </div>
+      <div class="occasion-pill">
+        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Graduation
+      </div>
+      <div class="occasion-pill">
+        <svg viewBox="0 0 24 24"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+        Baby Shower
+      </div>
+      <div class="occasion-pill">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Christmas
+      </div>
+      <div class="occasion-pill">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Hanukkah
+      </div>
+      <div class="occasion-pill">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Wedding
+      </div>
+      <div class="occasion-pill">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Any occasion
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY -->
+<div style="background: var(--cream2); border-bottom: 1px solid var(--border);">
+  <div class="wrap">
+    <p class="eyebrow reveal">Built for families</p>
+    <h2 class="reveal">Private by design<span class="coral">.</span></h2>
+    <p class="section-lead reveal">Gift giving should feel warm, not exposed. Every feature is built with privacy in mind.</p>
+    <div class="privacy-grid">
+      <div class="privacy-card reveal" style="transition-delay:0s">
+        <div class="privacy-icon-wrap">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div class="privacy-title">Encrypted addresses</div>
+        <div class="privacy-body">Mailing addresses are encrypted and only revealed to verified gift claimers — never exposed publicly.</div>
+      </div>
+      <div class="privacy-card reveal" style="transition-delay:0.08s">
+        <div class="privacy-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="privacy-title">Verified claimers only</div>
+        <div class="privacy-body">Anyone claiming a gift must create an account first. No anonymous claiming.</div>
+      </div>
+      <div class="privacy-card reveal" style="transition-delay:0.16s">
+        <div class="privacy-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </div>
+        <div class="privacy-title">You control sharing</div>
+        <div class="privacy-body">Share links only go to people you send them to. Lists aren't publicly searchable.</div>
+      </div>
+      <div class="privacy-card reveal" style="transition-delay:0.24s">
+        <div class="privacy-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="privacy-title">Secure by Supabase</div>
+        <div class="privacy-body">Enterprise-grade database security with row-level policies protecting every list.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div style="background: var(--surface); border-bottom: 1px solid var(--border);">
+  <div class="wrap">
+    <p class="eyebrow reveal">Families love it</p>
+    <h2 class="reveal">Why families choose<br>Why, Thank You<span class="coral">!</span></h2>
+    <div class="testimonials-grid" style="margin-top:3rem">
+      <div class="testimonial-card reveal" style="transition-delay:0s">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Finally! No more getting three copies of the same toy. My mom and mother-in-law can both shop without stepping on each other's toes."</p>
+        <div class="testimonial-author">Sarah M. — mom of 2</div>
+      </div>
+      <div class="testimonial-card reveal" style="transition-delay:0.08s">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"As a grandma who isn't tech-savvy, I just clicked the link and everything was right there. The sizes, what she likes — I felt so confident shopping."</p>
+        <div class="testimonial-author">Linda K. — grandmother</div>
+      </div>
+      <div class="testimonial-card reveal" style="transition-delay:0.16s">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"The mailing address feature is genius. I just claimed the gift and they sent me the address. No awkward texts asking where to ship it."</p>
+        <div class="testimonial-author">Marcus T. — dad of 3</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div style="background: var(--cream); border-bottom: 1px solid var(--border);">
+  <div class="wrap-sm">
+    <p class="eyebrow reveal" style="text-align:center">Frequently asked</p>
+    <h2 class="reveal" style="text-align:center; margin-bottom:3rem">Good questions<span class="coral">.</span></h2>
+    <div class="reveal">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Do gift givers need the app?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p>No app needed! Gift givers just open the shared link in any browser. They can view the wishlist and claim gifts without downloading anything.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Is the mailing address safe?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Completely. Addresses are encrypted and only revealed after someone claims a gift and creates an account. They're never visible on the public wishlist.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Can I add gifts from any store?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Yes — paste any product URL from Amazon, Target, Walmart, LEGO, Nike, Etsy, and thousands more. Why, Thank You! imports the name, photo, and price automatically.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Is Why, Thank You! free?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Yes! The core app is free for families. We offer optional upgrades for power users, but everything you need to share wishlists and claim gifts is free forever.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What occasions can I use it for?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p>Any gifting occasion — birthdays, Christmas, Hanukkah, graduations, baby showers, weddings, and more. You can label each list with the occasion type.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div id="download" class="cta-section">
+  <p class="eyebrow reveal" style="color:rgba(255,255,255,0.55)">Ready?</p>
+  <h2 class="reveal" style="color:white; margin-bottom:1rem">Make gift giving<br>delightful<span style="color:var(--coral)">.</span></h2>
+  <p class="section-lead reveal" style="color:rgba(255,255,255,0.7); margin: 0 auto 2.5rem;">Join families who've taken the guesswork out of giving.</p>
+  <a href="#" class="btn-cta-white reveal">Download on the App Store</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">why<span class="coral">,</span> thank you<span class="coral">!</span></div>
+      <div class="footer-tagline">The wishlist that keeps surprises safe.</div>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <a href="#how">How it works</a>
+        <a href="#download">Download</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Why, Thank You! All rights reserved.</span>
+    <span>Some links may earn affiliate commissions at no extra cost to gift buyers.</span>
+  </div>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>
