@@ -19,6 +19,7 @@ import { Image } from 'expo-image';
 import { CheckCircle, Gift } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
+import { AvatarCircle } from '@/components/AvatarCircle';
 import { apiFetch } from '@/utils/api';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -254,19 +255,34 @@ export default function GuestScreen() {
   const [claimError, setClaimError] = useState<string | null>(null);
   const [claimingItemId, setClaimingItemId] = useState<string | null>(null);
 
+  // Profile sheet
+  const [profileSheetOpen, setProfileSheetOpen] = useState(false);
+
+  // One-time hint (shows after wishlist loads, auto-dismisses)
+  const [hintVisible, setHintVisible] = useState(false);
+  const hintOpacity = useRef(new Animated.Value(0)).current;
+
   // Success banner
   const bannerOpacity = useRef(new Animated.Value(0)).current;
   const [bannerVisible, setBannerVisible] = useState(false);
 
   const fetchWishlist = useCallback(async () => {
     console.log('[Guest] Fetching wishlist for token:', token);
+    if (!token) {
+      setError('Invalid link');
+      setLoading(false);
+      return;
+    }
     try {
       const data = await apiFetch(`/api/guest/${token}`);
-      console.log('[Guest] Wishlist loaded:', data.name, 'items:', data.items?.length);
-      setWishlist(data);
+      // API returns { wishlist: {...}, items: [...] } — merge into a flat object
+      const merged: GuestWishlist = { ...data.wishlist, items: data.items ?? [] };
+      console.log('[Guest] Wishlist loaded:', merged.name, 'items:', merged.items?.length);
+      setWishlist(merged);
       setError(null);
     } catch (err) {
-      console.log('[Guest] Error fetching wishlist:', err);
+      const detail = err instanceof Error ? err.message : String(err);
+      console.log('[Guest] Error fetching wishlist:', detail);
       setError('List not found');
     } finally {
       setLoading(false);
@@ -276,6 +292,35 @@ export default function GuestScreen() {
   useEffect(() => {
     fetchWishlist();
   }, [fetchWishlist]);
+
+  // Show hint once after the wishlist loads, if there's profile data worth seeing
+  useEffect(() => {
+    if (!wishlist) return;
+    const hasProfileData =
+      wishlist.child_age != null ||
+      wishlist.clothing_size ||
+      wishlist.shoe_size ||
+      wishlist.current_interests;
+    if (!hasProfileData) return;
+
+    const showTimer = setTimeout(() => {
+      setHintVisible(true);
+      Animated.timing(hintOpacity, { toValue: 1, duration: 360, useNativeDriver: true }).start();
+    }, 900);
+    const hideTimer = setTimeout(() => {
+      Animated.timing(hintOpacity, { toValue: 0, duration: 400, useNativeDriver: true })
+        .start(() => setHintVisible(false));
+    }, 5500);
+
+    return () => { clearTimeout(showTimer); clearTimeout(hideTimer); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wishlist?.id]);
+
+  function openProfileSheet() {
+    Animated.timing(hintOpacity, { toValue: 0, duration: 200, useNativeDriver: true })
+      .start(() => setHintVisible(false));
+    setProfileSheetOpen(true);
+  }
 
   function openClaimModal(item: GuestItem) {
     setPendingItem(item);
@@ -360,7 +405,7 @@ export default function GuestScreen() {
   // ── Derived ───────────────────────────────────────────────────────────────
 
   const itemCountText = String(wishlist?.items?.length ?? 0);
-  const occasionLabel = wishlist
+  const occasionLabel = wishlist?.occasion
     ? wishlist.occasion.charAt(0).toUpperCase() + wishlist.occasion.slice(1).toLowerCase()
     : '';
   const modalVisible = pendingItem !== null;
@@ -408,7 +453,20 @@ export default function GuestScreen() {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
       >
-        <GuestProfileCard wishlist={wishlist} />
+        {/* Profile avatar hero — tap to see sizes and interests */}
+        <View style={avatarHeroStyles.container}>
+          <TouchableOpacity onPress={openProfileSheet} activeOpacity={0.8} style={avatarHeroStyles.avatarWrap}>
+            <View style={avatarHeroStyles.avatarRing}>
+              <AvatarCircle uri={wishlist.avatar_url} name={wishlist.person} size={72} />
+            </View>
+          </TouchableOpacity>
+          <Text style={avatarHeroStyles.name}>{wishlist.person}</Text>
+          {hintVisible ? (
+            <Animated.View style={[avatarHeroStyles.hintBubble, { opacity: hintOpacity }]}>
+              <Text style={avatarHeroStyles.hintText}>Tap the profile photo to see sizes, interests, and gift preferences.</Text>
+            </Animated.View>
+          ) : null}
+        </View>
 
         <View style={styles.itemsSection}>
           <View style={styles.sectionHeader}>
@@ -444,6 +502,28 @@ export default function GuestScreen() {
           )}
         </View>
       </ScrollView>
+
+      {/* Profile sheet modal */}
+      <Modal
+        visible={profileSheetOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setProfileSheetOpen(false)}
+      >
+        <Pressable style={modalStyles.overlay} onPress={() => setProfileSheetOpen(false)}>
+          <Pressable style={[modalStyles.sheet, profileSheetStyles.sheet]} onPress={() => {}}>
+            <View style={modalStyles.handle} />
+            <GuestProfileCard wishlist={wishlist} />
+            <TouchableOpacity
+              onPress={() => setProfileSheetOpen(false)}
+              style={profileSheetStyles.closeBtn}
+              activeOpacity={0.7}
+            >
+              <Text style={profileSheetStyles.closeBtnText}>Close</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* Claim modal */}
       <Modal
@@ -553,6 +633,72 @@ export default function GuestScreen() {
     </View>
   );
 }
+
+// ─── Avatar Hero Styles ───────────────────────────────────────────────────────
+
+const avatarHeroStyles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    paddingTop: 8,
+    paddingBottom: 4,
+    gap: 8,
+  },
+  avatarWrap: {
+    padding: 4,
+  },
+  avatarRing: {
+    borderRadius: 42,
+    shadowColor: '#1B8A8A',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.22,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: '700',
+    fontFamily: 'Georgia',
+    color: C.label,
+    letterSpacing: -0.3,
+  },
+  hintBubble: {
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(15,107,111,0.18)',
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  hintText: {
+    fontSize: 12,
+    color: C.textSecondary,
+    fontWeight: '500',
+  },
+});
+
+// ─── Profile Sheet Styles ─────────────────────────────────────────────────────
+
+const profileSheetStyles = StyleSheet.create({
+  sheet: {
+    paddingTop: 16,
+    paddingBottom: Platform.OS === 'ios' ? 44 : 28,
+  },
+  closeBtn: {
+    alignItems: 'center',
+    paddingVertical: 14,
+    marginTop: 8,
+  },
+  closeBtnText: {
+    fontSize: 15,
+    color: C.textSecondary,
+    fontWeight: '500',
+  },
+});
 
 // ─── Profile Styles ───────────────────────────────────────────────────────────
 

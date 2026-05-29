@@ -82,7 +82,7 @@ export default function ShareScreen() {
     console.log('[Share] Share via pressed, URL:', shareUrl);
     try {
       await Share.share({
-        message: `Here's the wishlist — one link with gift ideas from every store. Pick something and I'll know who's getting what. ${shareUrl}`,
+        message: `Why, thank you for asking for gift ideas! We've put together a list of suggestions to make gift giving easier. Browse the list below and we'll keep track of what's already been claimed. ${shareUrl}`,
         url: shareUrl,
         title: 'Gift Wishlist',
       });

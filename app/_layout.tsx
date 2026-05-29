@@ -1,7 +1,7 @@
 // Last backed up to GitHub: pending — export via Newly dashboard before deploy
 import "react-native-reanimated";
 import React, { useState, useEffect } from "react";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -35,6 +35,7 @@ export const unstable_settings = {
 
 function AppNavigator({ splashDone }: { splashDone: boolean }) {
   const router = useRouter();
+  const segments = useSegments();
   const colorScheme = useColorScheme();
   const { user, loading } = useAuth();
 
@@ -69,11 +70,13 @@ function AppNavigator({ splashDone }: { splashDone: boolean }) {
   useEffect(() => {
     if (!splashDone) return;
     if (loading) return;
-    if (!user) {
+    // Guest and shared-list routes are publicly accessible — no login required
+    const isPublicRoute = segments[0] === 'guest' || segments[0] === 'list';
+    if (!user && !isPublicRoute) {
       console.log('[AppNavigator] No user found, redirecting to login');
       router.replace('/auth/login');
     }
-  }, [splashDone, loading, user]);
+  }, [splashDone, loading, user, segments]);
 
   if (!splashDone) {
     return null;
