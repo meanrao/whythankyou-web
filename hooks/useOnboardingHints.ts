@@ -30,6 +30,13 @@ export function useOnboardingHints() {
     AsyncStorage.setItem(KEY_PLUS, '1').catch(() => {});
   }, []);
 
+  // Persists the "seen" flag without hiding the hint in the current session.
+  // Use this to record first-view immediately so the hint never re-appears on
+  // the next launch, even if the user navigates away without tapping dismiss.
+  const markPlusSeen = useCallback(() => {
+    AsyncStorage.setItem(KEY_PLUS, '1').catch(() => {});
+  }, []);
+
   const dismissProfile = useCallback(() => {
     setProfileSeen(true);
     AsyncStorage.setItem(KEY_PROFILE, '1').catch(() => {});
@@ -41,5 +48,6 @@ export function useOnboardingHints() {
     hintsLoaded:     plusSeen !== null,
     dismissPlus,
     dismissProfile,
+    markPlusSeen,
   };
 }

@@ -1,7 +1,7 @@
 // PROTOTYPE: Circle-based home screen (Apple/Netflix profile grid style).
 // Swap back to cards layout in index.ios.tsx by toggling USE_PROTO = false.
 
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -235,7 +235,7 @@ export default function HomeScreenProto() {
   const [displayName, setDisplayName] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
-  const { showPlusHint, hintsLoaded, dismissPlus } = useOnboardingHints();
+  const { showPlusHint, hintsLoaded, dismissPlus, markPlusSeen } = useOnboardingHints();
   const { savedLists, remove: removeSharedList, reload: reloadSharedLists } = useSharedLists();
 
   // ── Data fetching (identical to original) ────────────────────────────────
@@ -325,6 +325,17 @@ export default function HomeScreenProto() {
   const avatarInitial = displayName ? displayName.charAt(0).toUpperCase() : 'W';
   const showFabHint = hintsLoaded && showPlusHint && wishlists.length === 0;
 
+  // The first time the hint becomes visible, write the "seen" flag to
+  // AsyncStorage so it never appears again — even if the user navigates
+  // away without tapping the dismiss button.
+  const hintSeenRecorded = useRef(false);
+  useEffect(() => {
+    if (showFabHint && !hintSeenRecorded.current) {
+      hintSeenRecorded.current = true;
+      markPlusSeen();
+    }
+  }, [showFabHint]);
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -382,7 +393,7 @@ export default function HomeScreenProto() {
           <SectionHeader title="Shared With Me" />
           {savedLists.length === 0 ? (
             <Text style={[styles.sharedEmptyText, { paddingHorizontal: 20 }]}>
-              When someone shares a list with you, it will appear here.
+              No shared gift lists yet.
             </Text>
           ) : (
             <ScrollView
