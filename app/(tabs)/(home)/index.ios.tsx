@@ -24,6 +24,8 @@ import { supabase } from '@/utils/supabase';
 import { StatusBar } from 'expo-status-bar';
 import { Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { useOnboardingHints } from '@/hooks/useOnboardingHints';
+import { useSharedLists, SavedSharedList } from '@/hooks/useSharedLists';
+import { AvatarCircle } from '@/components/AvatarCircle';
 
 function formatDate(iso: string): string {
   const date = new Date(iso);
@@ -304,6 +306,95 @@ const swipeStyles = StyleSheet.create({
   },
 });
 
+// ─── Shared List Card ─────────────────────────────────────────────────────────
+
+function SharedListCard({
+  item,
+  onPress,
+  onRemove,
+}: {
+  item: SavedSharedList;
+  onPress: () => void;
+  onRemove: () => void;
+}) {
+  const colors = useColors();
+  const occasionLabel = item.occasion
+    ? item.occasion.charAt(0).toUpperCase() + item.occasion.slice(1).toLowerCase()
+    : null;
+
+  return (
+    <AnimatedPressable
+      onPress={onPress}
+      style={[
+        styles.card,
+        {
+          backgroundColor: colors.surface,
+          borderLeftWidth: 5,
+          borderLeftColor: '#7AA7A3',
+          borderTopWidth: 1,
+          borderRightWidth: 1,
+          borderBottomWidth: 1,
+          borderTopColor: colors.border,
+          borderRightColor: colors.border,
+          borderBottomColor: colors.border,
+        },
+      ]}
+    >
+      <View style={sharedCardStyles.row}>
+        <AvatarCircle uri={item.avatarUrl} name={item.person} size={52} />
+        <View style={sharedCardStyles.textCol}>
+          <Text style={[sharedCardStyles.personName, { color: colors.text }]} numberOfLines={1}>
+            {item.person}
+          </Text>
+          <Text style={[sharedCardStyles.listName, { color: colors.textSecondary }]} numberOfLines={1}>
+            {item.name}
+          </Text>
+          {occasionLabel ? (
+            <Text style={sharedCardStyles.occasion}>{occasionLabel}</Text>
+          ) : null}
+        </View>
+        <TouchableOpacity
+          onPress={onRemove}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          style={sharedCardStyles.removeBtn}
+          accessibilityLabel="Remove from list"
+        >
+          <X size={14} color="#9AA89A" strokeWidth={2.5} />
+        </TouchableOpacity>
+      </View>
+    </AnimatedPressable>
+  );
+}
+
+const sharedCardStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  textCol: {
+    flex: 1,
+    gap: 3,
+  },
+  personName: {
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: 'Georgia',
+    letterSpacing: -0.2,
+  },
+  listName: {
+    fontSize: 13,
+  },
+  occasion: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#7AA7A3',
+  },
+  removeBtn: {
+    paddingLeft: 8,
+  },
+});
+
 function EmptyState({ onCreate }: { onCreate: () => void }) {
   const colors = useColors();
 
@@ -457,6 +548,7 @@ export default function HomeScreen() {
   const [refreshing,   setRefreshing]   = useState(false);
 
   const { showPlusHint, showProfileHint, hintsLoaded, dismissPlus, dismissProfile } = useOnboardingHints();
+  const { savedLists, remove: removeSharedList, reload: reloadSharedLists } = useSharedLists();
 
   async function handleRefresh() {
     setRefreshing(true);
@@ -525,6 +617,7 @@ export default function HomeScreen() {
     useCallback(() => {
       console.log('[HomeScreen] Screen focused, re-fetching wishlists');
       fetchWishlists();
+      reloadSharedLists();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
@@ -599,6 +692,26 @@ export default function HomeScreen() {
                 onDismissHint={index === 0 ? dismissProfile : undefined}
               />
             ))}
+          </View>
+        )}
+
+        {/* Shared With Me section */}
+        {savedLists.length > 0 && (
+          <View style={[
+            styles.sharedSection,
+            wishlists.length > 0 && styles.sharedSectionDivider,
+          ]}>
+            <Text style={styles.sharedSectionLabel}>Shared with me</Text>
+            <View style={styles.sharedListContainer}>
+              {savedLists.map(item => (
+                <SharedListCard
+                  key={item.token}
+                  item={item}
+                  onPress={() => router.push(`/guest/${item.token}`)}
+                  onRemove={() => removeSharedList(item.token)}
+                />
+              ))}
+            </View>
           </View>
         )}
       </ScrollView>
@@ -785,5 +898,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: '0 4px 16px rgba(15,107,111,0.35)',
+  },
+
+  // ── Shared With Me section ────────────────────────────────────────────────
+  sharedSection: {
+    marginTop: 28,
+  },
+  sharedSectionDivider: {
+    borderTopWidth: 1,
+    borderTopColor: '#EAE6DF',
+    paddingTop: 24,
+  },
+  sharedSectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#7AA7A3',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 12,
+    paddingLeft: 2,
+  },
+  sharedListContainer: {
+    gap: 10,
   },
 });

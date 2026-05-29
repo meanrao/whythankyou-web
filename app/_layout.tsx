@@ -1,6 +1,7 @@
 // Last backed up to GitHub: pending — export via Newly dashboard before deploy
 import "react-native-reanimated";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import * as Linking from 'expo-linking';
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { SystemBars } from "react-native-edge-to-edge";
@@ -67,11 +68,31 @@ function AppNavigator({ splashDone }: { splashDone: boolean }) {
     },
   };
 
+  // Detect cold Universal Link launches — Expo Router may not yet have processed
+  // the deep link URL when the auth guard first fires, so segments[0] would still
+  // be '(tabs)'. We suppress the login redirect until navigation settles.
+  const deepLinkInflight = useRef(false);
+
+  useEffect(() => {
+    Linking.getInitialURL().then(url => {
+      if (url && (url.includes('/list/') || url.includes('/guest/'))) {
+        deepLinkInflight.current = true;
+      }
+    }).catch(() => {});
+  }, []);
+
+  // Clear flag once Expo Router has settled to the public route
+  useEffect(() => {
+    if (segments[0] === 'guest' || segments[0] === 'list') {
+      deepLinkInflight.current = false;
+    }
+  }, [segments]);
+
   useEffect(() => {
     if (!splashDone) return;
     if (loading) return;
     // Guest and shared-list routes are publicly accessible — no login required
-    const isPublicRoute = segments[0] === 'guest' || segments[0] === 'list';
+    const isPublicRoute = segments[0] === 'guest' || segments[0] === 'list' || deepLinkInflight.current;
     if (!user && !isPublicRoute) {
       console.log('[AppNavigator] No user found, redirecting to login');
       router.replace('/auth/login');

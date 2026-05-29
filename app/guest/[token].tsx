@@ -13,6 +13,7 @@ import {
   Modal,
   KeyboardAvoidingView,
   Pressable,
+  Linking,
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
@@ -21,6 +22,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { apiFetch } from '@/utils/api';
+import { saveSharedListEntry, removeSharedListEntry } from '@/hooks/useSharedLists';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -280,9 +282,22 @@ export default function GuestScreen() {
       console.log('[Guest] Wishlist loaded:', merged.name, 'items:', merged.items?.length);
       setWishlist(merged);
       setError(null);
+      // Persist for "Shared With Me" section on home screen
+      saveSharedListEntry({
+        token,
+        name:      merged.name,
+        person:    merged.person,
+        occasion:  merged.occasion || '',
+        avatarUrl: merged.avatar_url ?? null,
+        savedAt:   Date.now(),
+      });
     } catch (err) {
       const detail = err instanceof Error ? err.message : String(err);
       console.log('[Guest] Error fetching wishlist:', detail);
+      // Remove from saved lists if the token is no longer valid
+      if (detail.startsWith('404') || detail.includes('404')) {
+        removeSharedListEntry(token);
+      }
       setError('List not found');
     } finally {
       setLoading(false);
@@ -500,6 +515,22 @@ export default function GuestScreen() {
               ))}
             </View>
           )}
+        </View>
+
+        {/* Sign-up CTA — soft nudge for recipients who want their own lists */}
+        <View style={ctaStyles.container}>
+          <View style={ctaStyles.divider} />
+          <Text style={ctaStyles.headline}>Want to make your own gift list?</Text>
+          <Text style={ctaStyles.body}>
+            Download Why, Thank You! — free to create and share your own wishlist.
+          </Text>
+          <TouchableOpacity
+            onPress={() => Linking.openURL('https://apps.apple.com/app/id6746818447')}
+            style={ctaStyles.button}
+            activeOpacity={0.8}
+          >
+            <Text style={ctaStyles.buttonText}>Download on the App Store</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
@@ -1067,5 +1098,48 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     maxWidth: 260,
+  },
+});
+
+// ─── CTA Styles ───────────────────────────────────────────────────────────────
+
+const ctaStyles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    paddingVertical: 8,
+    gap: 8,
+  },
+  divider: {
+    width: 40,
+    height: 1,
+    backgroundColor: C.border,
+    marginBottom: 8,
+  },
+  headline: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: C.textSecondary,
+    textAlign: 'center',
+  },
+  body: {
+    fontSize: 13,
+    color: C.textTertiary,
+    textAlign: 'center',
+    lineHeight: 18,
+    maxWidth: 260,
+  },
+  button: {
+    marginTop: 4,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: C.sageBg,
+    borderWidth: 1,
+    borderColor: 'rgba(74,124,95,0.25)',
+  },
+  buttonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.sage,
   },
 });

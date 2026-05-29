@@ -599,12 +599,19 @@ Deno.serve(async (req: Request) => {
     // Look up the token
     const { data: tokenRow, error: tokenErr } = await supabase
       .from("share_tokens")
-      .select("wishlist_id")
+      .select("wishlist_id, open_count")
       .eq("token", token)
       .maybeSingle();
 
     if (tokenErr) return json({ error: tokenErr.message }, 500);
     if (!tokenRow) return json({ error: "Token not found" }, 404);
+
+    // Track anonymous open event (best-effort — errors don't block the response)
+    supabase.from("share_tokens")
+      .update({ open_count: (tokenRow.open_count ?? 0) + 1 })
+      .eq("token", token)
+      .then(() => {})
+      .catch(() => {});
 
     const wishlistId = tokenRow.wishlist_id;
 
