@@ -424,6 +424,8 @@ export default function GuestScreen() {
     ? wishlist.occasion.charAt(0).toUpperCase() + wishlist.occasion.slice(1).toLowerCase()
     : '';
   const modalVisible = pendingItem !== null;
+  const availableGifts = wishlist?.items.filter(i => i.status !== 'claimed') ?? [];
+  const claimedGifts = wishlist?.items.filter(i => i.status === 'claimed') ?? [];
 
   // ── Render: loading / error ────────────────────────────────────────────────
 
@@ -504,7 +506,7 @@ export default function GuestScreen() {
             </View>
           ) : (
             <View style={styles.itemsList}>
-              {wishlist.items.map((item, index) => (
+              {availableGifts.map((item, index) => (
                 <GuestItemCard
                   key={item.id}
                   item={item}
@@ -513,6 +515,20 @@ export default function GuestScreen() {
                   claiming={claimingItemId === item.id}
                 />
               ))}
+              {claimedGifts.length > 0 ? (
+                <>
+                  <Text style={styles.claimedSectionLabel}>Already Claimed</Text>
+                  {claimedGifts.map((item, index) => (
+                    <GuestItemCard
+                      key={item.id}
+                      item={item}
+                      index={availableGifts.length + index}
+                      onClaim={openClaimModal}
+                      claiming={claimingItemId === item.id}
+                    />
+                  ))}
+                </>
+              ) : null}
             </View>
           )}
         </View>
@@ -1081,6 +1097,15 @@ const styles = StyleSheet.create({
   },
   itemsList: {
     gap: 10,
+  },
+  claimedSectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: C.textTertiary,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginTop: 6,
+    marginBottom: 2,
   },
   emptyState: {
     alignItems: 'center',
