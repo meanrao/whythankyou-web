@@ -533,6 +533,15 @@ export default function GuestScreen() {
           )}
         </View>
 
+        {/* Affiliate disclosure — shown only when the list has items */}
+        {wishlist.items.length > 0 ? (
+          <View style={styles.affiliateDisclosure}>
+            <Text style={styles.affiliateDisclosureText}>
+              Some links may earn a commission for Why, Thank You! when purchases are made through them. This helps support the app at no additional cost to you.
+            </Text>
+          </View>
+        ) : null}
+
         {/* Sign-up CTA — soft nudge for recipients who want their own lists */}
         <View style={ctaStyles.container}>
           <View style={ctaStyles.divider} />
@@ -1123,6 +1132,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     maxWidth: 260,
+  },
+  affiliateDisclosure: {
+    borderTopWidth: 1,
+    borderTopColor: C.border,
+    paddingTop: 14,
+    paddingHorizontal: 8,
+  },
+  affiliateDisclosureText: {
+    fontSize: 11,
+    color: C.textTertiary,
+    lineHeight: 16,
+    textAlign: 'center',
   },
 });
 
