@@ -284,7 +284,7 @@ h2 .coral { color: var(--coral); }
 .showcase-inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 5rem 2rem 4rem;
+  padding: 3.5rem 2rem 1.5rem;
   text-align: center;
 }
 
@@ -292,7 +292,8 @@ h2 .coral { color: var(--coral); }
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin-top: 3.5rem;
+  margin-top: 0.75rem;
+  gap: 0;
   position: relative;
 }
 
@@ -302,24 +303,17 @@ h2 .coral { color: var(--coral); }
   transition: transform 0.3s ease;
 }
 
-.sc-phone-l {
-  width: 200px;
-  transform: rotate(-8deg) translateY(28px);
+.sc-phone-dashboard {
+  width: 302px;
   z-index: 1;
-  margin-right: -32px;
-  opacity: 0.85;
-}
-.sc-phone-c {
-  width: 248px;
-  z-index: 3;
+  transform: rotate(-4deg);
+  margin-right: -22px;
 }
 
-.sc-phone-r {
-  width: 200px;
-  transform: rotate(8deg) translateY(28px);
+.sc-phone-share {
+  width: 302px;
   z-index: 2;
-  margin-left: -32px;
-  opacity: 0.85;
+  transform: rotate(4deg);
 }
 
 /* ── STORY SECTION ── */
@@ -663,6 +657,45 @@ footer {
   to   { opacity: 1; transform: none; }
 }
 
+/* ── UNCLE JOHNNY SECTION ── */
+.uncle-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 4.5rem 2rem 4rem;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.uncle-phone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.uncle-phone img {
+  width: 340px;
+  max-width: 100%;
+  transform: rotate(2deg);
+  filter: drop-shadow(0 28px 48px rgba(31,42,36,0.18));
+}
+
+@media (max-width: 780px) {
+  .uncle-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 3.5rem 1.5rem;
+  }
+  .uncle-phone {
+    justify-content: center;
+  }
+  .uncle-phone img {
+    width: 260px;
+    transform: none;
+  }
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 960px) {
   .testimonials-grid { grid-template-columns: 1fr; }
@@ -675,8 +708,8 @@ footer {
   .story-inner { grid-template-columns: 1fr; gap: 2.5rem; }
   .story-lifestyle { order: -1; border-radius: 20px; }
   .story-lifestyle img { max-height: 280px; object-fit: cover; object-position: center top; }
-  .sc-phone-l, .sc-phone-r { width: 160px; }
-  .sc-phone-c { width: 200px; }
+  .sc-phone-dashboard { width: 232px; margin-right: -16px; }
+  .sc-phone-share { width: 232px; }
   .wrap { padding: 4rem 1.5rem; }
   .wrap-sm { padding: 4rem 1.5rem; }
   .showcase-inner { padding: 4rem 1.5rem 3rem; }
@@ -685,8 +718,9 @@ footer {
 
 @media (max-width: 500px) {
   .hero-phone-proof { display: none; }
-  .sc-phone-l, .sc-phone-r { display: none; }
-  .sc-phone-c { width: 260px; }
+  .showcase-phones { gap: 12px; }
+  .sc-phone-dashboard { width: 155px; transform: rotate(-3deg); margin-right: -12px; }
+  .sc-phone-share { width: 155px; transform: rotate(3deg); }
 }
 </style>
 </head>
@@ -732,19 +766,14 @@ footer {
     <p class="section-lead reveal" style="margin: 0 auto 0; max-width: 460px;">From creating a list to sharing it with family, every screen is designed to feel simple, warm, and clear.</p>
 
     <div class="showcase-phones reveal" style="transition-delay:0.1s">
-      <div class="sc-phone sc-phone-l">
+      <div class="sc-phone sc-phone-dashboard">
         <div class="phone-frame">
-          <img src="assets/app-dashboard.png" alt="Wishlists dashboard">
+          <img src="assets/app-dashboard.png" alt="Circle-based wishlists dashboard showing My Lists and Shared With Me">
         </div>
       </div>
-      <div class="sc-phone sc-phone-c">
+      <div class="sc-phone sc-phone-share">
         <div class="phone-frame">
-          <img src="assets/app-list-detail.png" alt="Gift list detail">
-        </div>
-      </div>
-      <div class="sc-phone sc-phone-r">
-        <div class="phone-frame">
-          <img src="assets/app-share-list.png" alt="Share your list">
+          <img src="assets/app-share-list.png" alt="Share your gift list — copy link or share via any app">
         </div>
       </div>
     </div>
@@ -789,19 +818,15 @@ footer {
 
 <!-- UNCLE JOHNNY EXAMPLE -->
 <div style="background: var(--cream2); border-bottom: 1px solid var(--border);">
-  <div class="wrap-sm">
-    <h2 class="reveal">When Uncle Johnny asks<br>what Lennon wants<span class="coral">&hellip;</span></h2>
-    <p class="section-lead reveal" style="margin-top:1.25rem; max-width:560px;">Instead of texting an Amazon link, a Nike link, a LEGO idea, and a Target screenshot &mdash; you send one link.</p>
-    <div class="example-list-card reveal">
-      <p class="example-list-card-eyebrow">Everything is there</p>
-      <ul>
-        <li>the sneakers</li>
-        <li>the LEGO set</li>
-        <li>the book</li>
-        <li>the random thing he mentioned three weeks ago</li>
-      </ul>
+  <div class="uncle-inner">
+    <div class="uncle-text">
+      <h2 class="reveal">When Uncle Johnny asks<br>what Lennon wants<span class="coral">&hellip;</span></h2>
+      <p class="section-lead reveal" style="margin-top:1.25rem;">Instead of texting an Amazon link, a Nike link, a LEGO idea, and a Target screenshot &mdash; you send one link.</p>
+      <p class="section-lead reveal" style="margin-bottom:0;">Family can choose what to get, mark it as picked, and move on with their lives.</p>
     </div>
-    <p class="section-lead reveal" style="max-width:520px; margin-bottom:0;">Family can choose what to get, mark it as picked, and move on with their lives.</p>
+    <div class="uncle-phone reveal" style="transition-delay:0.12s">
+      <img src="assets/app-list-detail.png" alt="Gift list inside the app showing Lennon's Birthday wishlist with LEGO, sneakers, and more">
+    </div>
   </div>
 </div>
 
