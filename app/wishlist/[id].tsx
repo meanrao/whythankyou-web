@@ -861,7 +861,7 @@ export default function WishlistDetailScreen() {
 
   function handleShare() {
     console.log('[WishlistDetail] Share button pressed for wishlist:', id);
-    router.push(`/share/${id}`);
+    router.push({ pathname: '/share/[id]', params: { id: id ?? '', person: wishlist?.person ?? '' } });
   }
 
   function handleEdit() {
@@ -992,7 +992,7 @@ export default function WishlistDetailScreen() {
               <View style={[styles.emptyState, { backgroundColor: colors.surface, borderColor: colors.border }]}>
                 <Text style={[styles.emptyTitle, { color: colors.text }]}>No items yet</Text>
                 <Text style={[styles.emptyBody, { color: colors.textSecondary }]}>
-                  Add gift ideas from anywhere — Amazon, Target, Etsy, Nike, LEGO, and more.
+                  Add gift ideas from almost any online store.
                 </Text>
               </View>
             ) : (

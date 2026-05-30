@@ -167,7 +167,7 @@ export default function CreateListScreen() {
 
   async function handleCreate() {
     if (!name.trim()) {
-      Alert.alert('Missing info', "Please enter the child's name.");
+      Alert.alert('Missing info', 'Please enter a name.');
       return;
     }
     if (!occasion) {
@@ -213,9 +213,7 @@ export default function CreateListScreen() {
         return;
       }
       console.log('[CreateList] Wishlist created successfully, id:', data?.id);
-      Alert.alert('List created! 🎉', `${insertPayload.name} has been saved.`, [
-        { text: 'OK', onPress: () => router.back() }
-      ]);
+      router.replace(`/wishlist/${data.id}`);
     } catch (err: any) {
       console.log('[CreateList] Create exception:', err);
       Alert.alert('Error', err?.message ?? 'Something went wrong. Please try again.');
@@ -250,7 +248,7 @@ export default function CreateListScreen() {
         >
           {/* Row 1 — Child's name */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>Child's name</Text>
+            <Text style={[styles.sectionLabel, { color: colors.text }]}>Name</Text>
             <TextInput
               style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
               placeholder="e.g. Emma"
@@ -380,7 +378,7 @@ export default function CreateListScreen() {
 
           {/* Row 7 — Child photo */}
           <View style={styles.section}>
-            <Text style={[styles.sectionLabel, { color: colors.text }]}>Child photo</Text>
+            <Text style={[styles.sectionLabel, { color: colors.text }]}>Photo</Text>
             <View style={styles.avatarRow}>
               <TouchableOpacity onPress={handlePickAvatar} activeOpacity={0.8}>
                 {avatarUrl ? (

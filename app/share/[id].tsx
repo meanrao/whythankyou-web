@@ -33,7 +33,8 @@ export default function ShareScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const colors = useColors();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, person } = useLocalSearchParams<{ id: string; person?: string }>();
+  const personName = Array.isArray(person) ? person[0] : (person ?? '');
 
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,11 +81,15 @@ export default function ShareScreen() {
   async function handleShareVia() {
     if (!shareUrl) return;
     console.log('[Share] Share via pressed, URL:', shareUrl);
+    const intro = personName
+      ? `Here's a gift list I put together for ${personName}.`
+      : "Here's a gift list I put together.";
+    const shareMessage = `${intro} Browse and claim anything you'd like to get: ${shareUrl}`;
     try {
       await Share.share({
-        message: `Why, thank you for asking for gift ideas! We've put together a list of suggestions to make gift giving easier. Browse the list below and we'll keep track of what's already been claimed. ${shareUrl}`,
+        message: shareMessage,
         url: shareUrl,
-        title: 'Gift Wishlist',
+        title: 'Gift List',
       });
     } catch (err) {
       console.log('[Share] Share via error:', err);

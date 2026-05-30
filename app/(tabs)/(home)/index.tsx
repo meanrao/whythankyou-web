@@ -167,7 +167,7 @@ function WishlistCard({ wishlist, index }: { wishlist: Wishlist; index: number }
                 ? `${wishlist.occasion.charAt(0).toUpperCase() + wishlist.occasion.slice(1).toLowerCase()} · ${formattedDate}`
                 : formattedDate}
             </Text>
-            <Text style={[styles.cardClaimed, { color: allClaimed ? '#B85C3C' : '#1B8A8A' }]}>
+            <Text style={[styles.cardClaimed, { color: '#1B8A8A' }]}>
               {claimedText}
             </Text>
           </View>
@@ -263,7 +263,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       </View>
       <Text style={[styles.emptyTitle, { color: colors.text }]}>No lists yet</Text>
       <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-        Create a list, add gift ideas from any store — Amazon, Target, Etsy, Nike, LEGO, and more — then share one link with family.
+        Create a list, add gift ideas from almost any online store, then share one link with family.
       </Text>
       <AnimatedPressable
         onPress={handleCreate}
