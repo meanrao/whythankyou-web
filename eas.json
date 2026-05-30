@@ -3,14 +3,17 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "autoIncrement": true
+      "autoIncrement": true,
+      "node": "22"
     },
     "preview": {
       "distribution": "internal",
-      "autoIncrement": true
+      "autoIncrement": true,
+      "node": "22"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "node": "22"
     }
   },
   "cli": {
