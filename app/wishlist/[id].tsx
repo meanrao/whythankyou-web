@@ -896,7 +896,9 @@ export default function WishlistDetailScreen() {
 
   // ── Derived ───────────────────────────────────────────────────────────────
 
-  const claimedCount = items.filter((i) => i.claimed === true).length;
+  const availableGifts = items.filter((i) => i.claimed !== true);
+  const claimedGifts = items.filter((i) => i.claimed === true);
+  const claimedCount = claimedGifts.length;
   const itemCount = items.length;
   const summaryText = `${claimedCount} of ${itemCount} gifts claimed`;
   const occasionLabel =
@@ -997,7 +999,7 @@ export default function WishlistDetailScreen() {
               </View>
             ) : (
               <View style={styles.itemsList}>
-                {items.map((item, index) => (
+                {availableGifts.map((item, index) => (
                   <ItemCard
                     key={item.id}
                     item={item}
@@ -1005,6 +1007,21 @@ export default function WishlistDetailScreen() {
                     onPress={() => setEditingItem(item)}
                   />
                 ))}
+                {claimedGifts.length > 0 ? (
+                  <>
+                    <Text style={[styles.claimedSectionLabel, { color: colors.textTertiary }]}>
+                      Already Claimed
+                    </Text>
+                    {claimedGifts.map((item, index) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        index={availableGifts.length + index}
+                        onPress={() => setEditingItem(item)}
+                      />
+                    ))}
+                  </>
+                ) : null}
               </View>
             )}
           </View>
@@ -1464,6 +1481,14 @@ const styles = StyleSheet.create({
   },
   itemsList: {
     gap: 10,
+  },
+  claimedSectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginTop: 6,
+    marginBottom: 2,
   },
   itemCard: {
     borderRadius: 14,
