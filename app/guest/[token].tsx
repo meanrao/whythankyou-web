@@ -23,6 +23,7 @@ import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { apiFetch } from '@/utils/api';
 import { saveSharedListEntry, removeSharedListEntry } from '@/hooks/useSharedLists';
+import { cleanProductTitle } from '@/utils/cleanProductTitle';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -198,8 +199,8 @@ function GuestItemCard({ item, index, onClaim, claiming }: ItemCardProps) {
           </View>
         )}
         <View style={itemStyles.content}>
-          <Text style={itemStyles.name} numberOfLines={3}>
-            {item.name}
+          <Text style={itemStyles.name} numberOfLines={2}>
+            {cleanProductTitle(item.name)}
           </Text>
           {priceDisplay ? (
             <Text style={itemStyles.price}>{priceDisplay}</Text>

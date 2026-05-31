@@ -29,6 +29,7 @@ import { AvatarCircle } from '@/components/AvatarCircle';
 import { supabase } from '@/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
+import { cleanProductTitle } from '@/utils/cleanProductTitle';
 
 function TappableAvatar({
   uri,
@@ -417,7 +418,7 @@ function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPr
         />
         <View style={styles.itemContent}>
           <Text style={[styles.itemName, { color: colors.text }]} numberOfLines={2}>
-            {item.name}
+            {cleanProductTitle(item.name)}
           </Text>
           {priceDisplay ? (
             <Text style={[styles.itemPrice, { color: colors.text }]}>
@@ -477,7 +478,7 @@ interface EditItemModalProps {
 }
 
 function EditItemModal({ item, onClose, onSaved }: EditItemModalProps) {
-  const [editName, setEditName] = useState(item.name);
+  const [editName, setEditName] = useState(cleanProductTitle(item.name));
   const [editPrice, setEditPrice] = useState(item.price != null ? String(item.price) : '');
   const [editStore, setEditStore] = useState(item.store ?? '');
   const [editNotes, setEditNotes] = useState(item.notes ?? '');
