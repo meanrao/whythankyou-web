@@ -23,7 +23,8 @@
     "production": {
       "ios": {
         "appleId": "info@drumshakers.com",
-        "ascAppId": "6746818447"
+        "ascAppId": "6746818447",
+        "appleTeamId": "KGDGB34J7R"
       }
     }
   }
