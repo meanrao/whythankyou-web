@@ -22,7 +22,8 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "info@drumshakers.com"
+        "appleId": "info@drumshakers.com",
+        "ascAppId": "6746818447"
       }
     }
   }
