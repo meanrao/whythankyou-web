@@ -45,7 +45,15 @@
       "expo-web-browser",
       "expo-secure-store",
       "expo-video",
-      "@react-native-firebase/app"
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "scheme": "wty",
     "experiments": {
