@@ -14,7 +14,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.drumshakers.whythankyou",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "Why, Thank You! needs access to your photo library to add photos to gift items and child profiles.",
@@ -44,16 +43,7 @@
       "expo-router",
       "expo-web-browser",
       "expo-secure-store",
-      "expo-video",
-      "@react-native-firebase/app",
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "useFrameworks": "static"
-          }
-        }
-      ]
+      "expo-video"
     ],
     "scheme": "wty",
     "experiments": {
