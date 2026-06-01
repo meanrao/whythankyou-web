@@ -50,7 +50,7 @@
         "expo-build-properties",
         {
           "ios": {
-            "newArchEnabled": false
+            "useFrameworks": "static"
           }
         }
       ]
