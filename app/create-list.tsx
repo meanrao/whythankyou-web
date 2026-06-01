@@ -22,6 +22,7 @@ import { supabase } from '@/utils/supabase';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { useColors } from '@/hooks/useColors';
 import { StatusBar } from 'expo-status-bar';
+import { trackCreateList } from '@/utils/analytics';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -213,6 +214,7 @@ export default function CreateListScreen() {
         return;
       }
       console.log('[CreateList] Wishlist created successfully, id:', data?.id);
+      trackCreateList(data.id).catch(() => {});
       router.replace(`/wishlist/${data.id}`);
     } catch (err: any) {
       console.log('[CreateList] Create exception:', err);

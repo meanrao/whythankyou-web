@@ -24,6 +24,7 @@ import { AvatarCircle } from '@/components/AvatarCircle';
 import { apiFetch } from '@/utils/api';
 import { saveSharedListEntry, removeSharedListEntry } from '@/hooks/useSharedLists';
 import { cleanProductTitle } from '@/utils/cleanProductTitle';
+import { trackClaimGift } from '@/utils/analytics';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -381,6 +382,7 @@ export default function GuestScreen() {
       });
 
       console.log('[Guest] Claim successful for item:', pendingItem.id);
+      if (wishlist?.id) trackClaimGift(wishlist.id).catch(() => {});
       const claimedId = pendingItem.id;
       setWishlist((prev) => {
         if (!prev) return prev;

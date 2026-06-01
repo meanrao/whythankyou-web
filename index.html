@@ -723,13 +723,21 @@ footer {
   .sc-phone-share { width: 155px; transform: rotate(3deg); }
 }
 </style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-J1L88RK5TD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-J1L88RK5TD');
+</script>
 </head>
 <body>
 
 <!-- NAV -->
 <nav id="main-nav">
   <a href="#" class="nav-logo">why<span class="coral">,</span> thank you<span class="coral">!</span></a>
-  <a href="#download" class="nav-cta">Get the App, Free</a>
+  <a href="#download" class="nav-cta" onclick="gtag('event','get_app_click',{button_location:'nav'})">Get the App, Free</a>
 </nav>
 
 <!-- HERO -->
@@ -745,7 +753,7 @@ footer {
       <p class="hero-headline">Take the guesswork<br>out of giving.</p>
       <p class="hero-sub">Create a wishlist with gifts from any store. Share one link so everyone knows what to buy and what&rsquo;s already been claimed.</p>
       <div class="hero-actions">
-        <a href="#download" class="btn-primary">Get the App, Free</a>
+        <a href="#download" class="btn-primary" onclick="gtag('event','get_app_click',{button_location:'hero'})">Get the App, Free</a>
         <a href="#story" class="btn-secondary">See how it works</a>
       </div>
     </div>
@@ -954,7 +962,7 @@ footer {
 <div id="download" class="cta-section">
   <h2 class="reveal" style="color:white; margin-bottom:0.75rem">Take the guesswork<br>out of giving<span style="color:var(--coral)">.</span></h2>
   <p class="section-lead reveal" style="color:rgba(255,255,255,0.68); margin: 0 auto 2rem;">Make it easy for friends and family to find the right gift.</p>
-  <a href="#" class="btn-cta-white reveal">Download on the App Store</a>
+  <a href="#" class="btn-cta-white reveal" onclick="gtag('event','app_store_click',{placement:'cta'})">Download on the App Store</a>
 </div>
 
 <!-- FOOTER -->

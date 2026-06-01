@@ -24,6 +24,7 @@ import { apiFetch } from '@/utils/api';
 import { AvatarCircle } from '@/components/AvatarCircle';
 import { useColors } from '@/hooks/useColors';
 import { cleanProductTitle } from '@/utils/cleanProductTitle';
+import { trackAddGift } from '@/utils/analytics';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -240,6 +241,7 @@ export default function AddItemScreen() {
         return;
       }
       console.log('[AddItem] Item saved successfully, id:', data?.id);
+      trackAddGift(wishlistId, !!productUrl.trim(), !!imageUrl).catch(() => {});
       router.back();
     } catch (err: any) {
       console.log('[AddItem] Save exception:', err?.message, err);

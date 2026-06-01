@@ -30,6 +30,7 @@ import { supabase } from '@/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
 import { cleanProductTitle } from '@/utils/cleanProductTitle';
+import { trackEditGift, trackDeleteGift } from '@/utils/analytics';
 
 function TappableAvatar({
   uri,
@@ -574,6 +575,7 @@ function EditItemModal({ item, onClose, onSaved }: EditItemModalProps) {
         return;
       }
       console.log('[EditItem] Item saved successfully');
+      trackEditGift(item.wishlist_id).catch(() => {});
       onClose();
       onSaved();
     } catch (err) {
@@ -603,6 +605,7 @@ function EditItemModal({ item, onClose, onSaved }: EditItemModalProps) {
             return;
           }
           console.log('[EditItem] Item deleted successfully');
+          trackDeleteGift(item.wishlist_id).catch(() => {});
           onClose();
           onSaved();
         },

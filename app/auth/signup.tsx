@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import { useAuth } from '@/contexts/AuthContext';
+import { trackSignUp } from '@/utils/analytics';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -68,6 +69,7 @@ export default function SignupScreen() {
     try {
       await signUp(trimmedEmail, password, trimmedName);
       console.log('[Signup] Signup successful, navigating to tabs');
+      trackSignUp().catch(() => {});
       router.replace('/(tabs)' as any);
     } catch (err: any) {
       console.log('[Signup] Signup failed:', err?.message);

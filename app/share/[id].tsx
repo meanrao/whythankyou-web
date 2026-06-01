@@ -15,6 +15,7 @@ import { X, Link2, Share2 } from 'lucide-react-native';
 import { apiFetch } from '@/utils/api';
 import { useColors } from '@/hooks/useColors';
 import { StatusBar } from 'expo-status-bar';
+import { trackShareList } from '@/utils/analytics';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -81,6 +82,7 @@ export default function ShareScreen() {
   async function handleShareVia() {
     if (!shareUrl) return;
     console.log('[Share] Share via pressed, URL:', shareUrl);
+    if (id) trackShareList(Array.isArray(id) ? id[0] : id).catch(() => {});
     const intro = personName
       ? `Here's a gift list I put together for ${personName}.`
       : "Here's a gift list I put together.";
