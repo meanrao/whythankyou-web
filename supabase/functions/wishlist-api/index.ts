@@ -608,22 +608,24 @@ Deno.serve(async (req: Request) => {
   if (method === "GET" && guestMatch) {
     const token = guestMatch[1];
 
-    // Look up the token
+    // Look up the token — select only wishlist_id so this query is resilient
+    // to optional analytics columns (open_count) that may not exist yet.
     const { data: tokenRow, error: tokenErr } = await supabase
       .from("share_tokens")
-      .select("wishlist_id, open_count")
+      .select("wishlist_id")
       .eq("token", token)
       .maybeSingle();
 
-    if (tokenErr) return json({ error: tokenErr.message }, 500);
-    if (!tokenRow) return json({ error: "Token not found" }, 404);
+    if (tokenErr) {
+      console.error("[GET /api/guest] share_tokens lookup error:", JSON.stringify(tokenErr));
+      return json({ error: tokenErr.message }, 500);
+    }
+    if (!tokenRow) {
+      console.log("[GET /api/guest] token not found:", token);
+      return json({ error: "Token not found" }, 404);
+    }
 
-    // Track anonymous open event (best-effort — errors don't block the response)
-    supabase.from("share_tokens")
-      .update({ open_count: (tokenRow.open_count ?? 0) + 1 })
-      .eq("token", token)
-      .then(() => {})
-      .catch(() => {});
+    console.log("[GET /api/guest] token resolved:", token, "→ wishlist", tokenRow.wishlist_id);
 
     const wishlistId = tokenRow.wishlist_id;
 
