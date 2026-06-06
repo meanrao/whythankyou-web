@@ -410,6 +410,16 @@ Deno.serve(async (req: Request) => {
     const { wishlist_id, name, price, store, store_url, notes, image_url } = body;
     if (!wishlist_id || !name) return json({ error: "wishlist_id and name are required" }, 400);
 
+    // Place new items at the end of the list
+    const { data: maxRow } = await supabase
+      .from("wishlist_items")
+      .select("sort_order")
+      .eq("wishlist_id", wishlist_id)
+      .order("sort_order", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    const nextSortOrder = (maxRow?.sort_order ?? -1) + 1;
+
     const { data, error } = await supabase
       .from("wishlist_items")
       .insert({
@@ -420,6 +430,7 @@ Deno.serve(async (req: Request) => {
         store_url: store_url ?? null,
         notes: notes ?? null,
         image_url: image_url ?? null,
+        sort_order: nextSortOrder,
       })
       .select()
       .single();
@@ -628,8 +639,9 @@ Deno.serve(async (req: Request) => {
     // AND item_claims presence — OR of both so any inconsistency shows as claimed.
     const { data: itemRows, error: iErr } = await supabase
       .from("wishlist_items")
-      .select(`id, name, price, store, store_url, notes, image_url, created_at, claimed, item_claims ( id )`)
+      .select(`id, name, price, store, store_url, notes, image_url, created_at, sort_order, claimed, item_claims ( id )`)
       .eq("wishlist_id", wishlistId)
+      .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
 
     if (iErr) return json({ error: iErr.message }, 500);

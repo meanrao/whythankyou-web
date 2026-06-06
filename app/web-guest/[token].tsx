@@ -201,8 +201,9 @@ export default function WebGuestScreen() {
           .single(),
         supabase
           .from('wishlist_items')
-          .select('id, name, price, store, store_url, photo_url, claimed')
+          .select('id, name, price, store, store_url, photo_url, claimed, sort_order')
           .eq('wishlist_id', wid)
+          .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true }),
       ]);
 

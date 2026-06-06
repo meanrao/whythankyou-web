@@ -4,7 +4,7 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Animated,
+  Animated as RNAnimated,
   Alert,
   ActivityIndicator,
   ImageSourcePropType,
@@ -15,10 +15,20 @@ import {
   Linking,
   RefreshControl,
 } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  useAnimatedReaction,
+  withSpring,
+  runOnJS,
+  type SharedValue,
+} from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import * as Haptics from 'expo-haptics';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { Share2, CheckCircle, Plus, Pencil, X } from 'lucide-react-native';
+import { Share2, CheckCircle, Plus, Pencil, X, GripVertical } from 'lucide-react-native';
 import { Image } from 'expo-image';
 import { useColors } from '@/hooks/useColors';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
@@ -113,6 +123,7 @@ interface ApiItem {
   image_url: string | null;
   claimed: boolean;
   created_at: string;
+  sort_order: number;
   item_claims?: ClaimRecord[];
 }
 
@@ -365,18 +376,18 @@ function ChildProfileBottomSheet({ wishlist, visible, onClose, isOwner, onBirthd
 
 function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPress: () => void }) {
   const colors = useColors();
-  const opacity = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(16)).current;
+  const opacity = useRef(new RNAnimated.Value(0)).current;
+  const translateY = useRef(new RNAnimated.Value(16)).current;
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(opacity, {
+    RNAnimated.parallel([
+      RNAnimated.timing(opacity, {
         toValue: 1,
         duration: 350,
         delay: index * 80,
         useNativeDriver: Platform.OS !== 'web',
       }),
-      Animated.timing(translateY, {
+      RNAnimated.timing(translateY, {
         toValue: 0,
         duration: 350,
         delay: index * 80,
@@ -397,7 +408,7 @@ function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPr
   }
 
   return (
-    <Animated.View style={[{ opacity, transform: [{ translateY }] }, isClaimed && { opacity: 0.55 }]}>
+    <RNAnimated.View style={[{ opacity, transform: [{ translateY }] }, isClaimed && { opacity: 0.55 }]}>
       <AnimatedPressable
         onPress={() => {
           console.log('[WishlistDetail] Item card tapped, opening edit sheet for item:', item.id, item.name);
@@ -405,10 +416,7 @@ function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPr
         }}
         style={[
           styles.itemCard,
-          {
-            backgroundColor: colors.surface,
-            borderColor: colors.border,
-          },
+          { overflow: 'hidden', backgroundColor: colors.surface, borderColor: colors.border },
         ]}
       >
         <Image
@@ -466,7 +474,7 @@ function ItemCard({ item, index, onPress }: { item: ApiItem; index: number; onPr
           ) : null}
         </View>
       </AnimatedPressable>
-    </Animated.View>
+    </RNAnimated.View>
   );
 }
 
@@ -747,6 +755,172 @@ function EditItemModal({ item, onClose, onSaved }: EditItemModalProps) {
   );
 }
 
+// ─── Drag-and-Drop ────────────────────────────────────────────────────────────
+
+const SLOT_HEIGHT = 118; // approximate item height (108) + gap (10)
+
+interface DragState {
+  active: number; // index in availableGifts being dragged, -1 = none
+  ty: number;     // Y translation of gesture
+}
+
+function computeHoveredIndex(active: number, ty: number, total: number): number {
+  'worklet';
+  const center = active * SLOT_HEIGHT + SLOT_HEIGHT / 2 + ty;
+  const idx = Math.round((center - SLOT_HEIGHT / 2) / SLOT_HEIGHT);
+  return Math.max(0, Math.min(total - 1, idx));
+}
+
+function DraggableItemCard({
+  item,
+  index,
+  total,
+  dragState,
+  onPress,
+  onDragStart,
+  onDragEnd,
+}: {
+  item: ApiItem;
+  index: number;
+  total: number;
+  dragState: SharedValue<DragState>;
+  onPress: () => void;
+  onDragStart: () => void;
+  onDragEnd: (from: number, to: number) => void;
+}) {
+  const colors = useColors();
+  const shiftY = useSharedValue(0);
+  const isActive = useSharedValue(false);
+
+  useAnimatedReaction(
+    () => dragState.value,
+    (state) => {
+      'worklet';
+      if (state.active === -1) {
+        isActive.value = false;
+        shiftY.value = withSpring(0, { damping: 20, stiffness: 300 });
+        return;
+      }
+      if (state.active === index) {
+        isActive.value = true;
+        shiftY.value = state.ty;
+        return;
+      }
+      isActive.value = false;
+      const newIdx = computeHoveredIndex(state.active, state.ty, total);
+      let shift = 0;
+      if (newIdx > state.active) {
+        if (index > state.active && index <= newIdx) shift = -SLOT_HEIGHT;
+      } else if (newIdx < state.active) {
+        if (index >= newIdx && index < state.active) shift = SLOT_HEIGHT;
+      }
+      shiftY.value = withSpring(shift, { damping: 20, stiffness: 300 });
+    },
+    [index, total],
+  );
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: shiftY.value }],
+    zIndex: isActive.value ? 100 : 1,
+    shadowOpacity: isActive.value ? 0.18 : 0.04,
+    elevation: isActive.value ? 8 : 1,
+  }));
+
+  const panGesture = Gesture.Pan()
+    .activateAfterLongPress(250)
+    .onStart(() => {
+      'worklet';
+      dragState.value = { active: index, ty: 0 };
+      runOnJS(onDragStart)();
+    })
+    .onUpdate((e) => {
+      'worklet';
+      dragState.value = { active: index, ty: e.translationY };
+    })
+    .onEnd((e) => {
+      'worklet';
+      const newIdx = computeHoveredIndex(index, e.translationY, total);
+      dragState.value = { active: -1, ty: 0 };
+      runOnJS(onDragEnd)(index, newIdx);
+    })
+    .onFinalize(() => {
+      'worklet';
+      dragState.value = { active: -1, ty: 0 };
+    });
+
+  const isClaimed = item.claimed === true;
+  const priceDisplay = item.price != null ? `$${Number(item.price).toFixed(2)}` : null;
+  const hasStoreUrl = !!item.store_url;
+
+  function handleViewItem() {
+    if (!item.store_url) return;
+    Linking.openURL(item.store_url);
+  }
+
+  return (
+    <Animated.View style={[animatedStyle, isClaimed && { opacity: 0.55 }]}>
+      <View
+        style={[
+          styles.itemCard,
+          { backgroundColor: colors.surface, borderColor: colors.border },
+        ]}
+      >
+        <AnimatedPressable
+          onPress={onPress}
+          style={styles.itemCardPressable}
+        >
+          <Image
+            source={resolveImageSource(item.image_url)}
+            style={styles.itemImage}
+            contentFit="contain"
+          />
+          <View style={styles.itemContent}>
+            <Text style={[styles.itemName, { color: colors.text }]} numberOfLines={2}>
+              {cleanProductTitle(item.name)}
+            </Text>
+            {priceDisplay ? (
+              <Text style={[styles.itemPrice, { color: colors.text }]}>{priceDisplay}</Text>
+            ) : null}
+            {item.store ? (
+              <Text style={[styles.itemStore, { color: colors.textSecondary }]}>{item.store}</Text>
+            ) : null}
+            {hasStoreUrl ? (
+              <TouchableOpacity onPress={handleViewItem} activeOpacity={0.7} hitSlop={4}>
+                <Text style={styles.viewItemLink}>View item</Text>
+              </TouchableOpacity>
+            ) : null}
+            {item.notes ? (
+              <Text style={[styles.itemNotes, { color: colors.textTertiary }]} numberOfLines={2}>
+                {item.notes}
+              </Text>
+            ) : null}
+            {isClaimed ? (
+              <View style={styles.claimedSection}>
+                <View style={[styles.claimedBadge, { backgroundColor: colors.accentMuted }]}>
+                  <CheckCircle size={12} color={colors.accent} strokeWidth={2} />
+                  <Text style={[styles.claimedText, { color: colors.accent }]}>Claimed</Text>
+                </View>
+                {item.item_claims?.[0]?.claimer_name ? (
+                  <Text style={[styles.claimerName, { color: colors.textTertiary }]}>
+                    by {item.item_claims[0].claimer_name}
+                  </Text>
+                ) : null}
+              </View>
+            ) : null}
+          </View>
+        </AnimatedPressable>
+
+        {/* Drag handle — always visible for owner */}
+        <GestureDetector gesture={panGesture}>
+          <View style={styles.dragHandle}>
+            <GripVertical size={18} color="#C0B8AE" strokeWidth={1.5} />
+          </View>
+        </GestureDetector>
+      </View>
+    </Animated.View>
+  );
+}
+
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function WishlistDetailScreen() {
@@ -762,6 +936,9 @@ export default function WishlistDetailScreen() {
   const [editingItem, setEditingItem] = useState<ApiItem | null>(null);
   const [profileSheetVisible, setProfileSheetVisible] = useState(false);
   const [avatarTapped, setAvatarTapped] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
+  const dragState = useSharedValue<DragState>({ active: -1, ty: 0 });
 
   async function handleRefresh() {
     setRefreshing(true);
@@ -779,7 +956,8 @@ export default function WishlistDetailScreen() {
           .from('wishlist_items')
           .select('*, item_claims(claimer_name, claimer_email, claimer_note, created_at)')
           .eq('wishlist_id', id)
-          .order('created_at', { ascending: false }),
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: true }),
       ]);
 
       if (wishlistResult.error) {
@@ -844,7 +1022,7 @@ export default function WishlistDetailScreen() {
         { event: 'INSERT', schema: 'public', table: 'wishlist_items', filter: `wishlist_id=eq.${id}` },
         (payload) => {
           console.log('[WishlistDetail] Realtime INSERT received for item:', payload.new.id);
-          setItems((prev) => [payload.new as ApiItem, ...prev]);
+          setItems((prev) => [...prev, payload.new as ApiItem]);
         }
       )
       .on(
@@ -876,6 +1054,33 @@ export default function WishlistDetailScreen() {
   function handleAddItem() {
     console.log('[WishlistDetail] Add item FAB pressed for wishlist:', id);
     router.push({ pathname: '/add-item', params: { wishlistId: id } });
+  }
+
+  function handleDragStart() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    setScrollEnabled(false);
+  }
+
+  function handleDragEnd(from: number, to: number) {
+    setScrollEnabled(true);
+    if (from === to) return;
+    const available = items.filter((i) => !i.claimed);
+    const claimed = items.filter((i) => i.claimed);
+    const reordered = [...available];
+    const [moved] = reordered.splice(from, 1);
+    reordered.splice(to, 0, moved);
+    const withUpdatedOrder = reordered.map((item, idx) => ({ ...item, sort_order: idx }));
+    setItems([...withUpdatedOrder, ...claimed]);
+    persistReorder(withUpdatedOrder).catch(() => {});
+  }
+
+  async function persistReorder(reorderedItems: ApiItem[]) {
+    console.log('[WishlistDetail] Persisting reorder for', reorderedItems.length, 'items');
+    await Promise.all(
+      reorderedItems.map((item, idx) =>
+        supabase.from('wishlist_items').update({ sort_order: idx }).eq('id', item.id)
+      )
+    );
   }
 
   // ── Loading ───────────────────────────────────────────────────────────────
@@ -954,6 +1159,7 @@ export default function WishlistDetailScreen() {
           style={{ flex: 1 }}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          scrollEnabled={scrollEnabled}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#0F6B6F" />}
         >
           {/* Summary card */}
@@ -1004,11 +1210,15 @@ export default function WishlistDetailScreen() {
             ) : (
               <View style={styles.itemsList}>
                 {availableGifts.map((item, index) => (
-                  <ItemCard
+                  <DraggableItemCard
                     key={item.id}
                     item={item}
                     index={index}
+                    total={availableGifts.length}
+                    dragState={dragState}
                     onPress={() => setEditingItem(item)}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
                   />
                 ))}
                 {claimedGifts.length > 0 ? (
@@ -1498,13 +1708,26 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderCurve: 'continuous',
     borderWidth: 1,
-    overflow: 'hidden',
     flexDirection: 'row',
+    alignItems: 'stretch',
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
     shadowRadius: 3,
+  },
+  itemCardPressable: {
+    flex: 1,
+    flexDirection: 'row',
+    overflow: 'hidden',
+    borderRadius: 14,
+  },
+  dragHandle: {
+    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderLeftWidth: 1,
+    borderLeftColor: '#EDE8E0',
   },
   itemImage: {
     width: 88,

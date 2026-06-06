@@ -218,6 +218,16 @@ export default function AddItemScreen() {
         return;
       }
 
+      // Place new item at the end of the list
+      const { data: maxRow } = await supabase
+        .from('wishlist_items')
+        .select('sort_order')
+        .eq('wishlist_id', wishlistId)
+        .order('sort_order', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const nextSortOrder = (maxRow?.sort_order ?? -1) + 1;
+
       const payload = {
         wishlist_id: wishlistId,
         name: itemName.trim(),
@@ -226,6 +236,7 @@ export default function AddItemScreen() {
         notes: notes.trim() || null,
         image_url: imageUrl || null,
         store_url: productUrl.trim() || null,
+        sort_order: nextSortOrder,
       };
       console.log('[AddItem] Inserting item directly via Supabase client:', payload);
 

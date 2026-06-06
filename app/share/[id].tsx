@@ -86,11 +86,10 @@ export default function ShareScreen() {
     const intro = personName
       ? `Here's a gift list I put together for ${personName}.`
       : "Here's a gift list I put together.";
-    const shareMessage = `${intro} Browse and claim what you'd like to get. No app needed. ${shareUrl}`;
+    const shareMessage = `${intro} Browse and claim what you'd like to get. No app needed.\n\n${shareUrl}`;
     try {
       await Share.share({
         message: shareMessage,
-        url: shareUrl,
         title: 'Gift List',
       });
     } catch (err) {
