@@ -46,7 +46,7 @@ type GiftItem = {
   price: string | number | null;
   store: string | null;
   store_url: string | null;
-  photo_url: string | null;
+  image_url: string | null;
   claimed: boolean;
 };
 
@@ -88,9 +88,9 @@ function GiftCard({
       <View style={styles.giftCardBody}>
         {/* Square photo */}
         <View style={styles.giftImageWrap}>
-          {item.photo_url ? (
+          {item.image_url ? (
             <Image
-              source={{ uri: item.photo_url }}
+              source={{ uri: item.image_url }}
               style={styles.giftImage}
               resizeMode="cover"
             />
@@ -201,7 +201,7 @@ export default function WebGuestScreen() {
           .single(),
         supabase
           .from('wishlist_items')
-          .select('id, name, price, store, store_url, photo_url, claimed, sort_order')
+          .select('id, name, price, store, store_url, image_url, claimed, sort_order')
           .eq('wishlist_id', wid)
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true }),

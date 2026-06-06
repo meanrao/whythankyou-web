@@ -449,8 +449,9 @@ Deno.serve(async (req: Request) => {
     const wishlistId = itemsMatch[1];
     const { data, error } = await supabase
       .from("wishlist_items")
-      .select(`id, wishlist_id, name, price, store, store_url, notes, image_url, created_at, item_claims ( claimer_name )`)
+      .select(`id, wishlist_id, name, price, store, store_url, notes, image_url, created_at, sort_order, item_claims ( claimer_name )`)
       .eq("wishlist_id", wishlistId)
+      .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
 
     if (error) return json({ error: error.message }, 500);

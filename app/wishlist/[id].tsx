@@ -865,8 +865,9 @@ function DraggableItemCard({
           { backgroundColor: colors.surface, borderColor: colors.border },
         ]}
       >
-        <AnimatedPressable
+        <TouchableOpacity
           onPress={onPress}
+          activeOpacity={0.85}
           style={styles.itemCardPressable}
         >
           <Image
@@ -908,7 +909,7 @@ function DraggableItemCard({
               </View>
             ) : null}
           </View>
-        </AnimatedPressable>
+        </TouchableOpacity>
 
         {/* Drag handle — always visible for owner */}
         <GestureDetector gesture={panGesture}>
@@ -1076,11 +1077,16 @@ export default function WishlistDetailScreen() {
 
   async function persistReorder(reorderedItems: ApiItem[]) {
     console.log('[WishlistDetail] Persisting reorder for', reorderedItems.length, 'items');
-    await Promise.all(
+    const results = await Promise.all(
       reorderedItems.map((item, idx) =>
         supabase.from('wishlist_items').update({ sort_order: idx }).eq('id', item.id)
       )
     );
+    results.forEach((result, idx) => {
+      if (result.error) {
+        console.error('[WishlistDetail] sort_order update failed for item', reorderedItems[idx].id, ':', result.error.message);
+      }
+    });
   }
 
   // ── Loading ───────────────────────────────────────────────────────────────
