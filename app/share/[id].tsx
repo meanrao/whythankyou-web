@@ -86,12 +86,15 @@ export default function ShareScreen() {
     const intro = personName
       ? `Here's a gift list I put together for ${personName}.`
       : "Here's a gift list I put together.";
-    const shareMessage = `${intro} Browse and claim what you'd like to get. No app needed.\n\n${shareUrl}`;
+    const textBody = `${intro} Browse and claim what you'd like to get. No app needed.`;
     try {
-      await Share.share({
-        message: shareMessage,
-        title: 'Gift List',
-      });
+      if (Platform.OS === 'ios') {
+        // On iOS, pass message and url separately so UIActivityViewController
+        // keeps both in a single iMessage bubble without stripping the text.
+        await Share.share({ message: textBody, url: shareUrl });
+      } else {
+        await Share.share({ message: `${textBody}\n\n${shareUrl}`, title: 'Gift List' });
+      }
     } catch (err) {
       console.log('[Share] Share via error:', err);
     }

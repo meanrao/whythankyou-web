@@ -9,11 +9,19 @@ export const API_BASE =
   (Constants.expoConfig?.extra?.apiUrl as string | undefined) ||
   '';
 
+// Anon key used as the JWT for unauthenticated requests (guests, share links).
+// Supabase Edge Functions reject requests with no Authorization header by default.
+const SUPABASE_ANON_KEY =
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ||
+  (Constants.expoConfig?.extra?.supabaseAnonKey as string | undefined) ||
+  '';
+
 export async function apiFetch(path: string, options?: RequestInit) {
-  // Attach the current Supabase session JWT so Edge Functions receive an authenticated request
+  // Use session JWT when logged in, fall back to anon key for guest/public routes.
   const { data: { session } } = await supabase.auth.getSession();
-  const authHeader = session?.access_token
-    ? { Authorization: `Bearer ${session.access_token}` }
+  const bearerToken = session?.access_token || SUPABASE_ANON_KEY;
+  const authHeader = bearerToken
+    ? { Authorization: `Bearer ${bearerToken}` }
     : {};
 
   console.log('[API] Base URL:', API_BASE);
